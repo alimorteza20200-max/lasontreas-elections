@@ -1,0 +1,892 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lasontreas Secretary of State – Elections Portal</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts: Vazirmatn & Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Vazirmatn:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        navy: {
+                            800: '#0c2340',
+                            900: '#0b1d3a',
+                            950: '#061021',
+                        },
+                        crimson: {
+                            700: '#8b0000',
+                            800: '#b22234',
+                        },
+                        gold: {
+                            500: '#d4af37',
+                            600: '#aa820a',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Vazirmatn', 'Inter', 'sans-serif'],
+                        vazir: ['Vazirmatn', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { font-family: 'Vazirmatn', 'Inter', sans-serif; background-color: #f8fafc; text-align: right; }
+    </style>
+</head>
+<body class="text-slate-800 antialiased bg-slate-100 min-h-screen flex flex-col">
+
+    <!-- Normal (Non-Sticky) State Seal Bar & Header -->
+    <header class="bg-navy-950 text-white border-b-4 border-gold-500">
+        <!-- Top Bar -->
+        <div class="bg-navy-950 py-2.5 px-4 border-b border-slate-800">
+            <div class="max-w-7xl mx-auto flex flex-wrap justify-between items-center text-xs text-slate-300 gap-2">
+                <div class="flex items-center space-x-3 space-x-reverse">
+                    <svg class="w-5 h-5 text-gold-500" viewBox="0 0 24 24" fill="currentColor">
+                        <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="1.5" fill="none"/>
+                        <path d="M12 4L14.5 9.5L20 10L16 14L17.5 19.5L12 16.5L6.5 19.5L8 14L4 10L9.5 9.5L12 4Z"/>
+                    </svg>
+                    <span class="font-semibold tracking-wide">OFFICIAL ELECTION DIVISION • STATE OF LASONTREAS</span>
+                </div>
+                <div>
+                    درگاه رسمی انتخابات ایالت لاسونتراس - دفتر وزیر ایالتی
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Government Banner -->
+        <div class="bg-navy-900 py-6 px-4">
+            <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-6">
+                <div class="flex items-center space-x-5 space-x-reverse">
+                    <div class="w-16 h-16 rounded-full bg-gradient-to-br from-gold-500 to-amber-700 p-1 shadow-xl flex-shrink-0">
+                        <div class="w-full h-full bg-navy-950 rounded-full flex items-center justify-center border border-gold-500/60">
+                            <i class="fa-solid fa-landmark text-gold-500 text-3xl"></i>
+                        </div>
+                    </div>
+                    <div>
+                        <h1 class="text-xl md:text-2xl font-extrabold tracking-tight text-white">
+                            دفتر وزیر امور ایالتی لاسونتراس – سامانه رسمی انتخابات
+                        </h1>
+                        <div class="text-gold-500 font-semibold text-sm md:text-base mt-0.5">
+                            Lasontreas Secretary of State – Elections Portal
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex items-center space-x-3 space-x-reverse bg-navy-950 px-5 py-3 rounded-xl border border-slate-700 shadow-inner">
+                    <span class="relative flex h-3.5 w-3.5">
+                      <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                      <span class="relative inline-flex rounded-full h-3.5 w-3.5 bg-emerald-500"></span>
+                    </span>
+                    <div class="text-xs">
+                        <div class="font-bold text-white uppercase tracking-wider">Election Status: Active</div>
+                        <div class="text-slate-300">وضعیت: سامانه رسمی فعال و آماده دریافت داده‌ها</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Navigation Bar (Fixed Order & Stable Buttons) -->
+        <nav class="bg-navy-950 border-t border-slate-800">
+            <div class="max-w-7xl mx-auto px-4 flex flex-wrap items-center gap-2 py-3 text-xs md:text-sm font-semibold">
+                <button onclick="switchTab('overview')" id="tab-overview" class="tab-btn px-4 py-2.5 bg-gold-500 text-navy-950 rounded-lg font-bold transition flex items-center gap-2">
+                    <i class="fa-solid fa-house"></i>
+                    <span>نمای کلی (Overview)</span>
+                </button>
+                <button onclick="switchTab('candidates')" id="tab-candidates" class="tab-btn px-4 py-2.5 text-slate-300 hover:bg-navy-800 hover:text-white rounded-lg transition flex items-center gap-2">
+                    <i class="fa-solid fa-users"></i>
+                    <span>نامزدها (Candidates)</span>
+                </button>
+                <button onclick="switchTab('cities')" id="tab-cities" class="tab-btn px-4 py-2.5 text-slate-300 hover:bg-navy-800 hover:text-white rounded-lg transition flex items-center gap-2">
+                    <i class="fa-solid fa-city"></i>
+                    <span>شهرها (Cities)</span>
+                </button>
+                <button onclick="switchTab('guide')" id="tab-guide" class="tab-btn px-4 py-2.5 text-slate-300 hover:bg-navy-800 hover:text-white rounded-lg transition flex items-center gap-2">
+                    <i class="fa-solid fa-id-card"></i>
+                    <span>راهنمای رأی‌دهی (Voter Guide)</span>
+                </button>
+                <button onclick="switchTab('analysis')" id="tab-analysis" class="tab-btn px-4 py-2.5 text-slate-300 hover:bg-navy-800 hover:text-white rounded-lg transition flex items-center gap-2">
+                    <i class="fa-solid fa-chart-pie"></i>
+                    <span>تحلیل و بررسی آرا (Vote Analysis)</span>
+                </button>
+                <button onclick="switchTab('news')" id="tab-news" class="tab-btn px-4 py-2.5 text-slate-300 hover:bg-navy-800 hover:text-white rounded-lg transition flex items-center gap-2">
+                    <i class="fa-solid fa-newspaper"></i>
+                    <span>اخبار (News)</span>
+                </button>
+                <button onclick="switchTab('calendar')" id="tab-calendar" class="tab-btn px-4 py-2.5 text-slate-300 hover:bg-navy-800 hover:text-white rounded-lg transition flex items-center gap-2">
+                    <i class="fa-solid fa-calendar-days"></i>
+                    <span>تقویم (Calendar)</span>
+                </button>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Main Content Container -->
+    <main class="flex-grow max-w-7xl w-full mx-auto px-4 py-8">
+
+        <!-- TAB 1: OVERVIEW SECTION -->
+        <section id="sec-overview" class="tab-content space-y-8">
+            <div class="bg-white rounded-2xl shadow-md border border-slate-200 overflow-hidden">
+                <div class="bg-gradient-to-r from-navy-900 via-navy-800 to-crimson-800 text-white p-6 md:p-8">
+                    <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                        <div>
+                            <span class="inline-block px-3 py-1 bg-gold-500/20 border border-gold-500/40 text-gold-500 text-xs font-bold rounded-full mb-2">
+                                انتخابات فرمانداری ایالت لاسونتراس • Gubernatorial General Election 2026
+                            </span>
+                            <h2 class="text-2xl md:text-3xl font-extrabold tracking-tight">
+                                نمای کلی انتخابات – General Election Overview
+                            </h2>
+                            <p class="text-slate-300 text-sm mt-1">
+                                آمار اولیه، ساختار حوزه‌ها و اطلاعات کلی انتخابات ایالت لاسونتراس
+                            </p>
+                        </div>
+                        <div class="bg-navy-950/90 p-4 rounded-xl border border-slate-700 text-center min-w-[220px]">
+                            <div class="text-xs text-slate-400">واجدان شرایط رأی‌دهی در ایالت</div>
+                            <div class="text-3xl font-black text-gold-500 mt-1">19,400,000</div>
+                            <div class="text-xs text-slate-400 mt-0.5">Total Eligible Voters</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="p-6 grid grid-cols-2 md:grid-cols-4 gap-6 bg-slate-50 border-b border-slate-200">
+                    <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
+                        <div class="text-slate-500 text-xs font-bold uppercase">شهرهای اصلی / Main Cities</div>
+                        <div class="text-2xl font-black text-navy-900 mt-1">۶ شهر</div>
+                        <div class="text-xs text-slate-500 mt-1">لوسانتوس، سان‌آندریاس، سان‌فییرو...</div>
+                    </div>
+                    <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
+                        <div class="text-slate-500 text-xs font-bold uppercase">تعداد نامزدها / Candidates</div>
+                        <div class="text-2xl font-black text-navy-900 mt-1">۵ جایگاه</div>
+                        <div class="text-xs text-slate-500 mt-1">جایگاه‌های رسمی نامزدهای فرمانداری</div>
+                    </div>
+                    <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
+                        <div class="text-slate-500 text-xs font-bold uppercase">ساختار / Structure</div>
+                        <div class="text-2xl font-black text-navy-900 mt-1">دومرحله‌ای</div>
+                        <div class="text-xs text-slate-500 mt-1">مقدماتی احزاب + عمومی مردمی</div>
+                    </div>
+                    <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
+                        <div class="text-slate-500 text-xs font-bold uppercase">وضعیت شمارش / Vote Count</div>
+                        <div class="text-xl font-black text-amber-600 mt-1">در انتظار نتایج</div>
+                        <div class="text-xs text-amber-700 font-semibold mt-1">Awaiting Results</div>
+                    </div>
+                </div>
+
+                <div class="p-6 bg-amber-50/70 border-r-4 border-amber-500 flex items-start space-x-4 space-x-reverse">
+                    <i class="fa-solid fa-circle-info text-amber-600 text-2xl mt-0.5"></i>
+                    <div>
+                        <h4 class="font-bold text-amber-900 text-sm">اطلاعیه رسمی سامانه شفافیت آرا</h4>
+                        <p class="text-xs text-amber-800 mt-1 leading-relaxed">
+                            اطلاعات آرای هیچ نامزدی تا پیش از شروع رسمی شمارش ثبت نخواهد شد. تمامی داده‌ها تا زمان پردازش اولیه با عبارت‌های <span class="font-bold">Pending (در انتظار)</span> یا <span class="font-bold">Not Started (شروع نشده)</span> مشخص شده‌اند.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 2: CANDIDATES SECTION -->
+        <section id="sec-candidates" class="tab-content hidden space-y-8">
+            <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
+                <h2 class="text-2xl font-extrabold text-navy-900">
+                    نامزدهای فرمانداری – Gubernatorial Candidates
+                </h2>
+                <p class="text-slate-600 text-sm mt-1">
+                    پروفایل‌های رسمی، برنامه‌ها و بررسی جامع سوابق ۵ نامزد ایالت لاسونتراس
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <!-- Candidate 1 Profile -->
+                <div class="lg:col-span-1 bg-white rounded-2xl shadow-md border-2 border-navy-900 overflow-hidden flex flex-col">
+                    <div class="bg-navy-900 text-white p-4 flex justify-between items-center">
+                        <span class="text-xs font-bold tracking-wider text-gold-500">CANDIDATE #1</span>
+                        <span class="px-2.5 py-0.5 bg-blue-600 text-[10px] font-bold rounded uppercase">مستقل / Independent</span>
+                    </div>
+                    <div class="p-6 flex flex-col items-center text-center border-b border-slate-100">
+                        <div class="w-28 h-28 rounded-full bg-slate-100 border-4 border-gold-500 shadow-inner flex items-center justify-center text-slate-400 mb-4 overflow-hidden">
+                            <i class="fa-solid fa-user-tie text-5xl text-navy-900"></i>
+                        </div>
+                        <h3 class="text-xl font-extrabold text-navy-900">حامد صادقیان</h3>
+                        <div class="text-slate-600 font-semibold text-sm">Hamed Sadeghian</div>
+                        <p class="text-xs text-slate-500 mt-2">متخصص اقتصاد کلان و مدیریت عمومی</p>
+                    </div>
+                    <div class="p-6 space-y-3 text-xs flex-grow bg-slate-50">
+                        <div class="flex justify-between py-1.5 border-b border-slate-200">
+                            <span class="text-slate-500">سن:</span>
+                            <span class="font-bold">۴۴ سال (44 Years)</span>
+                        </div>
+                        <div class="flex justify-between py-1.5 border-b border-slate-200">
+                            <span class="text-slate-500">تحصیلات:</span>
+                            <span class="font-bold">دکتری اقتصاد سیاسی</span>
+                        </div>
+                        <div class="flex justify-between py-1.5 border-b border-slate-200">
+                            <span class="text-slate-500">شعار اصلی:</span>
+                            <span class="font-bold text-navy-900">نوسازی و اصلاح ساختار اقتصادی</span>
+                        </div>
+                        <div class="pt-3">
+                            <button onclick="openCandidateModal()" class="w-full py-3 bg-navy-900 hover:bg-navy-800 text-white font-bold rounded-lg transition text-xs flex items-center justify-center gap-2 shadow">
+                                <i class="fa-solid fa-address-card"></i>
+                                <span>مطالعه بیوگرافی و تحلیل کامل</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Slots 2-5 -->
+                <div class="lg:col-span-2 grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div class="bg-white rounded-xl border border-dashed border-slate-300 p-6 flex flex-col justify-between items-center text-center">
+                        <div class="w-16 h-16 rounded-full bg-slate-100 flex items-center justify-center text-slate-400 mb-3">
+                            <i class="fa-solid fa-user-plus text-2xl"></i>
+                        </div>
+                        <div class="text-xs font-bold text-slate-400 uppercase">Candidate Slot #2</div>
+                        <div class="text-base font-bold text-slate-700 mt-1">ارائه نشده است</div>
+                        <div class="text-xs text-slate-500">Not Provided</div>
+                        <div class="w-full mt-4 py-2 bg-slate-100 text-slate-400 text-xs font-semibold rounded text-center">
+                            در انتظار معرفی توسط احزاب
+                        </div>
+                    </div>
+                    <div class="bg-white rounded-xl border border-dashed border-slate-300 p-6 flex flex-col justify-between items-center text-center">
+                        <div class="w-16 h-16 rounded-full bg-slate-100 flex items-center justify-center text-slate-400 mb-3">
+                            <i class="fa-solid fa-user-plus text-2xl"></i>
+                        </div>
+                        <div class="text-xs font-bold text-slate-400 uppercase">Candidate Slot #3</div>
+                        <div class="text-base font-bold text-slate-700 mt-1">ارائه نشده است</div>
+                        <div class="text-xs text-slate-500">Not Provided</div>
+                        <div class="w-full mt-4 py-2 bg-slate-100 text-slate-400 text-xs font-semibold rounded text-center">
+                            در انتظار معرفی توسط احزاب
+                        </div>
+                    </div>
+                    <div class="bg-white rounded-xl border border-dashed border-slate-300 p-6 flex flex-col justify-between items-center text-center">
+                        <div class="w-16 h-16 rounded-full bg-slate-100 flex items-center justify-center text-slate-400 mb-3">
+                            <i class="fa-solid fa-user-plus text-2xl"></i>
+                        </div>
+                        <div class="text-xs font-bold text-slate-400 uppercase">Candidate Slot #4</div>
+                        <div class="text-base font-bold text-slate-700 mt-1">ارائه نشده است</div>
+                        <div class="text-xs text-slate-500">Not Provided</div>
+                        <div class="w-full mt-4 py-2 bg-slate-100 text-slate-400 text-xs font-semibold rounded text-center">
+                            در انتظار معرفی توسط احزاب
+                        </div>
+                    </div>
+                    <div class="bg-white rounded-xl border border-dashed border-slate-300 p-6 flex flex-col justify-between items-center text-center">
+                        <div class="w-16 h-16 rounded-full bg-slate-100 flex items-center justify-center text-slate-400 mb-3">
+                            <i class="fa-solid fa-user-plus text-2xl"></i>
+                        </div>
+                        <div class="text-xs font-bold text-slate-400 uppercase">Candidate Slot #5</div>
+                        <div class="text-base font-bold text-slate-700 mt-1">ارائه نشده است</div>
+                        <div class="text-xs text-slate-500">Not Provided</div>
+                        <div class="w-full mt-4 py-2 bg-slate-100 text-slate-400 text-xs font-semibold rounded text-center">
+                            در انتظار معرفی توسط احزاب
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 3: CITIES SECTION -->
+        <section id="sec-cities" class="tab-content hidden space-y-6">
+            <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
+                <h2 class="text-2xl font-extrabold text-navy-900">
+                    شهرهای ایالت لاسونتراس – Cities of Lasontreas
+                </h2>
+                <p class="text-slate-600 text-sm mt-1">
+                    وضعیت زیرساخت انتخاباتی و تقسیم‌بندی ۶ شهر اصلی ایالت
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div class="bg-white rounded-xl p-6 border border-slate-200 shadow-sm space-y-3">
+                    <div class="flex justify-between items-center border-b pb-2">
+                        <h3 class="font-extrabold text-navy-900 text-lg">1. لوسانتوس</h3>
+                        <span class="text-xs font-bold text-slate-500">Los Santos</span>
+                    </div>
+                    <div class="text-xs space-y-1.5 text-slate-600">
+                        <div class="flex justify-between"><span>جمعیت:</span> <span class="font-bold text-slate-800">۶,۵۰۰,۰۰۰ نفر</span></div>
+                        <div class="flex justify-between"><span>واجدین شرایط:</span> <span class="font-bold text-slate-800">۴,۸۰۰,۰۰۰ نفر</span></div>
+                        <div class="flex justify-between"><span>مراکز رأی‌گیری:</span> <span class="font-bold text-slate-800">۴۵۰ مرکز</span></div>
+                        <div class="flex justify-between"><span>پیشرفت شمارش:</span> <span class="font-bold text-amber-600">در انتظار (Pending)</span></div>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-xl p-6 border border-slate-200 shadow-sm space-y-3">
+                    <div class="flex justify-between items-center border-b pb-2">
+                        <h3 class="font-extrabold text-navy-900 text-lg">2. سان آندریاس</h3>
+                        <span class="text-xs font-bold text-slate-500">San Andreas</span>
+                    </div>
+                    <div class="text-xs space-y-1.5 text-slate-600">
+                        <div class="flex justify-between"><span>جمعیت:</span> <span class="font-bold text-slate-800">۴,۲۰۰,۰۰۰ نفر</span></div>
+                        <div class="flex justify-between"><span>واجدین شرایط:</span> <span class="font-bold text-slate-800">۳,۱۰۰,۰۰۰ نفر</span></div>
+                        <div class="flex justify-between"><span>مراکز رأی‌گیری:</span> <span class="font-bold text-slate-800">۳۱۰ مرکز</span></div>
+                        <div class="flex justify-between"><span>پیشرفت شمارش:</span> <span class="font-bold text-amber-600">در انتظار (Pending)</span></div>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-xl p-6 border border-slate-200 shadow-sm space-y-3">
+                    <div class="flex justify-between items-center border-b pb-2">
+                        <h3 class="font-extrabold text-navy-900 text-lg">3. سان فییرو</h3>
+                        <span class="text-xs font-bold text-slate-500">San Fierro</span>
+                    </div>
+                    <div class="text-xs space-y-1.5 text-slate-600">
+                        <div class="flex justify-between"><span>جمعیت:</span> <span class="font-bold text-slate-800">۳,۸۰۰,۰۰۰ نفر</span></div>
+                        <div class="flex justify-between"><span>واجدین شرایط:</span> <span class="font-bold text-slate-800">۲,۹۰۰,۰۰۰ نفر</span></div>
+                        <div class="flex justify-between"><span>مراکز رأی‌گیری:</span> <span class="font-bold text-slate-800">۲۸۰ مرکز</span></div>
+                        <div class="flex justify-between"><span>پیشرفت شمارش:</span> <span class="font-bold text-amber-600">در انتظار (Pending)</span></div>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-xl p-6 border border-slate-200 shadow-sm space-y-3">
+                    <div class="flex justify-between items-center border-b pb-2">
+                        <h3 class="font-extrabold text-navy-900 text-lg">4. لیبرتی سیتی</h3>
+                        <span class="text-xs font-bold text-slate-500">Liberty City</span>
+                    </div>
+                    <div class="text-xs space-y-1.5 text-slate-600">
+                        <div class="flex justify-between"><span>جمعیت:</span> <span class="font-bold text-slate-800">۵,۱۰۰,۰۰۰ نفر</span></div>
+                        <div class="flex justify-between"><span>واجدین شرایط:</span> <span class="font-bold text-slate-800">۳,۹۰۰,۰۰۰ نفر</span></div>
+                        <div class="flex justify-between"><span>مراکز رأی‌گیری:</span> <span class="font-bold text-slate-800">۳۸۰ مرکز</span></div>
+                        <div class="flex justify-between"><span>پیشرفت شمارش:</span> <span class="font-bold text-amber-600">در انتظار (Pending)</span></div>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-xl p-6 border border-slate-200 shadow-sm space-y-3">
+                    <div class="flex justify-between items-center border-b pb-2">
+                        <h3 class="font-extrabold text-navy-900 text-lg">5. وای سیتی</h3>
+                        <span class="text-xs font-bold text-slate-500">Vice City</span>
+                    </div>
+                    <div class="text-xs space-y-1.5 text-slate-600">
+                        <div class="flex justify-between"><span>جمعیت:</span> <span class="font-bold text-slate-800">۳,۰۰۰,۰۰۰ نفر</span></div>
+                        <div class="flex justify-between"><span>واجدین شرایط:</span> <span class="font-bold text-slate-800">۲,۳۰۰,۰۰۰ نفر</span></div>
+                        <div class="flex justify-between"><span>مراکز رأی‌گیری:</span> <span class="font-bold text-slate-800">۲۲۰ مرکز</span></div>
+                        <div class="flex justify-between"><span>پیشرفت شمارش:</span> <span class="font-bold text-amber-600">در انتظار (Pending)</span></div>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-xl p-6 border border-slate-200 shadow-sm space-y-3">
+                    <div class="flex justify-between items-center border-b pb-2">
+                        <h3 class="font-extrabold text-navy-900 text-lg">6. کارل سیتی</h3>
+                        <span class="text-xs font-bold text-slate-500">Carl City</span>
+                    </div>
+                    <div class="text-xs space-y-1.5 text-slate-600">
+                        <div class="flex justify-between"><span>جمعیت:</span> <span class="font-bold text-slate-800">۳,۲۰۰,۰۰۰ نفر</span></div>
+                        <div class="flex justify-between"><span>واجدین شرایط:</span> <span class="font-bold text-slate-800">۲,۴۰۰,۰۰۰ نفر</span></div>
+                        <div class="flex justify-between"><span>مراکز رأی‌گیری:</span> <span class="font-bold text-slate-800">۲۱۰ مرکز</span></div>
+                        <div class="flex justify-between"><span>پیشرفت شمارش:</span> <span class="font-bold text-amber-600">در انتظار (Pending)</span></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 4: VOTER GUIDE SECTION (UPDATED TEXT CONTENT) -->
+        <section id="sec-guide" class="tab-content hidden space-y-8">
+            <div class="bg-white p-8 rounded-2xl border border-slate-200 shadow-sm space-y-6">
+                <div class="border-b border-slate-200 pb-4">
+                    <h2 class="text-2xl font-extrabold text-navy-900">
+                        راهنمای رسمی انتخابات فرماندار ایالت لاسونتراس
+                    </h2>
+                    <p class="text-slate-600 text-sm mt-1">
+                        Official Voter Guide & Election Regulations – State of Lasontreas
+                    </p>
+                </div>
+
+                <div class="prose max-w-none text-slate-700 text-sm leading-relaxed space-y-6">
+                    <p>
+                        انتخابات فرماندار ایالت لاسونتراس در دو مرحله برگزار می‌شود. تمامی شهروندان واجد شرایط رأی دادن می‌توانند در این انتخابات شرکت کنند و با رأی مستقیم خود، فرماندار آینده ایالت را انتخاب کنند.
+                    </p>
+
+                    <div class="bg-slate-50 p-6 rounded-xl border border-slate-200 space-y-4">
+                        <h3 class="text-lg font-extrabold text-navy-900 flex items-center gap-2">
+                            <i class="fa-solid fa-list-check text-gold-500"></i>
+                            مرحله اول: انتخابات مقدماتی (Party Primaries)
+                        </h3>
+                        <p>در مرحله اول، احزاب سیاسی نامزدهای خود را برای تصدی سمت فرمانداری معرفی می‌کنند:</p>
+                        <ul class="list-disc list-inside space-y-2 pr-4 text-slate-600">
+                            <li>نامزدها باید ابتدا برای شرکت در انتخابات ثبت‌نام کنند.</li>
+                            <li>مدارک و شرایط قانونی آن‌ها توسط مراجع انتخاباتی بررسی می‌شود.</li>
+                            <li>نامزدهای تأییدصلاحیت‌شده وارد رقابت مقدماتی می‌شوند.</li>
+                            <li>مردم در روز انتخابات مقدماتی به نامزد موردنظر خود رأی می‌دهند.</li>
+                            <li>نامزدهای برتر هر حزب برای حضور در انتخابات نهایی انتخاب می‌شوند.</li>
+                        </ul>
+                        <p class="font-semibold text-navy-800 pt-2">
+                            هدف از این مرحله، مشخص شدن نمایندگان نهایی احزاب برای رقابت بر سر فرمانداری است.
+                        </p>
+                    </div>
+
+                    <div class="bg-slate-50 p-6 rounded-xl border border-slate-200 space-y-4">
+                        <h3 class="text-lg font-extrabold text-navy-900 flex items-center gap-2">
+                            <i class="fa-solid fa-square-poll-vertical text-gold-500"></i>
+                            مرحله دوم: انتخابات نهایی (Public General Election)
+                        </h3>
+                        <p>در مرحله دوم، نامزدهایی که از انتخابات مقدماتی عبور کرده‌اند، وارد رقابت نهایی می‌شوند:</p>
+                        <ul class="list-disc list-inside space-y-2 pr-4 text-slate-600">
+                            <li>فهرست رسمی نامزدهای نهایی منتشر می‌شود.</li>
+                            <li>نامزدها برنامه‌ها، اهداف و وعده‌های انتخاباتی خود را به مردم ارائه می‌کنند.</li>
+                            <li>تبلیغات انتخاباتی تا زمان تعیین‌شده ادامه خواهد داشت.</li>
+                            <li>شهروندان در روز انتخابات نهایی به یکی از نامزدها رأی می‌دهند.</li>
+                            <li>پس از پایان رأی‌گیری، صندوق‌ها بسته شده و شمارش آرا آغاز می‌شود.</li>
+                            <li>نتایج رسمی پس از تأیید مراجع انتخاباتی اعلام خواهد شد.</li>
+                        </ul>
+                        <p class="font-semibold text-navy-800 pt-2">
+                            نامزدی که بیشترین آرای معتبر را کسب کند، به‌عنوان فرماندار منتخب ایالت لاسونتراس معرفی خواهد شد.
+                        </p>
+                    </div>
+
+                    <div class="bg-white p-6 rounded-xl border border-slate-200 space-y-4 shadow-sm">
+                        <h3 class="text-lg font-extrabold text-navy-900">
+                            نحوه رأی دادن شهروندان (How to Vote)
+                        </h3>
+                        <p>تمامی شهروندان واجد شرایط می‌توانند با مراجعه به مراکز رسمی رأی‌گیری در شهر محل سکونت خود، در انتخابات شرکت کنند. فرایند رأی دادن به این صورت است:</p>
+                        <ol class="list-decimal list-inside space-y-2 pr-4 text-slate-600">
+                            <li>مراجعه به مرکز رأی‌گیری در روز انتخابات.</li>
+                            <li>ارائه کارت شناسایی معتبر و بررسی هویت شهروند.</li>
+                            <li>دریافت برگه رسمی رأی.</li>
+                            <li>انتخاب نامزد موردنظر و علامت زدن نام او در برگه.</li>
+                            <li>قراردادن برگه رأی در صندوق رسمی انتخابات.</li>
+                            <li>ثبت رأی و پایان فرایند رأی‌گیری.</li>
+                        </ol>
+                    </div>
+
+                    <div class="bg-navy-900 text-white p-6 rounded-xl space-y-4">
+                        <h3 class="text-lg font-extrabold text-gold-500">
+                            قوانین عمومی انتخابات (General Election Laws)
+                        </h3>
+                        <ul class="list-disc list-inside space-y-2 pr-4 text-slate-200 text-xs md:text-sm">
+                            <li>شرکت در انتخابات برای شهروندان واجد شرایط آزاد است.</li>
+                            <li>رأی‌گیری به‌صورت مستقیم و مخفی انجام می‌شود.</li>
+                            <li>هر شهروند در هر مرحله فقط یک رأی خواهد داشت.</li>
+                            <li>خرید و فروش رأی، تهدید رأی‌دهندگان و دستکاری آرا ممنوع است.</li>
+                            <li>هیچ نامزد یا حزبی حق اجبار شهروندان به رأی دادن به فرد خاصی را ندارد.</li>
+                            <li>شمارش آرا باید شفاف و تحت نظارت مراجع رسمی انتخاباتی انجام شود.</li>
+                            <li>نتایج نهایی پس از بررسی و تأیید رسمی اعلام خواهند شد.</li>
+                        </ul>
+                    </div>
+
+                    <p class="text-center font-bold text-navy-900 text-base pt-4">
+                        انتخابات فرمانداری لاسونتراس فرصتی برای مشارکت شهروندان در تعیین آینده سیاسی، اقتصادی و اجتماعی ایالت است.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 5: VOTE ANALYSIS & DETAILS SECTION (NEWLY ADDED) -->
+        <section id="sec-analysis" class="tab-content hidden space-y-8">
+            <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
+                <h2 class="text-2xl font-extrabold text-navy-900">
+                    جزئیات کار، تحلیل و بررسی آرا – Vote Analysis & Detailed Metrics
+                </h2>
+                <p class="text-slate-600 text-sm mt-1">
+                    بررسی آماری، روند شمارش حوزه‌ها و تحلیل مشارکت مردمی در ایالت لاسونتراس
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm space-y-3">
+                    <div class="text-slate-500 text-xs font-bold uppercase">مجموع آرای ثبت‌شده</div>
+                    <div class="text-2xl font-black text-navy-900">در انتظار آغاز رأی‌گیری</div>
+                    <p class="text-xs text-slate-500 leading-relaxed">
+                        پس از اتمام مهلت اخذ رأی، مجموع کل برگه آرای صندوق‌های شهری و پستی در این بخش تجمیع خواهد شد.
+                    </p>
+                </div>
+                <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm space-y-3">
+                    <div class="text-slate-500 text-xs font-bold uppercase">آرای معتبر و باطله</div>
+                    <div class="text-2xl font-black text-amber-600">Pending / بدون داده</div>
+                    <p class="text-xs text-slate-500 leading-relaxed">
+                        تفکیک دقیق آرای صحیح، آرای سفید و برگه‌های باطله توسط کمیته نظارت بر شمارش اعلام می‌گردد.
+                    </p>
+                </div>
+                <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm space-y-3">
+                    <div class="text-slate-500 text-xs font-bold uppercase">درصد مشارکت مردمی</div>
+                    <div class="text-2xl font-black text-navy-900">محاسبه خودکار پس از شروع</div>
+                    <p class="text-xs text-slate-500 leading-relaxed">
+                        نرخ مشارکت در ۶ شهر اصلی به صورت لحظه‌ای بر اساس نسبت آرای اخذشده به واجدین شرایط محاسبه می‌شود.
+                    </p>
+                </div>
+            </div>
+
+            <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm space-y-4">
+                <h3 class="font-extrabold text-navy-900 text-lg">تحلیل عملکرد حوزه‌ها و گرایش منطقه‌ای</h3>
+                <p class="text-xs text-slate-600 leading-relaxed">
+                    مطابق با ساختار انتخاباتی ایالت لاسونتراس، رقابت بین نامزدها در مناطق شهری بزرگ مانند لوسانتوس و لیبرتی سیتی نقش تعیین‌کننده‌ای در نتیجه نهایی خواهد داشت. گزارش‌های تحلیلی تکمیلی همزمان با پیشرفت شمارش آرا در این بخش منتشر می‌گردد.
+                </p>
+            </div>
+        </section>
+
+        <!-- TAB 6: NEWS SECTION -->
+        <section id="sec-news" class="tab-content hidden space-y-6">
+            <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
+                <h2 class="text-2xl font-extrabold text-navy-900">
+                    اخبار و اطلاعیه‌های رسمی – Official News & Press
+                </h2>
+                <p class="text-slate-600 text-sm mt-1">
+                    آخرین بیانیه‌ها، تصمیمات امنیتی و اطلاعیه‌های کمیسیون انتخابات
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Article 1 -->
+                <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden flex flex-col hover:shadow-md transition">
+                    <div class="bg-navy-900 text-white p-4 flex justify-between items-center">
+                        <span class="px-2.5 py-0.5 bg-gold-500 text-navy-950 text-[10px] font-bold rounded">امنیت / Security</span>
+                        <span class="text-xs opacity-75">Nov 08, 2026</span>
+                    </div>
+                    <div class="p-5 flex-grow space-y-2">
+                        <h3 class="font-bold text-navy-900 text-base leading-snug">
+                            تصویب طرح جامع تدابیر امنیتی در سراسر شعب ایالت
+                        </h3>
+                        <div class="text-xs font-semibold text-slate-500">Statewide Election Security Plan Formally Authorized</div>
+                        <p class="text-xs text-slate-600 line-clamp-3">
+                            دفتر وزیر ایالتی لاسونتراس از استقرار تجهیزات الکترونیکی پایش و حضور ناظران برای تضمین امنیت کامل شعب خبر داد.
+                        </p>
+                    </div>
+                    <div class="p-4 bg-slate-50 border-t border-slate-100">
+                        <button onclick="openNewsModal(1)" class="w-full py-2.5 bg-navy-900 hover:bg-navy-800 text-white font-bold text-xs rounded-lg transition flex items-center justify-center gap-2 shadow-sm">
+                            <i class="fa-solid fa-book-open"></i>
+                            <span>مطالعه کامل خبر</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Article 2 -->
+                <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden flex flex-col hover:shadow-md transition">
+                    <div class="bg-navy-900 text-white p-4 flex justify-between items-center">
+                        <span class="px-2.5 py-0.5 bg-blue-600 text-white text-[10px] font-bold rounded">ثبت‌نام / Registration</span>
+                        <span class="text-xs opacity-75">Nov 06, 2026</span>
+                    </div>
+                    <div class="p-5 flex-grow space-y-2">
+                        <h3 class="font-bold text-navy-900 text-base leading-snug">
+                            تمدید مهلت ثبت‌نام در سامانه آنلاین برای واجدین شرایط
+                        </h3>
+                        <div class="text-xs font-semibold text-slate-500">Voter Registration Portal Deadline Extended by 48 Hours</div>
+                        <p class="text-xs text-slate-600 line-clamp-3">
+                            به دلیل حجم بالای مراجعات شهروندان در شهرهای لوسانتوس و سان‌آندریاس، مهلت ثبت نام به مدت دو روز دیگر تمدید گردید.
+                        </p>
+                    </div>
+                    <div class="p-4 bg-slate-50 border-t border-slate-100">
+                        <button onclick="openNewsModal(2)" class="w-full py-2.5 bg-navy-900 hover:bg-navy-800 text-white font-bold text-xs rounded-lg transition flex items-center justify-center gap-2 shadow-sm">
+                            <i class="fa-solid fa-book-open"></i>
+                            <span>مطالعه کامل خبر</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Article 3 -->
+                <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden flex flex-col hover:shadow-md transition">
+                    <div class="bg-navy-900 text-white p-4 flex justify-between items-center">
+                        <span class="px-2.5 py-0.5 bg-emerald-600 text-white text-[10px] font-bold rounded">مراکز رأی‌گیری / Polling Sites</span>
+                        <span class="text-xs opacity-75">Nov 04, 2026</span>
+                    </div>
+                    <div class="p-5 flex-grow space-y-2">
+                        <h3 class="font-bold text-navy-900 text-base leading-snug">
+                            آماده‌سازی بیش از ۱۲۰۰ مرکز اخذ رأی در ۶ شهر ایالت
+                        </h3>
+                        <div class="text-xs font-semibold text-slate-500">Over 1,200 Certified Polling Stations Prepared</div>
+                        <p class="text-xs text-slate-600 line-clamp-3">
+                            لیست کامل شعب اخذ رأی به همراه جدول ساعات کاری و آدرس دقیق بر روی درگاه رسمی کمیسیون قرار گرفت.
+                        </p>
+                    </div>
+                    <div class="p-4 bg-slate-50 border-t border-slate-100">
+                        <button onclick="openNewsModal(3)" class="w-full py-2.5 bg-navy-900 hover:bg-navy-800 text-white font-bold text-xs rounded-lg transition flex items-center justify-center gap-2 shadow-sm">
+                            <i class="fa-solid fa-book-open"></i>
+                            <span>مطالعه کامل خبر</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Article 4 -->
+                <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden flex flex-col hover:shadow-md transition">
+                    <div class="bg-navy-900 text-white p-4 flex justify-between items-center">
+                        <span class="px-2.5 py-0.5 bg-amber-600 text-white text-[10px] font-bold rounded">مناظرات / Debates</span>
+                        <span class="text-xs opacity-75">Nov 02, 2026</span>
+                    </div>
+                    <div class="p-5 flex-grow space-y-2">
+                        <h3 class="font-bold text-navy-900 text-base leading-snug">
+                            اعلام زمان‌بندی دقیق مناظرات زنده تلویزیونی نامزدها
+                        </h3>
+                        <div class="text-xs font-semibold text-slate-500">Official Gubernatorial Debate Schedule Formally Published</div>
+                        <p class="text-xs text-slate-600 line-clamp-3">
+                            نخستین مناظره تلویزیونی نامزدها با محوریت برنامه‌های اقتصادی و ساختار مالیاتی از شبکه سراسری ایالت پخش خواهد شد.
+                        </p>
+                    </div>
+                    <div class="p-4 bg-slate-50 border-t border-slate-100">
+                        <button onclick="openNewsModal(4)" class="w-full py-2.5 bg-navy-900 hover:bg-navy-800 text-white font-bold text-xs rounded-lg transition flex items-center justify-center gap-2 shadow-sm">
+                            <i class="fa-solid fa-book-open"></i>
+                            <span>مطالعه کامل خبر</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Article 5 -->
+                <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden flex flex-col hover:shadow-md transition">
+                    <div class="bg-navy-900 text-white p-4 flex justify-between items-center">
+                        <span class="px-2.5 py-0.5 bg-purple-600 text-white text-[10px] font-bold rounded">آرای پستی / Mail-In Voting</span>
+                        <span class="text-xs opacity-75">Oct 30, 2026</span>
+                    </div>
+                    <div class="p-5 flex-grow space-y-2">
+                        <h3 class="font-bold text-navy-900 text-base leading-snug">
+                            راه‌اندازی سامانه هوشمند رهگیری مرسولات آرای پستی
+                        </h3>
+                        <div class="text-xs font-semibold text-slate-500">Mail-In Ballot Electronic Tracking System Online</div>
+                        <p class="text-xs text-slate-600 line-clamp-3">
+                            رأی‌دهندگانی که برگه رأی خود را از طریق پست ارسال کرده‌اند، از هم‌اکنون می‌توانند موقعیت برگه خود را تا صندق پیگیری کنند.
+                        </p>
+                    </div>
+                    <div class="p-4 bg-slate-50 border-t border-slate-100">
+                        <button onclick="openNewsModal(5)" class="w-full py-2.5 bg-navy-900 hover:bg-navy-800 text-white font-bold text-xs rounded-lg transition flex items-center justify-center gap-2 shadow-sm">
+                            <i class="fa-solid fa-book-open"></i>
+                            <span>مطالعه کامل خبر</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 7: CALENDAR SECTION -->
+        <section id="sec-calendar" class="tab-content hidden space-y-6">
+            <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
+                <h2 class="text-2xl font-extrabold text-navy-900">
+                    تقویم رسمی انتخابات – Official Election Calendar
+                </h2>
+                <p class="text-slate-600 text-sm mt-1">
+                    زمان‌بندی مراحل دوگانه برگزاری انتخابات فرمانداری ایالت لاسونتراس
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm space-y-3">
+                    <div class="flex justify-between items-center border-b pb-2">
+                        <span class="px-3 py-1 bg-blue-100 text-blue-800 font-bold text-xs rounded-full">مرحله اول / Phase 1</span>
+                        <span class="text-xs text-slate-500 font-semibold">10 Nov – 12 Nov 2026</span>
+                    </div>
+                    <h3 class="text-lg font-bold text-navy-900">انتخابات مقدماتی احزاب (Party Primaries)</h3>
+                    <p class="text-xs text-slate-600 leading-relaxed">
+                        ارزیابی‌های درون‌حزبی برای تایید ۵ نامزد نهایی و دریافت مجوز رسمی حضور در رقابت عمومی مردمی.
+                    </p>
+                </div>
+
+                <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm space-y-3 border-r-4 border-r-gold-500">
+                    <div class="flex justify-between items-center border-b pb-2">
+                        <span class="px-3 py-1 bg-gold-100 text-gold-900 font-bold text-xs rounded-full">مرحله دوم / Phase 2</span>
+                        <span class="text-xs text-slate-500 font-semibold">12 Nov – 14 Nov 2026</span>
+                    </div>
+                    <h3 class="text-lg font-bold text-navy-900">انتخابات عمومی مردمی (Public General Election)</h3>
+                    <p class="text-xs text-slate-600 leading-relaxed">
+                        رأی‌گیری عمومی سرتاسری در تمامی ۶ شهر ایالت لاسونتراس و فرایند تجمیع و شمارش آرا.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Official Government Footer -->
+    <footer class="bg-navy-950 text-white border-t-4 border-gold-500 mt-16">
+        <div class="max-w-7xl mx-auto px-4 py-10 grid grid-cols-1 md:grid-cols-3 gap-8 text-xs">
+            <div>
+                <h4 class="font-extrabold text-gold-500 text-sm mb-3">Lasontreas Secretary of State</h4>
+                <p class="text-slate-400 leading-relaxed">
+                    سامانه رسمی اطلاع‌رسانی، شفافیت آرا و قوانین انتخاباتی ایالت لاسونتراس. کلیه اطلاعات مندرج تحت نظارت قانونی کمیسیون مرکزی قرار دارد.
+                </p>
+            </div>
+            <div>
+                <h4 class="font-bold text-white text-sm mb-3">دسترسی سریع / Quick Navigation</h4>
+                <ul class="space-y-2 text-slate-400">
+                    <li><button onclick="switchTab('overview')" class="hover:text-gold-500 transition">نمای کلی انتخابات</button></li>
+                    <li><button onclick="switchTab('candidates')" class="hover:text-gold-500 transition">فهرست نامزدها</button></li>
+                    <li><button onclick="switchTab('guide')" class="hover:text-gold-500 transition">راهنمای رأی‌دهندگان</button></li>
+                    <li><button onclick="switchTab('news')" class="hover:text-gold-500 transition">اخبار و بیانیه‌ها</button></li>
+                </ul>
+            </div>
+            <div>
+                <h4 class="font-bold text-white text-sm mb-3">مرکز پاسخگویی / Public Support</h4>
+                <p class="text-slate-400">Official Elections Hotline: (555) 019-2026</p>
+                <p class="text-slate-400 mt-1">تلفن پشتیبانی ستاد مرکزی انتخابات: ۵۵۵-۰۱۹-۲۰۲۶</p>
+                <p class="text-slate-500 text-[11px] mt-2">Hours: Mon - Fri, 8:00 AM - 5:00 PM EST</p>
+            </div>
+        </div>
+        <div class="bg-navy-900 py-4 text-center text-[11px] text-slate-400 border-t border-slate-800">
+            © 2026 State of Lasontreas • Office of the Secretary of State • All Rights Reserved
+        </div>
+    </footer>
+
+    <!-- Full Article Modal -->
+    <div id="news-modal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-md z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl max-w-2xl w-full max-h-[85vh] overflow-y-auto shadow-2xl border border-slate-300 p-6 space-y-4 text-right">
+            <div class="flex justify-between items-center border-b border-slate-100 pb-3">
+                <span id="modal-category" class="px-3 py-1 bg-navy-900 text-gold-500 font-bold text-xs rounded-full">Category</span>
+                <button onclick="closeNewsModal()" class="text-slate-400 hover:text-slate-700 text-xl font-bold p-1">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+            <h3 id="modal-title" class="text-xl font-extrabold text-navy-900">Article Title</h3>
+            <div id="modal-fa-title" class="text-sm font-semibold text-slate-600">عنوان فارسی خبر</div>
+            <div class="text-xs text-slate-400 border-b border-slate-100 pb-3" id="modal-date">Date</div>
+            <div id="modal-content" class="text-xs text-slate-700 leading-relaxed space-y-3">
+                <!-- Injected via JavaScript -->
+            </div>
+            <div class="pt-4 border-t border-slate-100 flex justify-end">
+                <button onclick="closeNewsModal()" class="px-6 py-2.5 bg-navy-900 text-white font-bold text-xs rounded-lg hover:bg-navy-800 transition">
+                    بستن خبر / Close
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Candidate Full Profile Modal -->
+    <div id="candidate-modal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-md z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl max-w-3xl w-full max-h-[90vh] overflow-y-auto shadow-2xl border border-slate-300 p-6 space-y-6 text-right">
+            <div class="flex justify-between items-center border-b border-slate-100 pb-3">
+                <span class="px-3 py-1 bg-navy-900 text-gold-500 font-bold text-xs rounded-full">Official Candidate Profile</span>
+                <button onclick="closeCandidateModal()" class="text-slate-400 hover:text-slate-700 text-xl font-bold p-1">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <div class="flex flex-col md:flex-row gap-6 items-start">
+                <div class="w-full md:w-1/3 text-center bg-slate-50 p-5 rounded-xl border border-slate-200">
+                    <div class="w-24 h-24 mx-auto rounded-full bg-navy-900 text-gold-500 flex items-center justify-center text-4xl mb-3 shadow">
+                        <i class="fa-solid fa-user-tie"></i>
+                    </div>
+                    <h3 class="font-extrabold text-navy-900 text-lg">حامد صادقیان</h3>
+                    <div class="text-xs text-slate-600 font-bold">Hamed Sadeghian</div>
+                    <span class="inline-block mt-2 px-3 py-0.5 bg-blue-100 text-blue-900 text-[11px] font-bold rounded-full">
+                        نامزد مستقل / Independent
+                    </span>
+                </div>
+
+                <div class="w-full md:w-2/3 space-y-4 text-xs">
+                    <h4 class="font-extrabold text-navy-900 border-b pb-1 text-sm">زندگینامه و تحلیل اختصاصی (Candidate Analysis)</h4>
+                    <p class="text-slate-700 leading-relaxed">
+                        حامد صادقیان با داشتن مدرک دکتری اقتصاد سیاسی و بیش از ۱۵ سال سابقه مدیریت کلان در حوزه‌های اجرایی و توسعه شهری، یکی از چهره‌های مستقل و شاخص انتخابات فرمانداری ایالت لاسونتراس به شمار می‌رود.
+                    </p>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
+                        <div class="bg-emerald-50 p-3 rounded-lg border border-emerald-200">
+                            <span class="font-bold text-emerald-900 block mb-1">نقاط قوت (Strengths):</span>
+                            تخصص در اصلاحات ساختار مالی، محبوبیت در مراکز دانشگاهی و برنامه‌ریزی نوین شهری.
+                        </div>
+                        <div class="bg-rose-50 p-3 rounded-lg border border-rose-200">
+                            <span class="font-bold text-rose-900 block mb-1">چالش‌ها (Challenges):</span>
+                            عدم وابستگی به احزاب بزرگ و نیاز به گسترش پایگاه رأی در مناطق حاشیه‌ای.
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pt-4 border-t border-slate-100 flex justify-end">
+                <button onclick="closeCandidateModal()" class="px-6 py-2.5 bg-navy-900 text-white font-bold text-xs rounded-lg hover:bg-navy-800 transition">
+                    بستن پروفایل / Close
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript Navigation & Data Script -->
+    <script>
+        function switchTab(tabId) {
+            const contents = document.querySelectorAll('.tab-content');
+            contents.forEach(el => el.classList.add('hidden'));
+
+            const targetSection = document.getElementById('sec-' + tabId);
+            if (targetSection) {
+                targetSection.classList.remove('hidden');
+            }
+
+            const buttons = document.querySelectorAll('.tab-btn');
+            buttons.forEach(btn => {
+                btn.classList.remove('bg-gold-500', 'text-navy-950', 'font-bold');
+                btn.classList.add('text-slate-300');
+            });
+
+            const activeBtn = document.getElementById('tab-' + tabId);
+            if (activeBtn) {
+                activeBtn.classList.remove('text-slate-300');
+                activeBtn.classList.add('bg-gold-500', 'text-navy-950', 'font-bold');
+            }
+
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        const newsData = {
+            1: {
+                title: "Statewide Election Security Plan Formally Authorized",
+                faTitle: "تصویب طرح جامع تدابیر امنیتی در سراسر شعب ایالت",
+                category: "Security / امنیت",
+                date: "November 08, 2026",
+                content: `
+                    <p><strong>Official Statement:</strong> The Office of the Secretary of State has formally authorized a comprehensive security framework for all 6 counties.</p>
+                    <p>دفتر وزیر ایالتی لاسونتراس با انتشار بیانیه‌ای رسمی از استقرار سامانه‌های پایش الکترونیکی و افزایش تعداد ناظران مستقل در تمامی شعب اخذ رأی خبر داد.</p>
+                    <p>هدف از این اقدامات، تضمین شفافیت کامل، صیانت از آرای شهروندان، جلوگیری از تداخل داده‌ها و ایجاد محیطی امن برای مشارکت همگانی می‌باشد.</p>
+                `
+            },
+            2: {
+                title: "Voter Registration Portal Deadline Extended by 48 Hours",
+                faTitle: "تمدید مهلت ثبت‌نام در سامانه آنلاین برای واجدین شرایط",
+                category: "Registration / ثبت‌نام",
+                date: "November 06, 2026",
+                content: `
+                    <p><strong>Official Directive:</strong> Due to unprecedented voter registration traffic, the deadline is extended.</p>
+                    <p>با توجه به ترافیک بالای سامانه ثبت‌نام در شهرهای لوسانتوس و سان‌آندریاس، طبق دستور وزیر ایالتی مهلت ثبت‌نام برای تمامی واجدین شرایط تا ۴۸ ساعت آینده تمدید گردید.</p>
+                `
+            },
+            3: {
+                title: "Over 1,200 Certified Polling Stations Prepared Across 6 Cities",
+                faTitle: "آماده‌سازی بیش از ۱۲۰۰ مرکز اخذ رأی در ۶ شهر ایالت",
+                category: "Polling Sites / شعب",
+                date: "November 04, 2026",
+                content: `
+                    <p><strong>Infrastructure Readiness:</strong> All polling stations are fully verified and equipped.</p>
+                    <p>کمیسیون انتخابات ایالت لاسونتراس اعلام کرد بیش از ۱۲۰۰ مرکز اخذ رأی در شهرهای لوسانتوس، سان آندریاس، سان فییرو، لیبرتی سیتی، وای سیتی و کارل سیتی آماده پذیرش رأی‌دهندگان هستند.</p>
+                `
+            },
+            4: {
+                title: "Official Gubernatorial Debate Schedule Formally Published",
+                faTitle: "اعلام زمان‌بندی دقیق مناظرات زنده تلویزیونی نامزدها",
+                category: "Debates / مناظرات",
+                date: "November 02, 2026",
+                content: `
+                    <p><strong>Broadcasting Announcement:</strong> Live debates will be broadcasted statewide.</p>
+                    <p>نخستین مناظره رسمی تلویزیونی با محوریت توسعه اقتصادی، ایجاد اشتغال و اصلاح ساختار مالیاتی ایالت با حضور نامزدها به صورت زنده پخش خواهد شد.</p>
+                `
+            },
+            5: {
+                title: "Mail-In Ballot Electronic Tracking System Online",
+                faTitle: "راه‌اندازی سامانه هوشمند رهگیری مرسولات آرای پستی",
+                category: "Mail-In Voting / آرای پستی",
+                date: "October 20, 2026",
+                content: `
+                    <p><strong>System Launch:</strong> Citizens can track their mail-in ballot status in real-time.</p>
+                    <p>سامانه جدید پیگیری آرای پستی فعال شد. رأی‌دهندگانی که برگه رأی خود را از طریق پست ارسال کرده‌اند، می‌توانند با وارد کردن کد رهگیری اختصاصی، وضعیت تحویل برگه رأی خود را پایش نمایند.</p>
+                `
+            }
+        };
+
+        function openNewsModal(id) {
+            const data = newsData[id];
+            if (!data) return;
+
+            document.getElementById('modal-title').innerText = data.title;
+            document.getElementById('modal-fa-title').innerText = data.faTitle;
+            document.getElementById('modal-category').innerText = data.category;
+            document.getElementById('modal-date').innerText = data.date;
+            document.getElementById('modal-content').innerHTML = data.content;
+
+            document.getElementById('news-modal').classList.remove('hidden');
+        }
+
+        function closeNewsModal() {
+            document.getElementById('news-modal').classList.add('hidden');
+        }
+
+        function openCandidateModal() {
+            document.getElementById('candidate-modal').classList.remove('hidden');
+        }
+
+        function closeCandidateModal() {
+            document.getElementById('candidate-modal').classList.add('hidden');
+        }
+    </script>
+</body>
+                                                                                       </html>
