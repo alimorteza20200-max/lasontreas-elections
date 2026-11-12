@@ -1,1168 +1,887 @@
-<!DOCTYPE html>
-<html lang="fa" dir="rtl">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lasontreas Secretary of State – Elections Portal</title>
-    <!-- Tailwind CSS CDN -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <!-- FontAwesome CDN -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Google Fonts: Vazirmatn & Inter -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Vazirmatn:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+import React, { useState, useEffect } from 'react';
+import { 
+  Landmark, 
+  Menu, 
+  X, 
+  Home, 
+  Users, 
+  Map, 
+  BarChart2, 
+  Newspaper, 
+  Info, 
+  MessageSquare, 
+  User, 
+  Clock, 
+  CheckCircle2, 
+  ChevronLeft,
+  Activity,
+  AlertCircle,
+  FileText
+} from 'lucide-react';
+import { 
+  BarChart, 
+  Bar, 
+  XAxis, 
+  YAxis, 
+  CartesianGrid, 
+  Tooltip, 
+  Legend, 
+  ResponsiveContainer,
+  PieChart,
+  Pie,
+  Cell
+} from 'recharts';
 
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        navy: { 800: '#0c2340', 900: '#0b1d3a', 950: '#061021' },
-                        crimson: { 700: '#8b0000', 800: '#b22234' },
-                        gold: { 500: '#d4af37', 600: '#aa820a' }
-                    },
-                    fontFamily: {
-                        sans: ['Vazirmatn', 'Inter', 'sans-serif'],
-                        vazir: ['Vazirmatn', 'sans-serif'],
-                    }
-                }
+// --- DATA STORE & CONSTANTS ---
+
+const BRAND_COLORS = {
+  navy: '#0f172a', // slate-900
+  gold: '#eab308', // yellow-500
+  green: '#10b981', // emerald-500
+  red: '#ef4444', // red-500
+  blue: '#3b82f6', // blue-500
+  gray: '#f8fafc'  // slate-50
+};
+
+const CANDIDATES_DATA = [
+  { id: 'arman-nikfar', name: 'آرمان نیک‌فر', votes: 3726283, color: '#1e3a8a' }, // Deep Blue
+  { id: 'hamed-sadeghian', name: 'حامد صادقیان', votes: 3109766, color: '#047857' }, // Deep Green
+  { id: 'mohammad-alinia', name: 'محمد علی‌نیا', votes: 2103348, color: '#d97706' }, // Amber
+  { id: 'james-wilson', name: 'جیمز ویلسون', votes: 203004, color: '#4f46e5' }, // Indigo
+].sort((a, b) => b.votes - a.votes);
+
+// Calculate totals
+const TOTAL_VOTES = CANDIDATES_DATA.reduce((acc, curr) => acc + curr.votes, 0);
+const TOTAL_ELIGIBLE = 15000000; 
+const TURNOUT_PERCENTAGE = ((TOTAL_VOTES / TOTAL_ELIGIBLE) * 100).toFixed(1);
+
+// Attach calculated properties
+const CANDIDATES = CANDIDATES_DATA.map((c, index) => ({
+  ...c,
+  rank: index + 1,
+  percentage: ((c.votes / TOTAL_VOTES) * 100).toFixed(2)
+}));
+
+const CITIES = [
+  { id: 'los-santos', name: 'لوسانتوس', eligible: 4500000, voted: 2800000, 
+    results: [ { name: 'نیک‌فر', value: 1200000 }, { name: 'صادقیان', value: 900000 }, { name: 'علی‌نیا', value: 600000 }, { name: 'ویلسون', value: 100000 }] },
+  { id: 'san-andreas', name: 'سان آندریاس', eligible: 3200000, voted: 1900000,
+    results: [ { name: 'نیک‌فر', value: 700000 }, { name: 'صادقیان', value: 800000 }, { name: 'علی‌نیا', value: 350000 }, { name: 'ویلسون', value: 50000 }] },
+  { id: 'san-fierro', name: 'سان فییرو', eligible: 2800000, voted: 1850000,
+    results: [ { name: 'نیک‌فر', value: 850000 }, { name: 'صادقیان', value: 600000 }, { name: 'علی‌نیا', value: 380000 }, { name: 'ویلسون', value: 20000 }] },
+  { id: 'liberty-city', name: 'لیبرتی سیتی', eligible: 2000000, voted: 1200000,
+    results: [ { name: 'نیک‌فر', value: 500000 }, { name: 'صادقیان', value: 400000 }, { name: 'علی‌نیا', value: 285000 }, { name: 'ویلسون', value: 15000 }] },
+  { id: 'vice-city', name: 'وای سیتی', eligible: 1500000, voted: 950000,
+    results: [ { name: 'نیک‌فر', value: 350000 }, { name: 'صادقیان', value: 300000 }, { name: 'علی‌نیا', value: 290000 }, { name: 'ویلسون', value: 10000 }] },
+  { id: 'carl-city', name: 'کارل سیتی', eligible: 1000000, voted: 650000,
+    results: [ { name: 'نیک‌فر', value: 126283 }, { name: 'صادقیان', value: 109766 }, { name: 'علی‌نیا', value: 198348 }, { name: 'ویلسون', value: 8004 }] },
+];
+
+const NEWS = [
+  { id: 1, title: 'آغاز رسمی فرآیند رأی‌گیری انتخابات فرمانداری لاسونتراس', date: '۱۴۰۳/۰۸/۱۵', summary: 'با دستور وزیر امور ایالتی، درب‌های حوزه‌های رأی‌گیری به روی شهروندان باز شد.', category: 'اخبار' },
+  { id: 2, title: 'اعلام آخرین وضعیت مشارکت شهروندان در شش شهر ایالت', date: '۱۴۰۳/۰۸/۱۶', summary: 'گزارش‌های اولیه حاکی از مشارکت گسترده شهروندان در شهرهای بزرگ است.', category: 'گزارش' },
+  { id: 3, title: 'ادامه فرآیند شمارش آرای انتخابات فرمانداری', date: '۱۴۰۳/۰۸/۱۷', summary: 'شمارش آرا در حوزه‌های اصلی با نظارت دقیق نمایندگان نامزدها ادامه دارد.', category: 'اخبار' },
+  { id: 4, title: 'تأکید کمیسیون انتخابات بر رعایت قوانین', date: '۱۴۰۳/۰۸/۱۷', summary: 'هرگونه تخلف انتخاباتی با برخورد قانونی سریع مواجه خواهد شد.', category: 'اطلاعیه' },
+];
+
+const ANNOUNCEMENTS = [
+  { id: 1, title: 'اطلاعیه شماره ۱: اعلام زمان پایان فرآیند رأی‌گیری', date: '۱۴۰۳/۰۸/۱۵' },
+  { id: 2, title: 'اطلاعیه شماره ۲: راهنمای مشاهده نتایج رسمی', date: '۱۴۰۳/۰۸/۱۶' },
+  { id: 3, title: 'اطلاعیه شماره ۳: توضیحات مربوط به مراحل شمارش آرا', date: '۱۴۰۳/۰۸/۱۷' },
+];
+
+// --- HELPERS ---
+const formatNumber = (num) => num.toLocaleString('fa-IR');
+const formatPersianDate = (date) => {
+  return new Intl.DateTimeFormat('fa-IR', { 
+    year: 'numeric', month: 'long', day: 'numeric',
+    hour: '2-digit', minute: '2-digit', second: '2-digit'
+  }).format(date);
+};
+
+// --- COMPONENTS ---
+
+const Card = ({ children, className = '', title, action }) => (
+  <div className={`bg-white rounded-xl shadow-[0_4px_20px_-4px_rgba(0,0,0,0.05)] border border-slate-100 overflow-hidden ${className}`}>
+    {(title || action) && (
+      <div className="px-6 py-4 border-b border-slate-100 flex justify-between items-center bg-slate-50/50">
+        {title && <h3 className="text-lg font-bold text-slate-800">{title}</h3>}
+        {action && <div>{action}</div>}
+      </div>
+    )}
+    <div className="p-6">{children}</div>
+  </div>
+);
+
+const Button = ({ children, variant = 'primary', className = '', onClick, icon: Icon }) => {
+  const baseStyle = "inline-flex items-center justify-center gap-2 px-6 py-2.5 rounded-lg font-semibold transition-all duration-200 text-sm";
+  const variants = {
+    primary: "bg-slate-900 text-white hover:bg-slate-800 shadow-md",
+    gold: "bg-yellow-500 text-slate-900 hover:bg-yellow-400 shadow-md",
+    outline: "border-2 border-slate-200 text-slate-700 hover:border-slate-300 hover:bg-slate-50",
+    ghost: "text-slate-600 hover:bg-slate-100"
+  };
+  
+  return (
+    <button onClick={onClick} className={`${baseStyle} ${variants[variant]} ${className}`}>
+      {Icon && <Icon size={18} />}
+      {children}
+    </button>
+  );
+};
+
+const ProgressBar = ({ percentage, color }) => (
+  <div className="w-full bg-slate-100 rounded-full h-2.5 overflow-hidden">
+    <div 
+      className="h-2.5 rounded-full transition-all duration-1000 ease-out" 
+      style={{ width: `${percentage}%`, backgroundColor: color }}
+    ></div>
+  </div>
+);
+
+const TestDataBadge = () => (
+  <span className="inline-flex items-center gap-1 bg-amber-50 text-amber-700 text-xs px-2.5 py-1 rounded-full border border-amber-200 font-medium">
+    <AlertCircle size={12} />
+    داده آزمایشی
+  </span>
+);
+
+// --- MAIN VIEWS ---
+
+const HomeView = ({ navigate }) => {
+  // Countdown Timer Logic
+  const [timeLeft, setTimeLeft] = useState({ d: 2, h: 14, m: 30, s: 0 });
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setTimeLeft(prev => {
+        let { d, h, m, s } = prev;
+        if (s > 0) s--;
+        else {
+          s = 59;
+          if (m > 0) m--;
+          else {
+            m = 59;
+            if (h > 0) h--;
+            else {
+              h = 23;
+              if (d > 0) d--;
             }
+          }
         }
-    </script>
-    <style>
-        body { font-family: 'Vazirmatn', 'Inter', sans-serif; background-color: #f1f5f9; text-align: right; }
-        .bg-pattern { background-image: url('data:image/svg+xml,%3Csvg width="20" height="20" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"%3E%3Cg fill="%23ffffff" fill-opacity="0.03" fill-rule="evenodd"%3E%3Ccircle cx="3" cy="3" r="3"/%3E%3Ccircle cx="13" cy="13" r="3"/%3E%3C/g%3E%3C/svg%3E'); }
-    </style>
-</head>
-<body class="text-slate-800 antialiased min-h-screen flex flex-col">
+        return { d, h, m, s };
+      });
+    }, 1000);
+    return () => clearInterval(timer);
+  }, []);
 
-    <!-- Official Gov Bar -->
-    <div class="bg-black py-1.5 px-4 text-center border-b border-slate-800">
-        <span class="text-[10px] sm:text-xs text-slate-400 flex items-center justify-center gap-2">
-            <i class="fa-solid fa-flag-usa text-slate-500"></i>
-            An official website of the State of Lasontreas government
-        </span>
-    </div>
-
-    <!-- Header -->
-    <header class="bg-navy-950 text-white border-b-4 border-gold-500 shadow-lg relative overflow-hidden">
-        <div class="absolute inset-0 bg-pattern pointer-events-none"></div>
-        <!-- Top Bar -->
-        <div class="bg-navy-950 py-2.5 px-4 border-b border-slate-800 relative z-10">
-            <div class="max-w-7xl mx-auto flex flex-wrap justify-between items-center text-xs text-slate-300 gap-2">
-                <div class="flex items-center space-x-3 space-x-reverse">
-                    <svg class="w-5 h-5 text-gold-500" viewBox="0 0 24 24" fill="currentColor">
-                        <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="1.5" fill="none"/>
-                        <path d="M12 4L14.5 9.5L20 10L16 14L17.5 19.5L12 16.5L6.5 19.5L8 14L4 10L9.5 9.5L12 4Z"/>
-                    </svg>
-                    <span class="font-semibold tracking-wide">OFFICIAL ELECTION DIVISION • STATE OF LASONTREAS</span>
+  return (
+    <div className="space-y-8 animate-in fade-in duration-500">
+      {/* Countdown Section */}
+      <div className="bg-gradient-to-r from-slate-900 to-slate-800 rounded-2xl p-8 text-white shadow-xl relative overflow-hidden">
+        <div className="absolute top-0 right-0 w-64 h-64 bg-yellow-500/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/4 pointer-events-none"></div>
+        <div className="relative z-10 flex flex-col md:flex-row items-center justify-between gap-8">
+          <div>
+            <h2 className="text-2xl md:text-3xl font-bold text-yellow-500 mb-2">زمان باقی‌مانده تا پایان انتخابات</h2>
+            <p className="text-slate-300">سامانه جامع اعلام نتایج - در حال دریافت اطلاعات زنده</p>
+          </div>
+          <div className="flex gap-4 dir-ltr">
+            {[
+              { label: 'روز', value: timeLeft.d },
+              { label: 'ساعت', value: timeLeft.h },
+              { label: 'دقیقه', value: timeLeft.m },
+              { label: 'ثانیه', value: timeLeft.s }
+            ].map((item, i) => (
+              <div key={i} className="flex flex-col items-center">
+                <div className="bg-slate-800/80 backdrop-blur border border-slate-700 w-16 h-16 md:w-20 md:h-20 rounded-xl flex items-center justify-center text-2xl md:text-3xl font-bold shadow-inner">
+                  {formatNumber(item.value).padStart(2, '۰')}
                 </div>
-                <div>درگاه رسمی انتخابات ایالت لاسونتراس - دفتر وزیر ایالتی</div>
-            </div>
+                <span className="text-sm mt-2 text-slate-400 font-medium">{item.label}</span>
+              </div>
+            ))}
+          </div>
         </div>
+      </div>
 
-        <!-- Main Government Banner -->
-        <div class="bg-gradient-to-b from-navy-900 to-navy-950 py-8 px-4 relative z-10">
-            <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-6">
-                <div class="flex items-center space-x-5 space-x-reverse">
-                    <div class="w-20 h-20 rounded-full bg-gradient-to-br from-gold-500 to-amber-700 p-1 shadow-2xl flex-shrink-0">
-                        <div class="w-full h-full bg-navy-950 rounded-full flex items-center justify-center border-2 border-gold-500/60">
-                            <i class="fa-solid fa-landmark text-gold-500 text-4xl shadow-sm"></i>
-                        </div>
-                    </div>
-                    <div>
-                        <h1 class="text-2xl md:text-3xl font-black tracking-tight text-white drop-shadow-md">
-                            دفتر وزیر امور ایالتی لاسونتراس – سامانه رسمی انتخابات
-                        </h1>
-                        <div class="text-gold-500 font-semibold text-sm md:text-base mt-1 drop-shadow-md">
-                            Lasontreas Secretary of State – Elections Portal
-                        </div>
-                    </div>
-                </div>
-
-                <div class="flex items-center space-x-3 space-x-reverse bg-navy-950/80 backdrop-blur px-5 py-3 rounded-xl border border-slate-700 shadow-inner">
-                    <span class="relative flex h-4 w-4">
-                      <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                      <span class="relative inline-flex rounded-full h-4 w-4 bg-emerald-500 border border-emerald-700"></span>
+      {/* Stats Cards */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        {[
+          { title: 'مجموع آرای ثبت‌شده', value: formatNumber(TOTAL_VOTES), icon: Users, color: 'text-blue-600', bg: 'bg-blue-50' },
+          { title: 'درصد مشارکت', value: `${formatNumber(TURNOUT_PERCENTAGE)}٪`, icon: Activity, color: 'text-purple-600', bg: 'bg-purple-50' },
+          { title: 'آرای شمارش‌شده', value: formatNumber(TOTAL_VOTES), icon: FileText, color: 'text-amber-600', bg: 'bg-amber-50' },
+          { title: 'وضعیت انتخابات', value: 'در حال شمارش', icon: CheckCircle2, color: 'text-emerald-600', bg: 'bg-emerald-50', isStatus: true }
+        ].map((stat, i) => (
+          <Card key={i} className="hover:shadow-md transition-shadow">
+            <div className="flex items-start justify-between">
+              <div>
+                <p className="text-sm font-medium text-slate-500 mb-1">{stat.title}</p>
+                {stat.isStatus ? (
+                  <div className="flex items-center gap-2 mt-2">
+                    <span className="relative flex h-3 w-3">
+                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                      <span className="relative inline-flex rounded-full h-3 w-3 bg-emerald-500"></span>
                     </span>
-                    <div class="text-xs">
-                        <div class="font-bold text-white uppercase tracking-wider">System Status: Active</div>
-                        <div class="text-slate-300">وضعیت: سامانه فعال و مانیتورینگ آنلاین</div>
-                    </div>
-                </div>
+                    <h3 className={`text-xl font-bold ${stat.color}`}>{stat.value}</h3>
+                  </div>
+                ) : (
+                  <h3 className="text-2xl font-bold text-slate-800">{stat.value}</h3>
+                )}
+              </div>
+              <div className={`p-3 rounded-lg ${stat.bg} ${stat.color}`}>
+                <stat.icon size={24} />
+              </div>
             </div>
+          </Card>
+        ))}
+      </div>
+
+      {/* Candidates Results */}
+      <div className="space-y-6">
+        <div className="flex items-center justify-between">
+          <h2 className="text-2xl font-bold text-slate-800 border-r-4 border-yellow-500 pr-3">نتایج فعلی نامزدها</h2>
+          <Button variant="outline" onClick={() => navigate('analysis')} icon={BarChart2}>تحلیل کامل آرا</Button>
         </div>
-
-        <!-- Main Navigation Bar -->
-        <nav class="bg-navy-950 border-t border-slate-800 relative z-10 shadow-md">
-            <div class="max-w-7xl mx-auto px-4 flex flex-wrap items-center gap-1 py-3 text-xs md:text-sm font-semibold">
-                <button onclick="switchTab('overview')" id="tab-overview" class="tab-btn px-4 py-2.5 bg-gold-500 text-navy-950 rounded-lg font-bold transition shadow flex items-center gap-2">
-                    <i class="fa-solid fa-house"></i><span>نمای کلی (Overview)</span>
-                </button>
-                <button onclick="switchTab('candidates')" id="tab-candidates" class="tab-btn px-4 py-2.5 text-slate-300 hover:bg-navy-800 hover:text-white rounded-lg transition flex items-center gap-2">
-                    <i class="fa-solid fa-users"></i><span>نامزدها (Candidates)</span>
-                </button>
-                <button onclick="switchTab('cities')" id="tab-cities" class="tab-btn px-4 py-2.5 text-slate-300 hover:bg-navy-800 hover:text-white rounded-lg transition flex items-center gap-2">
-                    <i class="fa-solid fa-city"></i><span>شهرها (Cities)</span>
-                </button>
-                <button onclick="switchTab('guide')" id="tab-guide" class="tab-btn px-4 py-2.5 text-slate-300 hover:bg-navy-800 hover:text-white rounded-lg transition flex items-center gap-2">
-                    <i class="fa-solid fa-id-card"></i><span>راهنمای رأی‌دهی (Voter Guide)</span>
-                </button>
-                <button onclick="switchTab('analysis')" id="tab-analysis" class="tab-btn px-4 py-2.5 text-slate-300 hover:bg-navy-800 hover:text-white rounded-lg transition flex items-center gap-2">
-                    <i class="fa-solid fa-chart-pie"></i><span>تحلیل و بررسی آرا (Analysis)</span>
-                </button>
-                <button onclick="switchTab('results')" id="tab-results" class="tab-btn px-4 py-2.5 text-slate-300 hover:bg-navy-800 hover:text-white rounded-lg transition flex items-center gap-2">
-                    <i class="fa-solid fa-check-to-slot"></i><span>نتایج زنده (Live)</span>
-                </button>
-                <button onclick="switchTab('comments')" id="tab-comments" class="tab-btn px-4 py-2.5 text-slate-300 hover:bg-navy-800 hover:text-white rounded-lg transition flex items-center gap-2">
-                    <i class="fa-solid fa-comments"></i><span>نظرات مردمی</span>
-                </button>
-
-                <button onclick="switchTab('news')" id="tab-news" class="tab-btn px-4 py-2.5 text-slate-300 hover:bg-navy-800 hover:text-white rounded-lg transition flex items-center gap-2">
-                    <i class="fa-solid fa-newspaper"></i><span>اخبار (News)</span>
-                </button>
-                <button onclick="switchTab('calendar')" id="tab-calendar" class="tab-btn px-4 py-2.5 text-slate-300 hover:bg-navy-800 hover:text-white rounded-lg transition flex items-center gap-2">
-                    <i class="fa-solid fa-calendar-days"></i><span>تقویم (Calendar)</span>
-                </button>
-            </div>
-        </nav>
-    </header>
-
-    <!-- Main Content Container -->
-    <main class="flex-grow max-w-7xl w-full mx-auto px-4 py-8">
-
-        <!-- TAB 1: OVERVIEW SECTION -->
-        <section id="sec-overview" class="tab-content space-y-8">
-            <div class="bg-white rounded-2xl shadow-lg border border-slate-200 overflow-hidden">
-                <div class="bg-gradient-to-r from-navy-900 via-navy-800 to-navy-900 text-white p-6 md:p-10 relative overflow-hidden">
-                    <div class="absolute right-0 top-0 opacity-5 -mt-10 -mr-10"><i class="fa-solid fa-check-to-slot text-[250px]"></i></div>
-                    <div class="flex flex-col md:flex-row justify-between items-center gap-8 relative z-10">
-                        <div class="flex-1">
-                            <span class="inline-flex items-center gap-2 px-3 py-1 bg-gold-500/20 border border-gold-500/40 text-gold-500 text-xs font-bold rounded-full mb-4 shadow-sm">
-                                <span class="w-2 h-2 rounded-full bg-gold-500 animate-pulse"></span>
-                                انتخابات فرمانداری ایالت لاسونتراس • Gubernatorial Election 2026
-                            </span>
-                            <h2 class="text-3xl md:text-4xl font-black tracking-tight leading-tight">
-                                صدای شما، آینده لاسونتراس
-                            </h2>
-                            <p class="text-slate-300 text-sm mt-3 max-w-xl leading-relaxed">
-                                سیستم یکپارچه، امن و شفاف رأی‌گیری ایالتی. با مشارکت در انتخابات ۱۲ نوامبر، فرماندار آینده ایالت لاسونتراس را برای یک دوره ۴ ساله تعیین کنید.
-                            </p>
-                        </div>
-                        
-                        <!-- LIVE COUNTDOWN TIMER -->
-                        <div class="bg-slate-900/90 p-5 rounded-2xl border-2 border-slate-700 text-center min-w-[280px] shadow-2xl relative overflow-hidden backdrop-blur-md">
-                            <div class="absolute -right-4 -top-4 opacity-10 text-gold-500 text-6xl"><i class="fa-solid fa-stopwatch"></i></div>
-                            <div class="text-xs text-slate-300 font-bold mb-3 tracking-wide z-10 relative flex items-center justify-center gap-2">
-                                <i class="fa-solid fa-bolt text-gold-500"></i> زمان باقی‌مانده تا شروع رأی‌گیری
-                            </div>
-                            <div id="countdown-timer" class="text-3xl font-black mt-1 z-10 relative tracking-widest bg-black/50 py-3 px-2 rounded-xl border border-slate-600 shadow-inner flex justify-center gap-2" dir="ltr">
-                                <div class="flex flex-col"><span id="cd-days" class="text-gold-500">00</span><span class="text-[8px] uppercase text-slate-500">Days</span></div><span class="text-slate-500 font-light mt-1">:</span>
-                                <div class="flex flex-col"><span id="cd-hours" class="text-white">00</span><span class="text-[8px] uppercase text-slate-500">Hours</span></div><span class="text-slate-500 font-light mt-1">:</span>
-                                <div class="flex flex-col"><span id="cd-minutes" class="text-white">00</span><span class="text-[8px] uppercase text-slate-500">Mins</span></div><span class="text-slate-500 font-light mt-1">:</span>
-                                <div class="flex flex-col"><span id="cd-seconds" class="text-rose-500">00</span><span class="text-[8px] uppercase text-slate-500">Secs</span></div>
-                            </div>
-                            <div class="text-[11px] text-slate-400 mt-3 z-10 relative uppercase font-bold tracking-wider bg-slate-800 py-1 rounded">12 NOV 2026 • 07:00 AM</div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="p-6 grid grid-cols-2 md:grid-cols-4 gap-6 bg-slate-50 border-b border-slate-200">
-                    <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm hover:shadow-md transition">
-                        <div class="text-slate-500 text-xs font-bold uppercase flex justify-between">واجدان شرایط <i class="fa-solid fa-users text-slate-300"></i></div>
-                        <div class="text-2xl font-black text-navy-900 mt-2">19,400,000</div>
-                        <div class="text-[10px] font-bold text-emerald-600 mt-1 bg-emerald-50 inline-block px-2 py-0.5 rounded">Total Eligible</div>
-                    </div>
-                    <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm hover:shadow-md transition">
-                        <div class="text-slate-500 text-xs font-bold uppercase flex justify-between">حوزه‌های شهری <i class="fa-solid fa-map-location-dot text-slate-300"></i></div>
-                        <div class="text-2xl font-black text-navy-900 mt-2">۶ کلان‌شهر</div>
-                        <div class="text-[10px] font-bold text-slate-500 mt-1 bg-slate-100 inline-block px-2 py-0.5 rounded">Main Cities</div>
-                    </div>
-                    <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm hover:shadow-md transition">
-                        <div class="text-slate-500 text-xs font-bold uppercase flex justify-between">نامزدهای رسمی <i class="fa-solid fa-user-tie text-slate-300"></i></div>
-                        <div class="text-2xl font-black text-navy-900 mt-2">۵ جایگاه</div>
-                        <div class="text-[10px] font-bold text-slate-500 mt-1 bg-slate-100 inline-block px-2 py-0.5 rounded">Candidates</div>
-                    </div>
-                    <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm hover:shadow-md transition relative overflow-hidden">
-                        <div class="absolute right-0 top-0 w-1 h-full bg-amber-500"></div>
-                        <div class="text-slate-500 text-xs font-bold uppercase flex justify-between">وضعیت شمارش <i class="fa-solid fa-server text-slate-300"></i></div>
-                        <div class="text-xl font-black text-amber-600 mt-2 pt-1">در انتظار آغاز</div>
-                        <div class="text-[10px] font-bold text-amber-700 mt-1 bg-amber-50 inline-block px-2 py-0.5 rounded animate-pulse">System Standby</div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- TAB 2: CANDIDATES SECTION -->
-        <section id="sec-candidates" class="tab-content hidden space-y-8">
-            <div class="bg-white p-8 rounded-2xl border border-slate-200 shadow-md relative overflow-hidden">
-                <div class="absolute right-0 top-0 opacity-5 -mt-4 -mr-4"><i class="fa-solid fa-users text-9xl"></i></div>
-                <h2 class="text-3xl font-black text-navy-900 relative z-10">نامزدهای رسمی فرمانداری</h2>
-                <p class="text-slate-600 text-sm mt-2 relative z-10">
-                    پروفایل‌های رسمی، برنامه‌ها و وابستگی حزبی ۵ نامزد تأییدصلاحیت‌شده ایالت لاسونتراس. برای مطالعه جزئیات و زندگینامه روی دکمه پروفایل هر نامزد کلیک کنید.
-                </p>
-            </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                
-                <!-- Candidate 1: Hamed Sadeghian -->
-                <div class="lg:col-span-1 bg-white rounded-2xl shadow-lg border-2 border-slate-200 overflow-hidden flex flex-col hover:border-red-600 transition-colors duration-300 relative">
-                    <div class="h-2 w-full bg-red-700"></div>
-                    <div class="bg-slate-50 p-4 flex justify-between items-center border-b border-slate-200">
-                        <span class="text-[10px] font-black tracking-widest text-slate-400 uppercase">Candidate #1</span>
-                        <span class="px-2.5 py-1 bg-red-700 text-white text-[10px] font-bold rounded shadow-sm flex items-center gap-1">
-                            <i class="fa-solid fa-republican"></i> جمهوری‌خواه
-                        </span>
-                    </div>
-                    <div class="p-8 flex flex-col items-center text-center">
-                        <div class="w-32 h-32 rounded-full bg-white border-4 border-red-700 shadow-xl flex items-center justify-center text-slate-300 mb-4 overflow-hidden relative">
-                            <div class="absolute inset-0 bg-slate-100"></div>
-                            <i class="fa-solid fa-user-tie text-6xl text-slate-700 relative z-10"></i>
-                        </div>
-                        <h3 class="text-2xl font-black text-navy-900">حامد صادقیان</h3>
-                        <div class="text-slate-500 font-bold text-xs mt-1 uppercase tracking-wider">Hamed Sadeghian</div>
-                        <p class="text-xs text-slate-600 mt-3 font-semibold bg-slate-100 px-3 py-1 rounded-full">متخصص اقتصاد کلان و مدیریت عمومی</p>
-                    </div>
-                    <div class="px-6 pb-6 space-y-4 text-xs flex-grow">
-                        <div class="flex flex-col space-y-2">
-                            <div class="flex justify-between items-center border-b border-dashed border-slate-200 pb-2">
-                                <span class="text-slate-500">سن:</span><span class="font-bold text-slate-800">۵۲ سال</span>
-                            </div>
-                            <div class="flex justify-between items-center border-b border-dashed border-slate-200 pb-2">
-                                <span class="text-slate-500">تحصیلات:</span><span class="font-bold text-slate-800">دکتری اقتصاد سیاسی</span>
-                            </div>
-                            <div class="flex justify-between items-center pb-1">
-                                <span class="text-slate-500">شعار:</span><span class="font-black text-red-700">«اتحاد، رمز پیروزی»</span>
-                            </div>
-                        </div>
-                        <button onclick="openCandidateModal(1)" class="w-full py-3 bg-red-700 hover:bg-red-800 text-white font-bold rounded-xl transition text-xs flex items-center justify-center gap-2 shadow-md">
-                            <i class="fa-solid fa-address-card"></i><span>تحلیل و بیوگرافی کامل</span>
-                        </button>
-                    </div>
-                </div>
-
-                <!-- Candidate 2: Mohammad Alinia -->
-                <div class="lg:col-span-1 bg-white rounded-2xl shadow-lg border-2 border-slate-200 overflow-hidden flex flex-col hover:border-red-600 transition-colors duration-300 relative">
-                    <div class="h-2 w-full bg-red-700"></div>
-                    <div class="bg-slate-50 p-4 flex justify-between items-center border-b border-slate-200">
-                        <span class="text-[10px] font-black tracking-widest text-slate-400 uppercase">Candidate #2</span>
-                        <span class="px-2.5 py-1 bg-red-700 text-white text-[10px] font-bold rounded shadow-sm flex items-center gap-1">
-                            <i class="fa-solid fa-republican"></i> جمهوری‌خواه
-                        </span>
-                    </div>
-                    <div class="p-8 flex flex-col items-center text-center">
-                        <div class="w-32 h-32 rounded-full bg-white border-4 border-red-700 shadow-xl flex items-center justify-center text-slate-300 mb-4 overflow-hidden relative">
-                            <div class="absolute inset-0 bg-slate-100"></div>
-                            <i class="fa-solid fa-user-tie text-6xl text-slate-700 relative z-10"></i>
-                        </div>
-                        <h3 class="text-2xl font-black text-navy-900">(تایید نشده) محمد علی‌نیا</h3>
-                        <div class="text-slate-500 font-bold text-xs mt-1 uppercase tracking-wider">Mohammad Alinia</div>
-                        <p class="text-xs text-slate-600 mt-3 font-semibold bg-slate-100 px-3 py-1 rounded-full">مدیریت دولتی و امنیت</p>
-                    </div>
-                    <div class="px-6 pb-6 space-y-4 text-xs flex-grow">
-                        <div class="flex flex-col space-y-2">
-                            <div class="flex justify-between items-center border-b border-dashed border-slate-200 pb-2">
-                                <span class="text-slate-500">سن:</span><span class="font-bold text-slate-800">۶۴ سال</span>
-                            </div>
-                            <div class="flex justify-between items-center border-b border-dashed border-slate-200 pb-2">
-                                <span class="text-slate-500">تحصیلات:</span><span class="font-bold text-slate-800">دکتری علوم سیاسی</span>
-                            </div>
-                            <div class="flex justify-between items-center pb-1">
-                                <span class="text-slate-500">شعار:</span><span class="font-black text-red-700">«ثبات، اقتدار، پیشرفت»</span>
-                            </div>
-                        </div>
-                        <button onclick="openCandidateModal(2)" class="w-full py-3 bg-red-700 hover:bg-red-800 text-white font-bold rounded-xl transition text-xs flex items-center justify-center gap-2 shadow-md">
-                            <i class="fa-solid fa-address-card"></i><span>تحلیل و بیوگرافی کامل</span>
-                        </button>
-                    </div>
-                </div>
-
-                <!-- Candidate 3: Arman Nikfar -->
-                <div class="lg:col-span-1 bg-white rounded-2xl shadow-lg border-2 border-slate-200 overflow-hidden flex flex-col hover:border-blue-600 transition-colors duration-300 relative">
-                    <div class="h-2 w-full bg-blue-600"></div>
-                    <div class="bg-slate-50 p-4 flex justify-between items-center border-b border-slate-200">
-                        <span class="text-[10px] font-black tracking-widest text-slate-400 uppercase">Candidate #3</span>
-                        <span class="px-2.5 py-1 bg-blue-600 text-white text-[10px] font-bold rounded shadow-sm flex items-center gap-1">
-                            <i class="fa-solid fa-democrat"></i> دموکرات
-                        </span>
-                    </div>
-                    <div class="p-8 flex flex-col items-center text-center">
-                        <div class="w-32 h-32 rounded-full bg-white border-4 border-blue-600 shadow-xl flex items-center justify-center text-slate-300 mb-4 overflow-hidden relative">
-                            <div class="absolute inset-0 bg-slate-100"></div>
-                            <i class="fa-solid fa-user-tie text-6xl text-slate-700 relative z-10"></i>
-                        </div>
-                        <h3 class="text-2xl font-black text-navy-900">آرمان نیک‌فر</h3>
-                        <div class="text-slate-500 font-bold text-xs mt-1 uppercase tracking-wider">Arman Nikfar</div>
-                        <p class="text-xs text-slate-600 mt-3 font-semibold bg-slate-100 px-3 py-1 rounded-full">متخصص اقتصاد و مدیریت مالی</p>
-                    </div>
-                    <div class="px-6 pb-6 space-y-4 text-xs flex-grow">
-                        <div class="flex flex-col space-y-2">
-                            <div class="flex justify-between items-center border-b border-dashed border-slate-200 pb-2">
-                                <span class="text-slate-500">سن:</span><span class="font-bold text-slate-800">۴۸ سال</span>
-                            </div>
-                            <div class="flex justify-between items-center border-b border-dashed border-slate-200 pb-2">
-                                <span class="text-slate-500">تحصیلات:</span><span class="font-bold text-slate-800">دکتری مدیریت مالی</span>
-                            </div>
-                            <div class="flex justify-between items-center pb-1">
-                                <span class="text-slate-500">شعار:</span><span class="font-black text-blue-700">«اقتصاد قوی، آینده روشن»</span>
-                            </div>
-                        </div>
-                        <button onclick="openCandidateModal(3)" class="w-full py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl transition text-xs flex items-center justify-center gap-2 shadow-md">
-                            <i class="fa-solid fa-address-card"></i><span>تحلیل و بیوگرافی کامل</span>
-                        </button>
-                    </div>
-                </div>
-
-                <!-- Candidate 4: James Wilson -->
-                <div class="lg:col-span-1 bg-white rounded-2xl shadow-lg border-2 border-slate-200 overflow-hidden flex flex-col hover:border-blue-600 transition-colors duration-300 relative">
-                    <div class="h-2 w-full bg-blue-600"></div>
-                    <div class="bg-slate-50 p-4 flex justify-between items-center border-b border-slate-200">
-                        <span class="text-[10px] font-black tracking-widest text-slate-400 uppercase">Candidate #4</span>
-                        <span class="px-2.5 py-1 bg-blue-600 text-white text-[10px] font-bold rounded shadow-sm flex items-center gap-1">
-                            <i class="fa-solid fa-democrat"></i> دموکرات
-                        </span>
-                    </div>
-                    <div class="p-8 flex flex-col items-center text-center">
-                        <div class="w-32 h-32 rounded-full bg-white border-4 border-blue-600 shadow-xl flex items-center justify-center text-slate-300 mb-4 overflow-hidden relative">
-                            <div class="absolute inset-0 bg-slate-100"></div>
-                            <i class="fa-solid fa-user-tie text-6xl text-slate-700 relative z-10"></i>
-                        </div>
-                        <h3 class="text-2xl font-black text-navy-900">جیمز ویلسون</h3>
-                        <div class="text-slate-500 font-bold text-xs mt-1 uppercase tracking-wider">James Wilson</div>
-                        <p class="text-xs text-slate-600 mt-3 font-semibold bg-slate-100 px-3 py-1 rounded-full">متخصص حقوق عمومی</p>
-                    </div>
-                    <div class="px-6 pb-6 space-y-4 text-xs flex-grow">
-                        <div class="flex flex-col space-y-2">
-                            <div class="flex justify-between items-center border-b border-dashed border-slate-200 pb-2">
-                                <span class="text-slate-500">سن:</span><span class="font-bold text-slate-800">۵۶ سال</span>
-                            </div>
-                            <div class="flex justify-between items-center border-b border-dashed border-slate-200 pb-2">
-                                <span class="text-slate-500">تحصیلات:</span><span class="font-bold text-slate-800">دکتری حقوق عمومی</span>
-                            </div>
-                            <div class="flex justify-between items-center pb-1">
-                                <span class="text-slate-500">شعار:</span><span class="font-black text-blue-700">«آینده‌ای متحد برای همه»</span>
-                            </div>
-                        </div>
-                        <button onclick="openCandidateModal(4)" class="w-full py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl transition text-xs flex items-center justify-center gap-2 shadow-md">
-                            <i class="fa-solid fa-address-card"></i><span>تحلیل و بیوگرافی کامل</span>
-                        </button>
-                    </div>
-                </div>
-
-                <!-- Candidate 5: Saman Farahmand -->
-                <div class="lg:col-span-1 bg-white rounded-2xl shadow-lg border-2 border-slate-200 overflow-hidden flex flex-col hover:border-purple-600 transition-colors duration-300 relative">
-                    <div class="h-2 w-full bg-purple-600"></div>
-                    <div class="bg-slate-50 p-4 flex justify-between items-center border-b border-slate-200">
-                        <span class="text-[10px] font-black tracking-widest text-slate-400 uppercase">Candidate #5</span>
-                        <span class="px-2.5 py-1 bg-purple-600 text-white text-[10px] font-bold rounded shadow-sm flex items-center gap-1">
-                            <i class="fa-solid fa-scale-unbalanced"></i> مستقل
-                        </span>
-                    </div>
-                    <div class="p-8 flex flex-col items-center text-center">
-                        <div class="w-32 h-32 rounded-full bg-white border-4 border-purple-600 shadow-xl flex items-center justify-center text-slate-300 mb-4 overflow-hidden relative">
-                            <div class="absolute inset-0 bg-slate-100"></div>
-                            <i class="fa-solid fa-user-tie text-6xl text-slate-700 relative z-10"></i>
-                        </div>
-                        <h3 class="text-2xl font-black text-navy-900">سامان فرهمند</h3>
-                        <div class="text-slate-500 font-bold text-xs mt-1 uppercase tracking-wider">Saman Farahmand</div>
-                        <p class="text-xs text-slate-600 mt-3 font-semibold bg-slate-100 px-3 py-1 rounded-full">متخصص عمران و توسعه شهری</p>
-                    </div>
-                    <div class="px-6 pb-6 space-y-4 text-xs flex-grow">
-                        <div class="flex flex-col space-y-2">
-                            <div class="flex justify-between items-center border-b border-dashed border-slate-200 pb-2">
-                                <span class="text-slate-500">سن:</span><span class="font-bold text-slate-800">۴۳ سال</span>
-                            </div>
-                            <div class="flex justify-between items-center border-b border-dashed border-slate-200 pb-2">
-                                <span class="text-slate-500">تحصیلات:</span><span class="font-bold text-slate-800">دکتری مهندسی عمران</span>
-                            </div>
-                            <div class="flex justify-between items-center pb-1">
-                                <span class="text-slate-500">شعار:</span><span class="font-black text-purple-700">«ساختن امروز، تضمین فردا»</span>
-                            </div>
-                        </div>
-                        <button onclick="openCandidateModal(5)" class="w-full py-3 bg-purple-600 hover:bg-purple-700 text-white font-bold rounded-xl transition text-xs flex items-center justify-center gap-2 shadow-md">
-                            <i class="fa-solid fa-address-card"></i><span>تحلیل و بیوگرافی کامل</span>
-                        </button>
-                    </div>
-                </div>
-
-            </div>
-        </section>
-
         
-        <!-- TAB 3: CITIES SECTION (ANALYTICAL REDESIGN) -->
-        <section id="sec-cities" class="tab-content hidden space-y-6">
-            <div class="bg-white p-8 rounded-2xl border border-slate-200 shadow-md">
-                <h2 class="text-3xl font-black text-navy-900">تحلیل حوزه‌های انتخابیه و زیرساخت شهری</h2>
-                <p class="text-slate-600 text-sm mt-2">
-                    بررسی دمگرافیک، وزن انتخاباتی و وضعیت مشارکت مورد انتظار در ۶ کلان‌شهر ایالت لاسونتراس.
-                </p>
-            </div>
-            
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                <!-- Los Santos (High Impact) -->
-                <div class="bg-white rounded-2xl p-6 border-l-4 border-navy-900 shadow hover:shadow-lg transition relative overflow-hidden group">
-                    <div class="absolute -left-10 -top-10 opacity-5 text-navy-900 group-hover:scale-110 transition duration-500">
-                        <i class="fa-solid fa-city text-9xl"></i>
-                    </div>
-                    <div class="flex justify-between items-start mb-4 relative z-10">
-                        <div>
-                            <h3 class="font-black text-navy-900 text-2xl flex items-center gap-2">
-                                لوسانتوس <span class="text-[10px] font-bold text-white bg-red-600 px-2 py-0.5 rounded-full uppercase shadow">Highest Weight</span>
-                            </h3>
-                            <div class="text-xs text-slate-500 font-bold uppercase tracking-wider mt-1">Los Santos</div>
-                        </div>
-                        <div class="text-right">
-                            <div class="text-2xl font-black text-slate-800">4,800,000</div>
-                            <div class="text-[10px] text-slate-400 font-bold">واجدین شرایط (Eligible)</div>
-                        </div>
-                    </div>
-                    <div class="space-y-3 relative z-10">
-                        <div class="bg-slate-50 p-3 rounded-xl flex justify-between items-center text-sm border border-slate-100">
-                            <span class="text-slate-600 font-medium">وزن انتخاباتی ایالت:</span>
-                            <span class="font-black text-navy-900">۲۴.۷٪ <i class="fa-solid fa-chart-pie text-slate-300 ml-1"></i></span>
-                        </div>
-                        <div class="bg-slate-50 p-3 rounded-xl flex justify-between items-center text-sm border border-slate-100">
-                            <span class="text-slate-600 font-medium">زیرساخت رأی‌گیری:</span>
-                            <span class="font-bold text-slate-700">۴۵۰ شعبه (مجهز به سیستم دیجیتال)</span>
-                        </div>
-                        <div class="p-3 rounded-xl border border-dashed border-slate-300 bg-slate-50/50">
-                            <div class="text-[10px] font-bold text-slate-400 uppercase mb-1">Live Vote Count</div>
-                            <div class="text-amber-600 font-black flex items-center gap-2">
-                                <i class="fa-solid fa-lock text-sm"></i> در انتظار آغاز رأی‌گیری
-                            </div>
-                        </div>
-                        <p class="text-xs text-slate-500 leading-relaxed text-justify mt-2">
-                            تحلیل منطقه‌ای: لوسانتوس با ترکیب جمعیتی متنوع و تمرکز بالای طبقه کارگر و فعالان اقتصادی، کلیدی‌ترین شهر در تعیین فرماندار آینده محسوب می‌شود. رقابت اصلی در مناطق صنعتی و حومه جنوبی این شهر متمرکز است.
-                        </p>
-                    </div>
-                </div>
-
-                <!-- Liberty City (High Impact) -->
-                <div class="bg-white rounded-2xl p-6 border-l-4 border-navy-800 shadow hover:shadow-lg transition relative overflow-hidden group">
-                    <div class="absolute -left-10 -top-10 opacity-5 text-navy-900 group-hover:scale-110 transition duration-500">
-                        <i class="fa-solid fa-building-columns text-9xl"></i>
-                    </div>
-                    <div class="flex justify-between items-start mb-4 relative z-10">
-                        <div>
-                            <h3 class="font-black text-navy-900 text-2xl flex items-center gap-2">
-                                لیبرتی سیتی <span class="text-[10px] font-bold text-white bg-amber-500 px-2 py-0.5 rounded-full uppercase shadow">Major Hub</span>
-                            </h3>
-                            <div class="text-xs text-slate-500 font-bold uppercase tracking-wider mt-1">Liberty City</div>
-                        </div>
-                        <div class="text-right">
-                            <div class="text-2xl font-black text-slate-800">3,900,000</div>
-                            <div class="text-[10px] text-slate-400 font-bold">واجدین شرایط (Eligible)</div>
-                        </div>
-                    </div>
-                    <div class="space-y-3 relative z-10">
-                        <div class="bg-slate-50 p-3 rounded-xl flex justify-between items-center text-sm border border-slate-100">
-                            <span class="text-slate-600 font-medium">وزن انتخاباتی ایالت:</span>
-                            <span class="font-black text-navy-900">۲۰.۱٪ <i class="fa-solid fa-chart-pie text-slate-300 ml-1"></i></span>
-                        </div>
-                        <div class="bg-slate-50 p-3 rounded-xl flex justify-between items-center text-sm border border-slate-100">
-                            <span class="text-slate-600 font-medium">زیرساخت رأی‌گیری:</span>
-                            <span class="font-bold text-slate-700">۳۸۰ شعبه فعال</span>
-                        </div>
-                        <div class="p-3 rounded-xl border border-dashed border-slate-300 bg-slate-50/50">
-                            <div class="text-[10px] font-bold text-slate-400 uppercase mb-1">Live Vote Count</div>
-                            <div class="text-amber-600 font-black flex items-center gap-2">
-                                <i class="fa-solid fa-lock text-sm"></i> در انتظار آغاز رأی‌گیری
-                            </div>
-                        </div>
-                        <p class="text-xs text-slate-500 leading-relaxed text-justify mt-2">
-                            تحلیل منطقه‌ای: مرکز سیاسی و بروکراتیک ایالت. رأی‌دهندگان لیبرتی سیتی عموماً به ثبات مدیریتی، قوانین مالیاتی و برنامه‌های توسعه شهری حساسیت بالایی نشان می‌دهند.
-                        </p>
-                    </div>
-                </div>
-
-                <!-- San Andreas (Medium Impact) -->
-                <div class="bg-white rounded-2xl p-6 border-l-4 border-slate-400 shadow hover:shadow-lg transition relative overflow-hidden group">
-                    <div class="absolute -left-10 -top-10 opacity-5 text-navy-900 group-hover:scale-110 transition duration-500">
-                        <i class="fa-solid fa-tree-city text-9xl"></i>
-                    </div>
-                    <div class="flex justify-between items-start mb-4 relative z-10">
-                        <div>
-                            <h3 class="font-black text-navy-900 text-2xl">سان آندریاس</h3>
-                            <div class="text-xs text-slate-500 font-bold uppercase tracking-wider mt-1">San Andreas</div>
-                        </div>
-                        <div class="text-right">
-                            <div class="text-2xl font-black text-slate-800">3,100,000</div>
-                            <div class="text-[10px] text-slate-400 font-bold">واجدین شرایط (Eligible)</div>
-                        </div>
-                    </div>
-                    <div class="space-y-3 relative z-10">
-                        <div class="bg-slate-50 p-3 rounded-xl flex justify-between items-center text-sm border border-slate-100">
-                            <span class="text-slate-600 font-medium">وزن انتخاباتی ایالت:</span>
-                            <span class="font-black text-navy-900">۱۵.۹٪ <i class="fa-solid fa-chart-pie text-slate-300 ml-1"></i></span>
-                        </div>
-                        <div class="bg-slate-50 p-3 rounded-xl flex justify-between items-center text-sm border border-slate-100">
-                            <span class="text-slate-600 font-medium">زیرساخت رأی‌گیری:</span>
-                            <span class="font-bold text-slate-700">۳۱۰ شعبه فعال</span>
-                        </div>
-                        <div class="p-3 rounded-xl border border-dashed border-slate-300 bg-slate-50/50">
-                            <div class="text-[10px] font-bold text-slate-400 uppercase mb-1">Live Vote Count</div>
-                            <div class="text-amber-600 font-black flex items-center gap-2">
-                                <i class="fa-solid fa-lock text-sm"></i> در انتظار آغاز رأی‌گیری
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- San Fierro (Medium Impact) -->
-                <div class="bg-white rounded-2xl p-6 border-l-4 border-slate-400 shadow hover:shadow-lg transition relative overflow-hidden group">
-                    <div class="absolute -left-10 -top-10 opacity-5 text-navy-900 group-hover:scale-110 transition duration-500">
-                        <i class="fa-solid fa-bridge-water text-9xl"></i>
-                    </div>
-                    <div class="flex justify-between items-start mb-4 relative z-10">
-                        <div>
-                            <h3 class="font-black text-navy-900 text-2xl">سان فییرو</h3>
-                            <div class="text-xs text-slate-500 font-bold uppercase tracking-wider mt-1">San Fierro</div>
-                        </div>
-                        <div class="text-right">
-                            <div class="text-2xl font-black text-slate-800">2,900,000</div>
-                            <div class="text-[10px] text-slate-400 font-bold">واجدین شرایط (Eligible)</div>
-                        </div>
-                    </div>
-                    <div class="space-y-3 relative z-10">
-                        <div class="bg-slate-50 p-3 rounded-xl flex justify-between items-center text-sm border border-slate-100">
-                            <span class="text-slate-600 font-medium">وزن انتخاباتی ایالت:</span>
-                            <span class="font-black text-navy-900">۱۴.۹٪ <i class="fa-solid fa-chart-pie text-slate-300 ml-1"></i></span>
-                        </div>
-                        <div class="bg-slate-50 p-3 rounded-xl flex justify-between items-center text-sm border border-slate-100">
-                            <span class="text-slate-600 font-medium">زیرساخت رأی‌گیری:</span>
-                            <span class="font-bold text-slate-700">۲۸۰ شعبه فعال</span>
-                        </div>
-                        <div class="p-3 rounded-xl border border-dashed border-slate-300 bg-slate-50/50">
-                            <div class="text-[10px] font-bold text-slate-400 uppercase mb-1">Live Vote Count</div>
-                            <div class="text-amber-600 font-black flex items-center gap-2">
-                                <i class="fa-solid fa-lock text-sm"></i> در انتظار آغاز رأی‌گیری
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Vice City (Growing Area) -->
-                <div class="bg-white rounded-2xl p-6 border-l-4 border-slate-300 shadow hover:shadow-lg transition relative overflow-hidden group">
-                    <div class="absolute -left-10 -top-10 opacity-5 text-navy-900 group-hover:scale-110 transition duration-500">
-                        <i class="fa-solid fa-umbrella-beach text-9xl"></i>
-                    </div>
-                    <div class="flex justify-between items-start mb-4 relative z-10">
-                        <div>
-                            <h3 class="font-black text-navy-900 text-2xl">وای سیتی</h3>
-                            <div class="text-xs text-slate-500 font-bold uppercase tracking-wider mt-1">Vice City</div>
-                        </div>
-                        <div class="text-right">
-                            <div class="text-2xl font-black text-slate-800">2,300,000</div>
-                            <div class="text-[10px] text-slate-400 font-bold">واجدین شرایط (Eligible)</div>
-                        </div>
-                    </div>
-                    <div class="space-y-3 relative z-10">
-                        <div class="bg-slate-50 p-3 rounded-xl flex justify-between items-center text-sm border border-slate-100">
-                            <span class="text-slate-600 font-medium">وزن انتخاباتی ایالت:</span>
-                            <span class="font-black text-navy-900">۱۱.۸٪ <i class="fa-solid fa-chart-pie text-slate-300 ml-1"></i></span>
-                        </div>
-                        <div class="bg-slate-50 p-3 rounded-xl flex justify-between items-center text-sm border border-slate-100">
-                            <span class="text-slate-600 font-medium">زیرساخت رأی‌گیری:</span>
-                            <span class="font-bold text-slate-700">۲۲۰ شعبه فعال</span>
-                        </div>
-                        <div class="p-3 rounded-xl border border-dashed border-slate-300 bg-slate-50/50">
-                            <div class="text-[10px] font-bold text-slate-400 uppercase mb-1">Live Vote Count</div>
-                            <div class="text-amber-600 font-black flex items-center gap-2">
-                                <i class="fa-solid fa-lock text-sm"></i> در انتظار آغاز رأی‌گیری
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Carl City (Growing Area) -->
-                <div class="bg-white rounded-2xl p-6 border-l-4 border-slate-300 shadow hover:shadow-lg transition relative overflow-hidden group">
-                    <div class="absolute -left-10 -top-10 opacity-5 text-navy-900 group-hover:scale-110 transition duration-500">
-                        <i class="fa-solid fa-industry text-9xl"></i>
-                    </div>
-                    <div class="flex justify-between items-start mb-4 relative z-10">
-                        <div>
-                            <h3 class="font-black text-navy-900 text-2xl">کارل سیتی</h3>
-                            <div class="text-xs text-slate-500 font-bold uppercase tracking-wider mt-1">Carl City</div>
-                        </div>
-                        <div class="text-right">
-                            <div class="text-2xl font-black text-slate-800">2,400,000</div>
-                            <div class="text-[10px] text-slate-400 font-bold">واجدین شرایط (Eligible)</div>
-                        </div>
-                    </div>
-                    <div class="space-y-3 relative z-10">
-                        <div class="bg-slate-50 p-3 rounded-xl flex justify-between items-center text-sm border border-slate-100">
-                            <span class="text-slate-600 font-medium">وزن انتخاباتی ایالت:</span>
-                            <span class="font-black text-navy-900">۱۲.۶٪ <i class="fa-solid fa-chart-pie text-slate-300 ml-1"></i></span>
-                        </div>
-                        <div class="bg-slate-50 p-3 rounded-xl flex justify-between items-center text-sm border border-slate-100">
-                            <span class="text-slate-600 font-medium">زیرساخت رأی‌گیری:</span>
-                            <span class="font-bold text-slate-700">۲۱۰ شعبه فعال</span>
-                        </div>
-                        <div class="p-3 rounded-xl border border-dashed border-slate-300 bg-slate-50/50">
-                            <div class="text-[10px] font-bold text-slate-400 uppercase mb-1">Live Vote Count</div>
-                            <div class="text-amber-600 font-black flex items-center gap-2">
-                                <i class="fa-solid fa-lock text-sm"></i> در انتظار آغاز رأی‌گیری
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-            </div>
-        </section>
-
-        <!-- TAB 4: VOTER GUIDE (FULLY REDESIGNED WITH DETAILS) -->
-        <section id="sec-guide" class="tab-content hidden space-y-8">
-            <div class="bg-white p-8 rounded-2xl border border-slate-200 shadow-md">
-                <div class="flex items-center gap-4 border-b-2 border-slate-100 pb-5 mb-6">
-                    <div class="w-14 h-14 bg-navy-900 rounded-xl flex items-center justify-center text-gold-500 text-2xl shadow-inner">
-                        <i class="fa-solid fa-book-open-reader"></i>
-                    </div>
-                    <div>
-                        <h2 class="text-3xl font-black text-navy-900">دستورالعمل جامع و رسمی رأی‌دهی</h2>
-                        <p class="text-slate-500 text-sm mt-1">Official Voter Guide, Required IDs, and Legal Procedures</p>
-                    </div>
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          {CANDIDATES.map((candidate) => (
+            <Card key={candidate.id} className="relative overflow-hidden group">
+              <div className="absolute top-0 right-0 w-2 h-full" style={{ backgroundColor: candidate.color }}></div>
+              <div className="flex items-center gap-6">
+                <div className="relative">
+                  <div className="w-20 h-20 bg-slate-100 rounded-full border-4 border-white shadow-sm flex items-center justify-center overflow-hidden">
+                    <User size={40} className="text-slate-400" />
+                  </div>
+                  <div className="absolute -bottom-2 -right-2 w-8 h-8 rounded-full bg-slate-900 text-white flex items-center justify-center font-bold border-2 border-white shadow-sm">
+                    {formatNumber(candidate.rank)}
+                  </div>
                 </div>
                 
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                    <!-- Step 1 -->
-                    <div class="bg-slate-50 p-6 rounded-2xl border border-slate-200 relative">
-                        <div class="absolute -left-3 -top-3 w-8 h-8 bg-gold-500 text-navy-950 font-black rounded-full flex items-center justify-center shadow-lg border-2 border-white">۱</div>
-                        <h3 class="text-xl font-black text-navy-900 mb-3 flex items-center gap-2">
-                            <i class="fa-regular fa-id-card text-slate-400"></i> شرایط ثبت‌نام و احراز هویت
-                        </h3>
-                        <p class="text-sm text-slate-600 leading-relaxed mb-4">
-                            برای شرکت در انتخابات، تمامی شهروندان باید از قبل در سامانه انتخاباتی ایالت ثبت‌نام کرده باشند. در روز رأی‌گیری همراه داشتن یکی از مدارک هویتی زیر **الزامی** است:
-                        </p>
-                        <ul class="text-sm text-slate-700 space-y-2 font-medium">
-                            <li class="flex items-center gap-2"><i class="fa-solid fa-check text-emerald-600"></i> گواهینامه رانندگی صادر شده توسط ایالت لاسونتراس</li>
-                            <li class="flex items-center gap-2"><i class="fa-solid fa-check text-emerald-600"></i> کارت شناسایی ایالتی (State ID) معتبر</li>
-                            <li class="flex items-center gap-2"><i class="fa-solid fa-check text-emerald-600"></i> گذرنامه (پاسپورت) رسمی</li>
-                            <li class="flex items-center gap-2"><i class="fa-solid fa-check text-emerald-600"></i> کارت شناسایی نظامی (ویژه پرسنل مسلح)</li>
-                        </ul>
-                    </div>
-
-                    <!-- Step 2 -->
-                    <div class="bg-slate-50 p-6 rounded-2xl border border-slate-200 relative">
-                        <div class="absolute -left-3 -top-3 w-8 h-8 bg-gold-500 text-navy-950 font-black rounded-full flex items-center justify-center shadow-lg border-2 border-white">۲</div>
-                        <h3 class="text-xl font-black text-navy-900 mb-3 flex items-center gap-2">
-                            <i class="fa-solid fa-building-flag text-slate-400"></i> ساعات کاری و شعب اخذ رأی
-                        </h3>
-                        <p class="text-sm text-slate-600 leading-relaxed mb-4">
-                            شعب اخذ رأی در تمامی ۶ شهر ایالت از ساعت **۷:۰۰ صبح تا ۸:۰۰ شب** به وقت محلی باز خواهند بود. قوانینی که باید در حوزه رعایت کنید:
-                        </p>
-                        <ul class="text-sm text-slate-700 space-y-2 font-medium">
-                            <li class="flex items-center gap-2"><i class="fa-solid fa-circle-dot text-slate-400 text-[8px]"></i> در صورتی که قبل از ساعت ۸:۰۰ شب در صف حضور داشته باشید، حق رأی دادن خواهید داشت.</li>
-                            <li class="flex items-center gap-2"><i class="fa-solid fa-circle-dot text-slate-400 text-[8px]"></i> هرگونه تبلیغات حزبی در فاصله ۱۰۰ متری شعب ممنوع است.</li>
-                            <li class="flex items-center gap-2"><i class="fa-solid fa-circle-dot text-slate-400 text-[8px]"></i> همراه داشتن سلاح گرم به داخل شعب رأی‌گیری اکیداً ممنوع می‌باشد.</li>
-                        </ul>
-                    </div>
-
-                    <!-- Step 3 -->
-                    <div class="bg-slate-50 p-6 rounded-2xl border border-slate-200 relative">
-                        <div class="absolute -left-3 -top-3 w-8 h-8 bg-gold-500 text-navy-950 font-black rounded-full flex items-center justify-center shadow-lg border-2 border-white">۳</div>
-                        <h3 class="text-xl font-black text-navy-900 mb-3 flex items-center gap-2">
-                            <i class="fa-solid fa-envelope-open-text text-slate-400"></i> رأی‌گیری پستی و غیابی
-                        </h3>
-                        <p class="text-sm text-slate-600 leading-relaxed">
-                            شهروندانی که برگه رأی پستی (Mail-in Ballot) دریافت کرده‌اند، باید برگه خود را با خودکار مشکی یا آبی تیره پر کرده و پس از امضای پاکت امنیتی، آن را حداکثر تا ساعت ۸ شب روز انتخابات به **صندوق‌های رسمی Drop Box** در سطح شهر بیندازند یا از طریق اداره پست ارسال کنند (مُهر پست باید حداکثر تا ۱۲ نوامبر باشد).
-                        </p>
-                    </div>
-
-                    <!-- Step 4 -->
-                    <div class="bg-rose-50 p-6 rounded-2xl border border-rose-200 relative">
-                        <div class="absolute -left-3 -top-3 w-8 h-8 bg-rose-500 text-white font-black rounded-full flex items-center justify-center shadow-lg border-2 border-white"><i class="fa-solid fa-triangle-exclamation"></i></div>
-                        <h3 class="text-xl font-black text-rose-900 mb-3 flex items-center gap-2">
-                            گزارش تخلفات انتخاباتی
-                        </h3>
-                        <p class="text-sm text-rose-800 leading-relaxed">
-                            صیانت از آرای شما اولویت اول پلیس فدرال و کمیسیون ایالتی است. در صورت مشاهده خرید و فروش رأی، ارعاب رأی‌دهندگان، اختلال در صندوق‌ها یا تقلب هویتی، بلافاصله با سامانه **۹۱۱ (داخلی امنیت انتخابات)** یا شماره ویژه **۱-۸۰۰-LST-VOTE** تماس بگیرید. حفظ هویت گزارش‌دهنده تضمین می‌شود.
-                        </p>
-                    </div>
+                <div className="flex-1">
+                  <h3 className="text-xl font-bold text-slate-800 mb-1">{candidate.name}</h3>
+                  <div className="flex items-end gap-2 mb-3">
+                    <span className="text-2xl font-black text-slate-900">{formatNumber(candidate.votes)}</span>
+                    <span className="text-sm text-slate-500 font-medium mb-1">رأی</span>
+                  </div>
+                  
+                  <div className="flex justify-between items-center mb-1 text-sm font-medium">
+                    <span className="text-slate-600">سهم آرا</span>
+                    <span style={{ color: candidate.color }}>{formatNumber(candidate.percentage)}٪</span>
+                  </div>
+                  <ProgressBar percentage={candidate.percentage} color={candidate.color} />
                 </div>
-            </div>
-        </section>
+              </div>
+            </Card>
+          ))}
+        </div>
+      </div>
 
-        <!-- TAB 5: CALENDAR (REDESIGNED TIMELINE) -->
-        <section id="sec-calendar" class="tab-content hidden space-y-6">
-            <div class="bg-white p-8 rounded-2xl border border-slate-200 shadow-md">
-                <div class="flex items-center gap-4 border-b-2 border-slate-100 pb-5 mb-8">
-                    <div class="w-14 h-14 bg-navy-900 rounded-xl flex items-center justify-center text-gold-500 text-2xl shadow-inner">
-                        <i class="fa-solid fa-calendar-check"></i>
-                    </div>
-                    <div>
-                        <h2 class="text-3xl font-black text-navy-900">تقویم زمان‌بندی انتخابات ۲۰۲۶</h2>
-                        <p class="text-slate-500 text-sm mt-1">Official Election Timeline & Deadlines</p>
-                    </div>
+      {/* Bottom Section: News & Analysis Snippet */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div className="lg:col-span-2 space-y-4">
+          <div className="flex items-center justify-between border-b border-slate-200 pb-2">
+            <h2 className="text-xl font-bold text-slate-800 flex items-center gap-2">
+              <Newspaper className="text-yellow-500" />
+              آخرین اخبار
+            </h2>
+            <button onClick={() => navigate('news')} className="text-sm text-blue-600 hover:text-blue-800 font-medium">مشاهده همه</button>
+          </div>
+          <div className="grid gap-4">
+            {NEWS.slice(0, 2).map(item => (
+              <div key={item.id} className="bg-white p-5 rounded-xl border border-slate-100 hover:shadow-md transition-shadow">
+                <div className="flex justify-between items-start mb-2">
+                  <span className="text-xs font-bold text-slate-500 bg-slate-100 px-2 py-1 rounded">{item.category}</span>
+                  <span className="text-xs text-slate-400 font-medium">{item.date}</span>
                 </div>
-
-                <div class="relative border-r-4 border-slate-200 pr-8 space-y-10 mr-4 py-4">
-                    <!-- Date 1 -->
-                    <div class="relative">
-                        <span class="absolute -right-[43px] top-1 w-6 h-6 rounded-full bg-slate-400 border-4 border-white shadow"></span>
-                        <div class="text-sm font-bold text-slate-400 mb-1 tracking-wider">۱۵ اکتبر ۲۰۲۶ <span dir="ltr">(Oct 15)</span></div>
-                        <h3 class="text-xl font-black text-navy-900">پایان مهلت ثبت‌نام رأی‌دهندگان</h3>
-                        <p class="text-slate-600 text-sm mt-2 leading-relaxed">سامانه آنلاین ثبت‌نام متوقف شده و لیست واجدین شرایط برای بررسی نهایی به نهادهای امنیتی و فرمانداری‌های ۶ گانه ارسال می‌گردد. پس از این تاریخ نام‌نویسی جدید امکان‌پذیر نخواهد بود.</p>
-                    </div>
-                    <!-- Date 2 -->
-                    <div class="relative">
-                        <span class="absolute -right-[43px] top-1 w-6 h-6 rounded-full bg-blue-500 border-4 border-white shadow"></span>
-                        <div class="text-sm font-bold text-blue-500 mb-1 tracking-wider">۱ نوامبر ۲۰۲۶ <span dir="ltr">(Nov 01)</span></div>
-                        <h3 class="text-xl font-black text-navy-900">آغاز رأی‌گیری زودهنگام (Early Voting)</h3>
-                        <p class="text-slate-600 text-sm mt-2 leading-relaxed">مراکز منتخب در کلان‌شهرهای لوسانتوس و لیبرتی‌سیتی آماده دریافت آرای شهروندانی هستند که تمایل دارند پیش از روز اصلی، رأی خود را به صندوق بیندازند. صندوق‌های دریافت آرای پستی در سطح ایالت فعال می‌شوند.</p>
-                    </div>
-                    <!-- Date 3 (Election Day) -->
-                    <div class="relative p-6 bg-gold-50/50 rounded-2xl border border-gold-200 mt-4 -mr-6 pr-12">
-                        <span class="absolute right-[18px] top-8 w-6 h-6 rounded-full bg-gold-500 border-4 border-white shadow animate-pulse"></span>
-                        <div class="text-sm font-bold text-gold-600 mb-1 tracking-wider flex gap-2 items-center">
-                            <i class="fa-solid fa-star"></i> ۱۲ نوامبر ۲۰۲۶ - ساعت ۷:۰۰ صبح
-                        </div>
-                        <h3 class="text-2xl font-black text-navy-900">روز اصلی انتخابات (Election Day)</h3>
-                        <p class="text-slate-700 text-sm mt-2 leading-relaxed font-medium">بازگشایی تمامی ۱۲۰۰ شعبه اخذ رأی در سراسر ایالت. آغاز پوشش زنده شبکه‌های خبری و آماده‌باش کامل نیروهای گارد ملی. رأی‌گیری تا ساعت ۸ شب به صورت پیوسته ادامه خواهد یافت.</p>
-                    </div>
-                    <!-- Date 4 -->
-                    <div class="relative">
-                        <span class="absolute -right-[43px] top-1 w-6 h-6 rounded-full bg-slate-300 border-4 border-white shadow"></span>
-                        <div class="text-sm font-bold text-slate-400 mb-1 tracking-wider">۲۰ نوامبر ۲۰۲۶ <span dir="ltr">(Nov 20)</span></div>
-                        <h3 class="text-xl font-black text-navy-900">تأیید نهایی و اعلام نتایج قطعی</h3>
-                        <p class="text-slate-600 text-sm mt-2 leading-relaxed">پایان مهلت قانونی شمارش آرای غیابی و پستی. کمیسیون مستقل انتخابات نتایج نهایی را پس از بررسی شکایات احتمالی امضا کرده و فرماندار جدید رسماً معرفی می‌شود.</p>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- TAB 6: NEWS SECTION (EXPANDED) -->
-        <section id="sec-news" class="tab-content hidden space-y-6">
-            <div class="bg-white p-8 rounded-2xl border border-slate-200 shadow-md flex justify-between items-center">
+                <h4 className="text-lg font-bold text-slate-800 mb-2">{item.title}</h4>
+                <p className="text-slate-600 text-sm leading-relaxed">{item.summary}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+        
+        <div className="space-y-4">
+          <h2 className="text-xl font-bold text-slate-800 border-b border-slate-200 pb-2 flex items-center gap-2">
+             <Activity className="text-blue-500" />
+             تحلیل سریع
+          </h2>
+          <Card className="bg-slate-900 text-white border-none shadow-xl">
+             <div className="space-y-4">
                 <div>
-                    <h2 class="text-3xl font-black text-navy-900">اتاق خبر و اطلاعیه‌های رسمی</h2>
-                    <p class="text-slate-600 text-sm mt-1">آخرین تحولات، بیانیه‌های امنیتی و اخبار روزانه کمیسیون انتخابات</p>
+                  <p className="text-slate-400 text-sm mb-1">نامزد پیشتاز</p>
+                  <p className="text-xl font-bold text-yellow-500">{CANDIDATES[0].name}</p>
                 </div>
-                <i class="fa-solid fa-bullhorn text-4xl text-slate-200"></i>
-            </div>
+                <div className="h-px bg-slate-800 w-full"></div>
+                <div>
+                  <p className="text-slate-400 text-sm mb-1">فاصله نفر اول و دوم</p>
+                  <p className="text-lg font-bold">
+                    {formatNumber(CANDIDATES[0].votes - CANDIDATES[1].votes)} <span className="text-sm font-normal text-slate-400">رأی</span>
+                  </p>
+                </div>
+                <div className="h-px bg-slate-800 w-full"></div>
+                <Button variant="gold" className="w-full" onClick={() => navigate('cities')}>بررسی وضعیت شهرها</Button>
+             </div>
+          </Card>
+        </div>
+      </div>
+    </div>
+  );
+};
 
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="news-container">
-                <!-- News items generated by JS loop to reduce HTML bulk -->
-            </div>
-        </section>
+const CandidatesView = ({ navigate, setSelectedCandidate }) => (
+  <div className="space-y-8 animate-in fade-in">
+    <div className="bg-white p-8 rounded-2xl shadow-sm border border-slate-100 text-center">
+      <h1 className="text-3xl font-bold text-slate-800 mb-4">نامزدهای انتخابات فرمانداری</h1>
+      <p className="text-slate-600 max-w-2xl mx-auto">معرفی نامزدهای تأیید صلاحیت شده برای تصدی مقام فرمانداری ایالت لاسونتراس.</p>
+    </div>
 
-        <!-- Placeholder for Analysis Tab -->
-        <section id="sec-analysis" class="tab-content hidden space-y-8">
-            <div class="bg-white p-12 rounded-2xl border border-slate-200 shadow-sm text-center">
-                <i class="fa-solid fa-lock text-6xl text-slate-300 mb-4"></i>
-                <h2 class="text-2xl font-extrabold text-navy-900">سامانه تحلیل در انتظار داده‌ها</h2>
-                <p class="text-slate-500 mt-2 max-w-lg mx-auto">بخش پردازش و تحلیل آمارها (Live Analytics) بلافاصله پس از بسته شدن صندوق‌ها در ساعت ۸ شب ۱۲ نوامبر و آغاز شمارش آرا فعال خواهد شد.</p>
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      {CANDIDATES.map((candidate) => (
+        <Card key={candidate.id} className="flex flex-col items-center text-center group hover:-translate-y-1 transition-transform duration-300">
+          <div className="w-32 h-32 bg-slate-50 rounded-full border-4 shadow-inner mb-6 flex items-center justify-center overflow-hidden transition-colors" style={{ borderColor: candidate.color }}>
+            <User size={64} className="text-slate-300 group-hover:text-slate-400 transition-colors" />
+          </div>
+          <h3 className="text-xl font-bold text-slate-800 mb-1">{candidate.name}</h3>
+          <p className="text-sm text-slate-500 font-medium mb-6">نامزد انتخابات فرمانداری</p>
+          
+          <div className="w-full bg-slate-50 p-4 rounded-lg mb-6 border border-slate-100">
+            <div className="flex justify-between items-center mb-2">
+              <span className="text-sm text-slate-600">آرای فعلی</span>
+              <span className="font-bold text-slate-800">{formatNumber(candidate.votes)}</span>
             </div>
-        </section>
+            <div className="flex justify-between items-center">
+              <span className="text-sm text-slate-600">رتبه در رقابت</span>
+              <span className="font-bold" style={{ color: candidate.color }}>{formatNumber(candidate.rank)}</span>
+            </div>
+          </div>
 
+          <Button 
+            variant="outline" 
+            className="w-full"
+            onClick={() => {
+              setSelectedCandidate(candidate);
+              navigate('candidateProfile');
+            }}
+          >
+            مشاهده بیوگرافی
+          </Button>
+        </Card>
+      ))}
+    </div>
+  </div>
+);
+
+const CandidateProfileView = ({ candidate, navigate }) => (
+  <div className="max-w-3xl mx-auto space-y-6 animate-in slide-in-from-bottom-4">
+    <Button variant="ghost" onClick={() => navigate('candidates')} icon={ChevronLeft} className="mb-4">
+      بازگشت به لیست نامزدها
+    </Button>
     
-        <!-- TAB 7: LIVE RESULTS SECTION -->
-        <section id="sec-results" class="tab-content hidden space-y-8">
-            <div class="bg-white p-8 rounded-2xl border border-slate-200 shadow-md">
-                <div class="flex flex-col md:flex-row justify-between items-center gap-4">
-                    <div>
-                        <h2 class="text-3xl font-black text-navy-900 flex items-center gap-3">
-                            <i class="fa-solid fa-square-poll-vertical text-gold-500"></i> نتایج زنده انتخابات
-                        </h2>
-                        <p class="text-slate-600 text-sm mt-2">
-                            Live Gubernatorial Election Results - Lasontreas State
-                        </p>
-                    </div>
-                    <div class="bg-slate-100 px-4 py-2 rounded-lg border border-slate-300 flex items-center gap-3 shadow-inner">
-                        <span class="relative flex h-3 w-3">
-                            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75"></span>
-                            <span class="relative inline-flex rounded-full h-3 w-3 bg-amber-500"></span>
-                        </span>
-                        <span class="text-xs font-bold text-slate-600 uppercase tracking-wider">وضعیت صندوق‌ها: پلمپ</span>
-                    </div>
-                </div>
+    <Card className="text-center py-16">
+      <div className="w-24 h-24 bg-slate-100 rounded-full mx-auto mb-6 flex items-center justify-center">
+        <Info size={40} className="text-slate-400" />
+      </div>
+      <h2 className="text-2xl font-bold text-slate-800 mb-4">پروفایل {candidate?.name || 'نامزد'}</h2>
+      <div className="inline-flex items-center gap-2 bg-yellow-50 text-yellow-800 px-4 py-3 rounded-lg border border-yellow-200">
+        <Activity size={20} className="animate-pulse" />
+        <p className="font-medium">اطلاعات بیوگرافی، سوابق و برنامه‌های این نامزد در حال آماده‌سازی و تکمیل است.</p>
+      </div>
+      <p className="text-slate-500 text-sm mt-6">مسیر توسعه: <code className="bg-slate-100 px-2 py-1 rounded">/candidates/{candidate?.id || 'id'}</code></p>
+    </Card>
+  </div>
+);
+
+const CitiesView = () => {
+  const [selectedCity, setSelectedCity] = useState(CITIES[0]);
+
+  // Format data for recharts
+  const chartData = selectedCity.results.map(r => {
+    const candidate = CANDIDATES_DATA.find(c => c.name.includes(r.name));
+    return {
+      name: r.name,
+      'تعداد آرا': r.value,
+      fill: candidate ? candidate.color : '#cbd5e1'
+    };
+  });
+
+  return (
+    <div className="space-y-8 animate-in fade-in">
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+        <div>
+          <h1 className="text-3xl font-bold text-slate-800 mb-2">تحلیل نتایج در شهرها</h1>
+          <p className="text-slate-600">بررسی تفکیکی آرای حوزه‌های انتخاباتی ایالت لاسونتراس.</p>
+        </div>
+        <TestDataBadge />
+      </div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
+        {/* Sidebar / City Selector */}
+        <div className="lg:col-span-1 space-y-3">
+          <h3 className="font-bold text-slate-800 mb-4 px-2">حوزه‌های انتخاباتی</h3>
+          {CITIES.map(city => (
+            <button
+              key={city.id}
+              onClick={() => setSelectedCity(city)}
+              className={`w-full text-right px-4 py-3 rounded-xl transition-all font-medium flex justify-between items-center ${
+                selectedCity.id === city.id 
+                  ? 'bg-slate-900 text-white shadow-md' 
+                  : 'bg-white text-slate-700 hover:bg-slate-50 border border-slate-200'
+              }`}
+            >
+              <span>{city.name}</span>
+              <ChevronLeft size={18} className={selectedCity.id === city.id ? 'opacity-100' : 'opacity-0'} />
+            </button>
+          ))}
+        </div>
+
+        {/* City Details */}
+        <div className="lg:col-span-3 space-y-6">
+          <Card title={`وضعیت انتخابات در: ${selectedCity.name}`}>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+              <div className="bg-slate-50 p-4 rounded-lg border border-slate-100">
+                <p className="text-sm text-slate-500 mb-1">واجدین شرایط</p>
+                <p className="text-xl font-bold text-slate-800">{formatNumber(selectedCity.eligible)}</p>
+              </div>
+              <div className="bg-blue-50 p-4 rounded-lg border border-blue-100">
+                <p className="text-sm text-blue-600 mb-1">آرای مأخوذه</p>
+                <p className="text-xl font-bold text-blue-900">{formatNumber(selectedCity.voted)}</p>
+              </div>
+              <div className="bg-emerald-50 p-4 rounded-lg border border-emerald-100">
+                <p className="text-sm text-emerald-600 mb-1">مشارکت</p>
+                <p className="text-xl font-bold text-emerald-900">{formatNumber(((selectedCity.voted / selectedCity.eligible) * 100).toFixed(1))}٪</p>
+              </div>
             </div>
 
-            <!-- Empty State for Results before Election -->
-            <div class="bg-white rounded-2xl border border-dashed border-slate-300 p-12 text-center shadow-sm">
-                <i class="fa-solid fa-chart-bar text-6xl text-slate-200 mb-4"></i>
-                <h3 class="text-2xl font-black text-navy-900 mb-2">اطلاعاتی برای نمایش وجود ندارد</h3>
-                <p class="text-slate-500 max-w-md mx-auto leading-relaxed">
-                    مطابق قانون فدرال، سامانه‌های شمارش آرا تا پیش از اتمام مهلت رأی‌گیری در ساعت ۲۰:۰۰ تاریخ ۱۲ نوامبر فعال نخواهند شد. نمودارهای آماری، برندگان حوزه‌ها و تعداد آرای لحظه‌ای در این بخش نمایش داده خواهند شد.
-                </p>
-                <div class="mt-6">
-                    <button onclick="switchTab('calendar')" class="px-6 py-2.5 bg-navy-900 text-white text-xs font-bold rounded-lg hover:bg-navy-800 transition">
-                        مشاهده تقویم زمان‌بندی
+            <div className="h-80 w-full" dir="ltr">
+              <ResponsiveContainer width="100%" height="100%">
+                <BarChart data={chartData} margin={{ top: 20, right: 30, left: 20, bottom: 5 }} style={{ fontFamily: 'inherit' }}>
+                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e2e8f0" />
+                  <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fill: '#64748b' }} />
+                  <YAxis axisLine={false} tickLine={false} tick={{ fill: '#64748b' }} tickFormatter={(val) => val.toLocaleString()} />
+                  <Tooltip 
+                    cursor={{ fill: '#f1f5f9' }}
+                    contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)', fontFamily: 'inherit', direction: 'rtl' }}
+                    formatter={(value) => [formatNumber(value), 'تعداد آرا']}
+                  />
+                  <Bar dataKey="تعداد آرا" radius={[4, 4, 0, 0]} barSize={40} />
+                </BarChart>
+              </ResponsiveContainer>
+            </div>
+          </Card>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+const AnalysisView = () => {
+  const pieData = CANDIDATES.map(c => ({
+    name: c.name,
+    value: c.votes,
+    color: c.color
+  }));
+
+  const cityComparisonData = CITIES.map(city => {
+    let obj = { name: city.name };
+    city.results.forEach(r => {
+      obj[r.name] = r.value;
+    });
+    return obj;
+  });
+
+  return (
+    <div className="space-y-8 animate-in fade-in">
+      <div className="bg-slate-900 rounded-2xl p-8 text-white shadow-lg">
+        <h1 className="text-3xl font-bold text-yellow-500 mb-4">مرکز تحلیل و بررسی نتایج</h1>
+        <p className="text-slate-300 max-w-3xl">داشبورد پیشرفته برای تحلیل دقیق پراکندگی آرا، مقایسه عملکرد نامزدها و بررسی روندهای انتخاباتی در سطح ایالت.</p>
+      </div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <Card title="سهم نامزدها از کل آرا" className="h-96 flex flex-col">
+          <div className="flex-1 w-full" dir="ltr">
+            <ResponsiveContainer width="100%" height="100%">
+              <PieChart style={{ fontFamily: 'inherit' }}>
+                <Pie
+                  data={pieData}
+                  cx="50%"
+                  cy="50%"
+                  innerRadius={80}
+                  outerRadius={120}
+                  paddingAngle={2}
+                  dataKey="value"
+                >
+                  {pieData.map((entry, index) => (
+                    <Cell key={`cell-${index}`} fill={entry.color} />
+                  ))}
+                </Pie>
+                <Tooltip 
+                  formatter={(value) => [formatNumber(value), 'آرا']}
+                  contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)', direction: 'rtl', fontFamily: 'inherit' }}
+                />
+                <Legend layout="horizontal" verticalAlign="bottom" align="center" wrapperStyle={{ fontFamily: 'inherit', paddingTop: '20px' }} />
+              </PieChart>
+            </ResponsiveContainer>
+          </div>
+        </Card>
+
+        <Card title="مقایسه عملکرد نامزدها در شهرها" className="h-96 flex flex-col">
+           <div className="flex-1 w-full" dir="ltr">
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart data={cityComparisonData} margin={{ top: 20, right: 10, left: 10, bottom: 5 }} style={{ fontFamily: 'inherit' }}>
+                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e2e8f0" />
+                <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fill: '#64748b', fontSize: 12 }} />
+                <YAxis axisLine={false} tickLine={false} tick={{ fill: '#64748b', fontSize: 12 }} tickFormatter={(val) => `${(val/1000000).toFixed(1)}M`} />
+                <Tooltip 
+                   cursor={{ fill: 'transparent' }}
+                   contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)', direction: 'rtl', fontFamily: 'inherit' }}
+                   formatter={(value) => formatNumber(value)}
+                />
+                {CANDIDATES.map((c, i) => (
+                  <Bar key={c.id} dataKey={c.name.split(' ')[1] || c.name} fill={c.color} stackId="a" />
+                ))}
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+          <div className="text-center text-xs text-slate-400 mt-2">محور عمودی بر اساس میلیون رأی نمایش داده شده است. (داده آزمایشی)</div>
+        </Card>
+      </div>
+
+      <div className="space-y-4">
+        <h3 className="text-xl font-bold text-slate-800 border-b pb-2">گزارش آماری تفصیلی</h3>
+        <div className="overflow-x-auto bg-white rounded-xl shadow-sm border border-slate-200">
+          <table className="w-full text-right text-sm">
+            <thead className="bg-slate-50 text-slate-600 font-bold border-b border-slate-200">
+              <tr>
+                <th className="px-6 py-4">رتبه</th>
+                <th className="px-6 py-4">نامزد</th>
+                <th className="px-6 py-4">آرای کسب شده</th>
+                <th className="px-6 py-4">درصد از کل</th>
+                <th className="px-6 py-4">فاصله با نفر اول</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-slate-100">
+              {CANDIDATES.map((c, i) => (
+                <tr key={c.id} className="hover:bg-slate-50 transition-colors">
+                  <td className="px-6 py-4 font-bold" style={{ color: c.color }}>{formatNumber(c.rank)}</td>
+                  <td className="px-6 py-4 font-bold text-slate-800">{c.name}</td>
+                  <td className="px-6 py-4">{formatNumber(c.votes)}</td>
+                  <td className="px-6 py-4">{formatNumber(c.percentage)}٪</td>
+                  <td className="px-6 py-4 text-slate-500">
+                    {i === 0 ? '-' : formatNumber(CANDIDATES[0].votes - c.votes)}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+const NewsView = () => (
+  <div className="space-y-8 animate-in fade-in">
+    <div className="flex items-center justify-between">
+      <div>
+        <h1 className="text-3xl font-bold text-slate-800 mb-2">اخبار و اطلاعیه‌ها</h1>
+        <p className="text-slate-600">آخرین رویدادها و اطلاعیه‌های رسمی کمیسیون انتخابات.</p>
+      </div>
+    </div>
+
+    <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      <div className="lg:col-span-2 space-y-6">
+        <h2 className="text-xl font-bold text-slate-800 border-b-2 border-yellow-500 pb-2 inline-block">اخبار انتخابات</h2>
+        {NEWS.map(news => (
+          <Card key={news.id} className="hover:shadow-md transition-shadow group cursor-pointer">
+             <div className="flex flex-col sm:flex-row gap-4">
+                <div className="hidden sm:flex flex-col items-center justify-center bg-slate-50 w-24 h-24 rounded-lg border border-slate-100 text-slate-400 group-hover:bg-blue-50 group-hover:text-blue-500 transition-colors">
+                  <Newspaper size={32} />
+                </div>
+                <div className="flex-1">
+                  <div className="flex items-center gap-3 mb-2">
+                    <span className="bg-blue-100 text-blue-800 text-xs px-2.5 py-0.5 rounded font-bold">{news.category}</span>
+                    <span className="text-xs text-slate-500 flex items-center gap-1"><Clock size={14}/> {news.date}</span>
+                  </div>
+                  <h3 className="text-lg font-bold text-slate-800 mb-2 group-hover:text-blue-700 transition-colors">{news.title}</h3>
+                  <p className="text-slate-600 text-sm leading-relaxed">{news.summary}</p>
+                </div>
+             </div>
+          </Card>
+        ))}
+      </div>
+
+      <div className="space-y-6">
+        <h2 className="text-xl font-bold text-slate-800 border-b-2 border-slate-900 pb-2 inline-block">اطلاعیه‌های رسمی</h2>
+        <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+          {ANNOUNCEMENTS.map((ann, index) => (
+            <div key={ann.id} className={`p-5 hover:bg-slate-50 transition-colors cursor-pointer ${index !== ANNOUNCEMENTS.length -1 ? 'border-b border-slate-100' : ''}`}>
+              <div className="flex items-start gap-3">
+                <AlertCircle className="text-yellow-500 shrink-0 mt-0.5" size={20} />
+                <div>
+                  <h4 className="font-bold text-slate-800 text-sm mb-1 leading-snug">{ann.title}</h4>
+                  <p className="text-xs text-slate-500">{ann.date}</p>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  </div>
+);
+
+const GuideView = () => (
+  <div className="max-w-4xl mx-auto space-y-8 animate-in fade-in">
+    <div className="text-center">
+      <h1 className="text-3xl font-bold text-slate-800 mb-4">راهنمای جامع رأی‌دهی</h1>
+      <p className="text-slate-600">اطلاعات لازم برای مشارکت آگاهانه و صحیح در انتخابات فرمانداری.</p>
+    </div>
+
+    <div className="grid gap-6">
+      {[
+        { title: 'شرایط شرکت در انتخابات', desc: 'داشتن حداقل ۱۸ سال تمام، تابعیت ایالت لاسونتراس و ثبت‌نام در سامانه جامع شهروندی.', icon: User },
+        { title: 'نحوه ثبت رأی', desc: 'مراجعه حضوری به شعب اخذ رأی همراه با مدارک هویتی معتبر (کارت شناسایی ایالتی یا گذرنامه).', icon: FileText },
+        { title: 'ساعات رأی‌گیری', desc: 'شعب اخذ رأی از ساعت ۸:۰۰ صبح الی ۱۸:۰۰ عصر آماده دریافت آرای شهروندان می‌باشند.', icon: Clock },
+        { title: 'پیگیری نتایج', desc: 'نتایج رسمی پس از پایان شمارش از طریق همین درگاه به‌صورت زنده اطلاع‌رسانی خواهد شد.', icon: Activity },
+      ].map((item, i) => (
+        <Card key={i} className="flex flex-col sm:flex-row items-start sm:items-center gap-6 p-6">
+          <div className="bg-blue-50 text-blue-600 p-4 rounded-full">
+            <item.icon size={32} />
+          </div>
+          <div>
+            <h3 className="text-xl font-bold text-slate-800 mb-2">{formatNumber(i + 1)}. {item.title}</h3>
+            <p className="text-slate-600 leading-relaxed">{item.desc}</p>
+          </div>
+        </Card>
+      ))}
+    </div>
+  </div>
+);
+
+const FeedbackView = () => (
+  <div className="max-w-2xl mx-auto space-y-6 animate-in slide-in-from-bottom-4">
+    <Card className="text-center py-16 px-8">
+      <div className="w-20 h-20 bg-slate-100 rounded-full mx-auto mb-6 flex items-center justify-center">
+        <MessageSquare size={36} className="text-slate-400" />
+      </div>
+      <h2 className="text-2xl font-bold text-slate-800 mb-4">سامانه ثبت نظرات و پیشنهادات</h2>
+      <p className="text-slate-600 mb-8 leading-relaxed">
+        این بخش برای دریافت دیدگاه‌ها، انتقادات و گزارش‌های شهروندان در نظر گرفته شده است. 
+        در حال حاضر زیرساخت‌های پایگاه داده این بخش در دست توسعه می‌باشد.
+      </p>
+      <div className="bg-slate-50 border border-dashed border-slate-300 rounded-lg p-6">
+        <p className="text-slate-500 text-sm font-medium">فرم ثبت نظر به‌زودی در این قسمت فعال خواهد شد.</p>
+        <p className="text-xs text-slate-400 mt-2 font-mono">Status: Pending Implementation (/feedback)</p>
+      </div>
+    </Card>
+  </div>
+);
+
+// --- MAIN APP COMPONENT ---
+
+export default function App() {
+  const [currentPage, setCurrentPage] = useState('home');
+  const [selectedCandidate, setSelectedCandidate] = useState(null);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [currentTime, setCurrentTime] = useState(new Date());
+
+  // Clock tick
+  useEffect(() => {
+    const timer = setInterval(() => setCurrentTime(new Date()), 1000);
+    return () => clearInterval(timer);
+  }, []);
+
+  const navigate = (page) => {
+    setCurrentPage(page);
+    setIsMobileMenuOpen(false);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const navItems = [
+    { id: 'home', label: 'صفحه اصلی', icon: Home },
+    { id: 'candidates', label: 'نامزدها', icon: Users },
+    { id: 'cities', label: 'حوزه‌ها و شهرها', icon: Map },
+    { id: 'analysis', label: 'تحلیل آرا', icon: BarChart2 },
+    { id: 'news', label: 'اخبار و اطلاعیه‌ها', icon: Newspaper },
+    { id: 'guide', label: 'راهنمای رأی‌دهی', icon: Info },
+    { id: 'feedback', label: 'نظرات', icon: MessageSquare },
+  ];
+
+  const renderPage = () => {
+    switch (currentPage) {
+      case 'home': return <HomeView navigate={navigate} />;
+      case 'candidates': return <CandidatesView navigate={navigate} setSelectedCandidate={setSelectedCandidate} />;
+      case 'candidateProfile': return <CandidateProfileView candidate={selectedCandidate} navigate={navigate} />;
+      case 'cities': return <CitiesView />;
+      case 'analysis': return <AnalysisView />;
+      case 'news': return <NewsView />;
+      case 'guide': return <GuideView />;
+      case 'feedback': return <FeedbackView />;
+      default: return <HomeView navigate={navigate} />;
+    }
+  };
+
+  return (
+    <div dir="rtl" className="min-h-screen bg-slate-50 text-slate-900 font-sans antialiased flex flex-col">
+      {/* Injecting Vazirmatn font to guarantee styling matches requirements if external styles aren't fully loaded */}
+      <style dangerouslySetInnerHTML={{__html: `
+        @import url('https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css');
+        body { font-family: 'Vazirmatn', sans-serif; }
+        .animate-in { animation: fadeIn 0.3s ease-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+      `}} />
+
+      {/* Header */}
+      <header className="bg-slate-900 text-white sticky top-0 z-50 border-b-4 border-yellow-500 shadow-lg">
+        <div className="container mx-auto px-4 md:px-6">
+          <div className="flex items-center justify-between h-20">
+            {/* Branding */}
+            <div className="flex items-center gap-4 cursor-pointer" onClick={() => navigate('home')}>
+              <div className="bg-slate-900 rounded-full border-2 border-yellow-500 p-2 shadow-[0_0_15px_rgba(234,179,8,0.3)]">
+                <Landmark className="text-yellow-500 w-8 h-8" />
+              </div>
+              <div className="hidden sm:block">
+                <h1 className="text-sm text-yellow-500 font-bold tracking-wide">وزارت امور ایالتی لاسونتراس</h1>
+                <h2 className="text-lg font-black mt-0.5">سامانه جامع انتخابات فرماندار</h2>
+              </div>
+            </div>
+
+            {/* Desktop Navigation & Clock */}
+            <div className="hidden lg:flex items-center gap-8">
+              <nav className="flex gap-1">
+                {navItems.map(item => (
+                  <button
+                    key={item.id}
+                    onClick={() => navigate(item.id)}
+                    className={`px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
+                      currentPage === item.id || (item.id === 'candidates' && currentPage === 'candidateProfile')
+                        ? 'bg-slate-800 text-yellow-400' 
+                        : 'text-slate-300 hover:text-white hover:bg-slate-800/50'
+                    }`}
+                  >
+                    {item.label}
+                  </button>
+                ))}
+              </nav>
+              
+              <div className="flex items-center gap-3 border-r border-slate-700 pr-6">
+                <div className="text-right">
+                  <div className="text-xs text-emerald-400 font-bold flex items-center justify-end gap-1 mb-1">
+                    سامانه فعال <span className="relative flex h-2 w-2 mr-1"><span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span><span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span></span>
+                  </div>
+                  <div className="text-sm font-mono tracking-wider">{formatPersianDate(currentTime)}</div>
+                </div>
+              </div>
+            </div>
+
+            {/* Mobile Menu Toggle */}
+            <button 
+              className="lg:hidden p-2 text-slate-300 hover:text-white"
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+            >
+              {isMobileMenuOpen ? <X size={28} /> : <Menu size={28} />}
+            </button>
+          </div>
+        </div>
+
+        {/* Mobile Navigation */}
+        {isMobileMenuOpen && (
+          <div className="lg:hidden bg-slate-800 border-t border-slate-700 animate-in fade-in slide-in-from-top-2">
+            <div className="px-4 pt-2 pb-4 space-y-1">
+              <div className="mb-4 pb-4 border-b border-slate-700 text-center text-sm font-mono text-slate-300">
+                {formatPersianDate(currentTime)}
+              </div>
+              {navItems.map(item => (
+                <button
+                  key={item.id}
+                  onClick={() => navigate(item.id)}
+                  className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg text-base font-medium transition-colors ${
+                    currentPage === item.id || (item.id === 'candidates' && currentPage === 'candidateProfile')
+                      ? 'bg-slate-700 text-yellow-400' 
+                      : 'text-slate-300 hover:bg-slate-700 hover:text-white'
+                  }`}
+                >
+                  <item.icon size={20} className={currentPage === item.id ? 'text-yellow-500' : 'text-slate-400'} />
+                  {item.label}
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
+      </header>
+
+      {/* Main Content Area */}
+      <main className="flex-1 container mx-auto px-4 md:px-6 py-8 md:py-12">
+        {renderPage()}
+      </main>
+
+      {/* Footer */}
+      <footer className="bg-slate-900 border-t border-slate-800 pt-16 pb-8 text-slate-400 mt-auto">
+        <div className="container mx-auto px-4 md:px-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-12">
+            <div className="space-y-4">
+              <div className="flex items-center gap-3 mb-6">
+                <Landmark className="text-yellow-500 w-8 h-8" />
+                <div>
+                  <h3 className="text-white font-bold">وزارت امور ایالتی لاسونتراس</h3>
+                  <p className="text-xs text-yellow-500">سامانه جامع انتخابات</p>
+                </div>
+              </div>
+              <p className="text-sm leading-relaxed">
+                این درگاه تنها مرجع رسمی اعلام نتایج، اخبار و اطلاعیه‌های مربوط به انتخابات فرمانداری ایالت لاسونتراس می‌باشد.
+              </p>
+            </div>
+            
+            <div>
+              <h4 className="text-white font-bold mb-6 border-b border-slate-800 pb-2 inline-block">دسترسی سریع</h4>
+              <ul className="space-y-3 text-sm">
+                {navItems.slice(0, 5).map(item => (
+                  <li key={item.id}>
+                    <button onClick={() => navigate(item.id)} className="hover:text-yellow-500 transition-colors flex items-center gap-2">
+                      <ChevronLeft size={14} /> {item.label}
                     </button>
-                </div>
-            </div>
-            
-            <!-- Placeholder for Candidate Bars (To be unlocked later) -->
-            <div class="bg-slate-50 rounded-2xl border border-slate-200 p-8 opacity-50 select-none pointer-events-none filter grayscale">
-                <h4 class="font-bold text-navy-900 mb-6 border-b border-slate-200 pb-2">پیش‌نمایش داشبورد شمارش (قفل شده)</h4>
-                <div class="space-y-6">
-                    <!-- Placeholder Bar 1 -->
-                    <div>
-                        <div class="flex justify-between text-xs font-bold mb-1">
-                            <span class="text-slate-700">نامزد ۱</span>
-                            <span class="text-slate-500">--- رأی (۰٪)</span>
-                        </div>
-                        <div class="w-full bg-slate-200 rounded-full h-3">
-                            <div class="bg-slate-400 h-3 rounded-full" style="width: 0%"></div>
-                        </div>
-                    </div>
-                    <!-- Placeholder Bar 2 -->
-                    <div>
-                        <div class="flex justify-between text-xs font-bold mb-1">
-                            <span class="text-slate-700">نامزد ۲</span>
-                            <span class="text-slate-500">--- رأی (۰٪)</span>
-                        </div>
-                        <div class="w-full bg-slate-200 rounded-full h-3">
-                            <div class="bg-slate-400 h-3 rounded-full" style="width: 0%"></div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- TAB 8: PUBLIC OPINIONS (COMMENTS) -->
-        <section id="sec-comments" class="tab-content hidden space-y-6">
-            <div class="bg-white p-8 rounded-2xl border border-slate-200 shadow-md">
-                <h2 class="text-3xl font-black text-navy-900 flex items-center gap-3">
-                    <i class="fa-solid fa-comments text-gold-500"></i> صدای شهروندان
-                </h2>
-                <p class="text-slate-600 text-sm mt-2">
-                    تالار گفتگوی رسمی شهروندان لاسونتراس پیرامون انتخابات و نامزدها.
-                </p>
+                  </li>
+                ))}
+              </ul>
             </div>
 
-            <div class="bg-white rounded-2xl border border-slate-200 p-8 shadow-sm text-center py-16">
-                <div class="w-24 h-24 bg-slate-50 border-4 border-slate-100 rounded-full flex items-center justify-center mx-auto mb-6">
-                    <i class="fa-solid fa-comment-slash text-4xl text-slate-300"></i>
-                </div>
-                <h3 class="text-2xl font-black text-navy-900 mb-3">تالار گفتگو موقتاً غیرفعال است</h3>
-                <p class="text-slate-500 max-w-lg mx-auto leading-relaxed mb-8">
-                    جهت حفظ آرامش روانی جامعه و جلوگیری از تبلیغات زودهنگام انتخاباتی، بخش نظرات مردمی تا تاریخ ۱۲ نوامبر ساعت ۷:۰۰ صبح (همزمان با شروع رأی‌گیری) قفل می‌باشد. پس از بازگشایی، سیستم نظرات از طریق پلتفرم مستقل بارگذاری خواهد شد.
-                </p>
-                <!-- This iframe point to the external github file -->
-                <div class="w-full max-w-3xl mx-auto rounded-xl border-2 border-dashed border-slate-300 bg-slate-50 h-32 flex items-center justify-center">
-                    <div class="text-sm font-bold text-slate-400 flex flex-col items-center gap-2">
-                        <i class="fa-solid fa-link"></i>
-                        <span><iframe src="comments_widget.html" class="hidden"></iframe>سیستم کامنت‌گذاری در اینجا بارگذاری خواهد شد</span>
-                    </div>
-                </div>
+            <div>
+              <h4 className="text-white font-bold mb-6 border-b border-slate-800 pb-2 inline-block">اطلاعات تماس</h4>
+              <ul className="space-y-4 text-sm">
+                <li className="flex items-start gap-3">
+                  <span className="text-slate-500 font-medium w-24">تلفن گویا:</span>
+                  <span dir="ltr" className="text-slate-300">۰۲۱-۱۲۳۴۵۶۷۸</span>
+                </li>
+                <li className="flex items-start gap-3">
+                  <span className="text-slate-500 font-medium w-24">پست الکترونیک:</span>
+                  <span dir="ltr" className="text-slate-300">info@lasontras.gov</span>
+                </li>
+                <li className="flex items-start gap-3">
+                  <span className="text-slate-500 font-medium w-24">ساعات پاسخگویی:</span>
+                  <span className="text-slate-300">۸ صبح الی ۱۸ عصر</span>
+                </li>
+              </ul>
             </div>
-        </section>
 
-    </main>
+            <div>
+               <h4 className="text-white font-bold mb-6 border-b border-slate-800 pb-2 inline-block">وضعیت سیستم</h4>
+               <div className="bg-slate-800/50 p-4 rounded-lg border border-slate-700">
+                  <div className="flex items-center gap-2 text-emerald-400 font-bold mb-2 text-sm">
+                    <CheckCircle2 size={16} /> سرورهای اصلی آنلاین
+                  </div>
+                  <p className="text-xs text-slate-500">آخرین بروزرسانی داده‌ها: لحظاتی پیش</p>
+                  <p className="text-xs text-slate-500 mt-1">نسخه سامانه: ۲.۴.۱</p>
+               </div>
+            </div>
+          </div>
 
-    <!-- Official Government Footer (REDESIGNED) -->
-    <footer class="bg-navy-950 text-slate-300 border-t-8 border-gold-500 mt-16 relative overflow-hidden">
-        <div class="absolute inset-0 bg-pattern pointer-events-none opacity-50"></div>
-        <div class="max-w-7xl mx-auto px-4 py-12 grid grid-cols-1 md:grid-cols-12 gap-10 relative z-10">
-            <!-- Brand & Legal -->
-            <div class="md:col-span-4 space-y-4">
-                <div class="flex items-center gap-3">
-                    <i class="fa-solid fa-landmark text-gold-500 text-3xl"></i>
-                    <div>
-                        <h4 class="font-black text-white text-lg tracking-tight">وزارت امور ایالتی لاسونتراس</h4>
-                        <div class="text-[10px] text-gold-500 font-bold uppercase tracking-widest">Secretary of State</div>
-                    </div>
-                </div>
-                <p class="text-xs leading-relaxed text-slate-400 text-justify">
-                    این پرتال، سامانه انحصاری و رسمی اطلاع‌رسانی، شفافیت آرا و قوانین انتخاباتی ایالت لاسونتراس است. کلیه اطلاعات، فرم‌ها و آمارهای مندرج تحت نظارت قانونی کمیسیون مرکزی انتخابات و پلیس فدرال قرار دارد. هرگونه کپی‌برداری غیرمجاز پیگرد قانونی خواهد داشت.
-                </p>
-            </div>
-            
-            <!-- Links -->
-            <div class="md:col-span-4 pl-0 md:pl-10">
-                <h4 class="font-bold text-white text-sm mb-4 border-b border-slate-800 pb-2">دسترسی سریع / Quick Links</h4>
-                <ul class="space-y-2.5 text-xs text-slate-400 font-medium">
-                    <li><button onclick="switchTab('overview')" class="hover:text-gold-500 transition flex items-center gap-2"><i class="fa-solid fa-angle-left text-[8px]"></i> صفحه اصلی انتخابات</button></li>
-                    <li><button onclick="switchTab('candidates')" class="hover:text-gold-500 transition flex items-center gap-2"><i class="fa-solid fa-angle-left text-[8px]"></i> پروفایل نامزدهای فرمانداری</button></li>
-                    <li><button onclick="switchTab('guide')" class="hover:text-gold-500 transition flex items-center gap-2"><i class="fa-solid fa-angle-left text-[8px]"></i> راهنمای مدارک و رأی‌دهی</button></li>
-                    <li><a href="#" class="hover:text-gold-500 transition flex items-center gap-2"><i class="fa-solid fa-angle-left text-[8px]"></i> سامانه استعلام ثبت‌نام (External)</a></li>
-                </ul>
-            </div>
-            
-            <!-- Contact & Emergency -->
-            <div class="md:col-span-4 bg-slate-900/50 p-6 rounded-xl border border-slate-800 backdrop-blur">
-                <h4 class="font-bold text-white text-sm mb-4 flex items-center gap-2">
-                    <i class="fa-solid fa-headset text-gold-500"></i> مرکز پاسخگویی و ارتباطات
-                </h4>
-                <div class="space-y-3 text-xs">
-                    <div class="flex justify-between items-center border-b border-slate-800 pb-2">
-                        <span class="text-slate-400">خط ویژه انتخابات:</span>
-                        <span class="text-gold-500 font-black tracking-wider" dir="ltr">1-800-LST-VOTE</span>
-                    </div>
-                    <div class="flex justify-between items-center border-b border-slate-800 pb-2">
-                        <span class="text-slate-400">گزارش تخلفات امنیتی:</span>
-                        <span class="text-rose-500 font-black tracking-wider" dir="ltr">911 (Ext. Elections)</span>
-                    </div>
-                    <div class="flex justify-between items-center border-b border-slate-800 pb-2">
-                        <span class="text-slate-400">ایمیل رسمی:</span>
-                        <span class="text-slate-300 font-mono">elections@sos.lasontreas.gov</span>
-                    </div>
-                    <div class="flex items-start gap-2 pt-1 text-slate-400">
-                        <i class="fa-solid fa-location-dot mt-1 text-slate-500"></i>
-                        <span class="leading-relaxed">Lasontreas State Capitol,<br>100 Democracy Plaza, LS 90001</span>
-                    </div>
-                </div>
-            </div>
+          <div className="pt-8 border-t border-slate-800 text-center md:text-right text-xs md:text-sm text-slate-500 flex flex-col md:flex-row justify-between items-center gap-4">
+            <p className="max-w-2xl leading-relaxed">
+              این وب‌سایت بخشی از پروژه شبیه‌سازی‌شده وزارت امور ایالتی لاسونتراس است. کلیه حقوق طراحی و محتوای این سامانه متعلق به پروژه لاسونتراس بوده و استفاده از آن تابع شرایط سامانه است.
+            </p>
+            <p dir="ltr">© {new Date().getFullYear()} Lasontras Gov. تمامی حقوق محفوظ است.</p>
+          </div>
         </div>
-        <div class="bg-black py-4 text-center text-[10px] text-slate-500 relative z-10">
-            © 2026 State of Lasontreas • Office of the Secretary of State • All Rights Reserved.
-        </div>
-    </footer>
-
-    <!-- Modals -->
-    <!-- News Modal -->
-    <div id="news-modal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
-        <div class="bg-white rounded-2xl max-w-2xl w-full max-h-[85vh] overflow-y-auto shadow-2xl p-8 space-y-4">
-            <div class="flex justify-between items-center border-b-2 border-slate-100 pb-4 mb-4">
-                <span id="modal-category" class="px-3 py-1 bg-navy-900 text-gold-500 font-bold text-xs rounded-lg">Category</span>
-                <button onclick="closeNewsModal()" class="text-slate-400 hover:text-rose-500 text-2xl transition">
-                    <i class="fa-solid fa-circle-xmark"></i>
-                </button>
-            </div>
-            <h3 id="modal-title" class="text-2xl font-black text-navy-900 leading-tight">Article Title</h3>
-            <div class="flex items-center gap-3 text-xs text-slate-400 font-semibold border-l-4 border-gold-500 pl-3">
-                <i class="fa-regular fa-calendar"></i> <span id="modal-date">Date</span>
-            </div>
-            <div id="modal-content" class="text-sm text-slate-700 leading-loose space-y-4 mt-6"></div>
-            <div class="pt-6 mt-6 border-t-2 border-slate-100 flex justify-end">
-                <button onclick="closeNewsModal()" class="px-8 py-3 bg-slate-200 text-slate-700 font-bold text-xs rounded-xl hover:bg-slate-300 transition">بستن</button>
-            </div>
-        </div>
+      </footer>
     </div>
-
-    <!-- Candidate Modal -->
-    <div id="candidate-modal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
-        <div class="bg-white rounded-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto shadow-2xl p-0 flex flex-col md:flex-row">
-            
-            <!-- Left Side Bar in Modal -->
-            <div class="w-full md:w-1/3 bg-slate-50 p-8 border-l border-slate-200 flex flex-col items-center text-center">
-                <div class="w-32 h-32 rounded-full bg-white border-4 border-slate-300 shadow-lg flex items-center justify-center text-slate-400 mb-6" id="modal-candidate-icon">
-                    <i class="fa-solid fa-user-tie text-6xl"></i>
-                </div>
-                <h3 class="font-black text-navy-900 text-2xl" id="modal-candidate-name">حامد صادقیان</h3>
-                <div class="text-xs text-slate-500 font-bold uppercase tracking-widest mt-1" id="modal-candidate-en-name">Hamed Sadeghian</div>
-                
-                <div id="modal-candidate-party" class="mt-4 px-4 py-1.5 text-xs font-bold rounded-lg shadow-sm text-white">
-                    حزب
-                </div>
-                
-                <div class="w-full h-px bg-slate-200 my-6"></div>
-                
-                <div class="w-full text-right space-y-3 text-xs">
-                    <div class="flex justify-between"><span class="text-slate-500">سن:</span><span class="font-bold" id="modal-candidate-age"></span></div>
-                    <div class="flex justify-between"><span class="text-slate-500">تحصیلات:</span><span class="font-bold text-left" id="modal-candidate-edu"></span></div>
-                </div>
-            </div>
-
-            <!-- Right Content in Modal -->
-            <div class="w-full md:w-2/3 p-8 relative">
-                <button onclick="closeCandidateModal()" class="absolute top-6 left-6 text-slate-400 hover:text-rose-500 text-2xl transition">
-                    <i class="fa-solid fa-circle-xmark"></i>
-                </button>
-                <div class="pr-8">
-                    <h4 class="font-black text-navy-900 text-xl flex items-center gap-2 mb-6">
-                        <i class="fa-solid fa-file-contract text-gold-500"></i> زندگینامه و سوابق اجرایی
-                    </h4>
-                    <div id="modal-candidate-bio" class="text-sm text-slate-700 leading-relaxed space-y-4 text-justify font-medium">
-                        <!-- Injected -->
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Scripts -->
-    <script>
-        // Timer Script
-        function startCountdown() {
-            const target = new Date("Nov 12, 2026 07:00:00").getTime();
-            const x = setInterval(function() {
-                const now = new Date().getTime();
-                const distance = target - now;
-
-                if (distance < 0) {
-                    clearInterval(x);
-                    document.getElementById("countdown-timer").innerHTML = '<span class="text-rose-500 text-2xl py-2">رأی‌گیری آغاز شده است</span>';
-                    return;
-                }
-
-                const days = Math.floor(distance / (1000 * 60 * 60 * 24));
-                const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-                const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-                const seconds = Math.floor((distance % (1000 * 60)) / 1000);
-
-                document.getElementById("cd-days").innerText = days.toString().padStart(2, '0');
-                document.getElementById("cd-hours").innerText = hours.toString().padStart(2, '0');
-                document.getElementById("cd-minutes").innerText = minutes.toString().padStart(2, '0');
-                document.getElementById("cd-seconds").innerText = seconds.toString().padStart(2, '0');
-            }, 1000);
-        }
-        startCountdown();
-
-        // Tab Switcher
-        function switchTab(tabId) {
-            const contents = document.querySelectorAll('.tab-content');
-            contents.forEach(el => el.classList.add('hidden'));
-
-            const targetSection = document.getElementById('sec-' + tabId);
-            if (targetSection) targetSection.classList.remove('hidden');
-
-            const buttons = document.querySelectorAll('.tab-btn');
-            buttons.forEach(btn => {
-                btn.classList.remove('bg-gold-500', 'text-navy-950', 'shadow');
-                btn.classList.add('text-slate-300');
-            });
-
-            const activeBtn = document.getElementById('tab-' + tabId);
-            if (activeBtn) {
-                activeBtn.classList.remove('text-slate-300');
-                activeBtn.classList.add('bg-gold-500', 'text-navy-950', 'shadow');
-            }
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        }
-
-        // Expanded News Data
-        const newsData = {
-            1: {
-                title: "آماده‌باش کامل نیروهای امنیتی و گارد ملی در سراسر لاسونتراس",
-                category: "امنیت ایالتی (Security)",
-                date: "۱۰ نوامبر ۲۰۲۶",
-                color: "bg-rose-700",
-                excerpt: "فرمانده گارد ایالتی اعلام کرد ۱۳ هزار نیروی پلیس و گارد ویژه در سطح خیابان‌ها و مراکز اخذ رأی مستقر خواهند شد.",
-                content: `
-                    <p>فرمانده گارد ایالتی لاسونتراس در یک کنفرانس مطبوعاتی اضطراری اعلام کرد که با توجه به حساسیت بالای انتخابات پیش‌رو، تمامی مرخصی‌های پرسنل نظامی و نیروهای پلیس محلی لغو شده است.</p>
-                    <p>بر اساس <strong>پروتکل سطح قرمز</strong>، بیش از ۱۳,۰۰۰ نیروی گارد ملی، پلیس فدرال و یگان‌های ویژه تکاوری در تمامی ۶ کلان‌شهر ایالت مستقر شده‌اند. تمرکز اصلی نیروها بر روی تأمین امنیت شعب اصلی اخذ رأی، صندوق‌های سیار و ساختمان‌های دولتی خواهد بود.</p>
-                    <p>مقامات امنیتی هشدار داده‌اند که با هرگونه تلاش برای اخلال در روند رأی‌گیری، ایجاد رعب و وحشت در صفوف رأی‌دهندگان، یا تجمع غیرقانونی در شعاع ۱۰۰ متری حوزه‌ها با شدیدترین برخوردهای قانونی مواجه خواهد شد.</p>
-                `
-            },
-            2: {
-                title: "تمدید مهلت دریافت آرای پستی تا پایان روز انتخابات",
-                category: "قوانین و دستورالعمل‌ها",
-                date: "۸ نوامبر ۲۰۲۶",
-                color: "bg-blue-600",
-                excerpt: "کمیسیون انتخابات ایالت اعلام کرد آرای پستی که تا ساعت ۸ شب ۱۲ نوامبر مهر پست خورده باشند، معتبر شمرده می‌شوند.",
-                content: `
-                    <p>به دنبال درخواست‌های مکرر شهروندان و گروه‌های مدنی در شهرهای وای‌سیتی و کارل‌سیتی، دادگاه عالی انتخابات با تمدید ضرب‌الاجل آرای پستی موافقت کرد.</p>
-                    <p>شهروندانی که به دلایل پزشکی، شغلی یا مسافرت قادر به حضور در پای صندوق‌های رأی نیستند، می‌توانند پاکت‌های رأی خود را تا آخرین ساعات روز انتخابات (۱۲ نوامبر) تحویل اداره پست دهند. شرط اصلی شمارش این آرا، ثبت مُهر تأیید پست مرکزی حداکثر تا ساعت ۲۰:۰۰ روز دوازدهم می‌باشد.</p>
-                    <p>همچنین ده‌ها صندوق ویژه (Drop Box) در اماکن امنیتی و تحت نظارت دوربین‌های ۲۴ ساعته در سطح شهرها نصب شده است تا شهروندان برگه‌های خود را مستقیماً درون آن‌ها بیندازند.</p>
-                `
-            },
-            3: {
-                title: "انتشار لیست نهایی ۱۲۰۰ شعبه رسمی اخذ رأی",
-                category: "زیرساخت انتخابات",
-                date: "۶ نوامبر ۲۰۲۶",
-                color: "bg-emerald-600",
-                excerpt: "شهروندان می‌توانند با وارد کردن کد پستی خود در سامانه، نزدیک‌ترین شعبه اخذ رأی را پیدا کنند.",
-                content: `
-                    <p>دفتر وزیر ایالتی امروز لیست رسمی و نهایی شعب اخذ رأی را برای تمامی ۶ شهر منتشر کرد. امسال با افزایش ۱۵ درصدی ظرفیت، مجموعاً ۱۲۰۰ شعبه اعم از مدارس، سالن‌های ورزشی، و کتابخانه‌های عمومی برای فرآیند رأی‌گیری تجهیز شده‌اند.</p>
-                    <p>در شهرهای پرجمعیتی مانند لوسانتوس که با ۴۵۰ شعبه بیشترین تعداد مراکز را به خود اختصاص داده است، ماشین‌های رأی‌گیری الکترونیکی نسل جدید مستقر شده‌اند که زمان انتظار را برای هر نفر به کمتر از ۳ دقیقه کاهش می‌دهد.</p>
-                    <p>همچنین برای افراد دارای معلولیت، رمپ‌های ویژه و دستگاه‌های مجهز به خط بریل و هدفون‌های صوتی در تمامی شعب پیش‌بینی شده است.</p>
-                `
-            }
-        };
-
-        // Render News
-        const newsContainer = document.getElementById('news-container');
-        Object.keys(newsData).forEach(id => {
-            const item = newsData[id];
-            newsContainer.innerHTML += `
-                <div class="bg-white rounded-2xl border border-slate-200 shadow-sm hover:shadow-lg transition overflow-hidden flex flex-col cursor-pointer group" onclick="openNewsModal(${id})">
-                    <div class="h-2 w-full ${item.color}"></div>
-                    <div class="p-6 flex-grow space-y-3">
-                        <div class="flex justify-between items-center mb-2">
-                            <span class="text-[10px] font-bold ${item.color.replace('bg-', 'text-')} bg-slate-50 px-2 py-1 rounded">${item.category}</span>
-                            <span class="text-xs text-slate-400 font-medium">${item.date}</span>
-                        </div>
-                        <h3 class="text-lg font-black text-navy-900 leading-snug group-hover:text-gold-600 transition">${item.title}</h3>
-                        <p class="text-sm text-slate-600 line-clamp-3 leading-relaxed">${item.excerpt}</p>
-                    </div>
-                    <div class="px-6 py-4 bg-slate-50 border-t border-slate-100 flex items-center justify-between text-xs font-bold text-navy-900 group-hover:text-gold-600 transition">
-                        مطالعه مشروح خبر <i class="fa-solid fa-arrow-left mt-0.5"></i>
-                    </div>
-                </div>
-            `;
-        });
-
-        // Modal Logic
-        function openNewsModal(id) {
-            const data = newsData[id];
-            document.getElementById('modal-title').innerText = data.title;
-            document.getElementById('modal-category').innerText = data.category;
-            document.getElementById('modal-category').className = `px-3 py-1 text-white font-bold text-xs rounded-lg ${data.color}`;
-            document.getElementById('modal-date').innerText = data.date;
-            document.getElementById('modal-content').innerHTML = data.content;
-            document.getElementById('news-modal').classList.remove('hidden');
-        }
-        function closeNewsModal() { document.getElementById('news-modal').classList.add('hidden'); }
-
-        const candidateData = {
-            1: {
-                name: "حامد صادقیان", enName: "Hamed Sadeghian", age: "۵۲ سال", edu: "دکتری مهندسی هواپیما<br>دکتری اقتصاد سیاسی",
-                party: "جمهوری‌خواه (Republican)", partyColor: "bg-red-700",
-                bio: `
-                    <p>حامد صادقیان از چهره‌های شناخته‌شده سیاسی و اقتصادی ایالت لاسونتراس است که سال‌ها در سمت فرماندار ایالت و فرمانده کل گارد ملی فعالیت داشته است.</p>
-                    <p>در دوران مدیریت وی، اقدامات گسترده‌ای در بخش‌های مختلف ایالت انجام شد که از مهم‌ترین آن‌ها می‌توان به آسفالت و بازسازی خیابان‌ها و محله‌های سراسر ایالت، ایجاد فرصت‌های شغلی متعدد برای شهروندان و توسعه زیرساخت‌های شهری اشاره کرد.</p>
-                    <p>وی همچنین مدیر و بنیان‌گذار برند بین‌المللی «گل‌های رنگارنگ» و یکی از بزرگ‌ترین سرمایه‌گذاران اقتصادی ایالت محسوب می‌شود که نقش مهمی در کنترل تورم ایالتی داشته است.</p>
-                    <p>صادقیان سال‌های زیادی برای حفظ امنیت ایالت و دفاع از مردم تلاش کرده و در دوران فعالیت خود بارها در برابر تهدیدات و دشمنان ایالت ایستادگی کرده است.</p>
-                    <p>از دیگر افتخارات وی می‌توان به انتخاب چندین‌باره به‌عنوان بهترین خبرنگار، کسب عنوان بهترین فرماندار کشور در یک دوره و ثبت چندین رکورد جهانی گینس اشاره کرد. یکی از عناوین ثبت‌شده برای او «نمیرترین فرد» بوده است.</p>
-                    <p>حامد صادقیان با شعار «اتحاد، رمز پیروزی» وارد رقابت‌ها شده و حمایت قاطع حزب جمهوری‌خواه را در پشت سر خود دارد.</p>
-                `
-            },
-            2: {
-                name: "محمد علی‌نیا", enName: "Mohammad Alinia", age: "۶۴ سال", edu: "دکتری مدیریت دولتی و علوم سیاسی",
-                party: "جمهوری‌خواه (Republican)", partyColor: "bg-red-700",
-                bio: `
-                    <p>محمد علی‌نیا از سیاستمداران باسابقه لاسونتراس است که سال‌ها در حوزه مدیریت دولتی، امنیت و توسعه شهری فعالیت داشته است.</p>
-                    <p>وی در دوران فعالیت خود دو مرتبه به‌عنوان فرمانده نیروهای نظامی منصوب شده و تجربه گسترده‌ای در مدیریت بحران و حفظ امنیت ایالت دارد.</p>
-                    <p>یکی از مهم‌ترین اقدامات اجرایی او، اجرای طرح بزرگ نوسازی و توسعه شبکه حمل‌ونقل شهری در مرکز لاسونتراس بود که شامل احداث چندین مسیر ارتباطی جدید، اصلاح تقاطع‌های پرتردد و توسعه زیرساخت‌های حمل‌ونقل عمومی می‌شد.</p>
-                    <p>او در دوران مسئولیت خود به‌عنوان مدیری باتجربه و فردی با رویکرد امنیت‌محور شناخته شده و معتقد است توسعه پایدار بدون ثبات سیاسی و اقتدار حاکمیت امکان‌پذیر نیست.</p>
-                `
-            },
-            3: {
-                name: "آرمان نیک‌فر", enName: "Arman Nikfar", age: "۴۸ سال", edu: "دکتری مدیریت مالی و اقتصاد",
-                party: "دموکرات (Democrat)", partyColor: "bg-blue-600",
-                bio: `
-                    <p>آرمان نیک‌فر از مدیران اقتصادی شناخته‌شده لاسونتراس است که بخش عمده فعالیت حرفه‌ای خود را در حوزه اقتصاد، سرمایه‌گذاری و مدیریت مالی در بخش خصوصی و دولتی سپری کرده است.</p>
-                    <p>وی در دوران مسئولیت اقتصادی خود در کابینه‌های پیشین، بر جذب سرمایه‌گذاران داخلی و خارجی، حمایت از تولیدکنندگان و ایجاد فرصت‌های شغلی تمرکز داشته است.</p>
-                    <p>نیک‌فر معتقد است ایالت لاسونتراس برای رسیدن به جایگاه اقتصادی بالاتر، نیازمند اصلاح نظام مالیاتی به نفع طبقه کارگر، افزایش درآمد شهروندان و حمایت از شرکت‌های خصوصی نوپا است.</p>
-                `
-            },
-            4: {
-                name: "جیمز ویلسون", enName: "James Wilson", age: "۵۶ سال", edu: "دکتری حقوق عمومی و روابط بین‌الملل",
-                party: "دموکرات (Democrat)", partyColor: "bg-blue-600",
-                bio: `
-                    <p>جیمز ویلسون یکی از چهره‌های سیاسی شاخص حزب دموکرات حاضر در رقابت‌های فرمانداری است که سابقه فعالیت در نهادهای دولتی و قانون‌گذاری را دارد.</p>
-                    <p>وی در دوران فعالیت خود در مجلس ایالتی، در تدوین و اصلاح قوانین مرتبط با سرمایه‌گذاری، توسعه پایدار شهری، حقوق شهروندی و برابری اجتماعی نقش کلیدی داشته است.</p>
-                    <p>یکی از اقدامات مهم او، پیگیری تصویب طرح حمایت از سرمایه‌گذاران خارجی و تسهیل فعالیت شرکت‌های بین‌المللی در لاسونتراس بوده است. ویلسون بر گسترش خدمات بهداشتی و آموزشی رایگان تأکید دارد.</p>
-                `
-            },
-            5: {
-                name: "سامان فرهمند", enName: "Saman Farahmand", age: "۴۳ سال", edu: "دکتری مهندسی عمران و مدیریت پروژه",
-                party: "مستقل (Independent)", partyColor: "bg-purple-600",
-                bio: `
-                    <p>سامان فرهمند از مدیران جوان و متخصص حوزه عمران و توسعه شهری است که سابقه مدیریت چندین پروژه بزرگ عمرانی را در کارنامه خود دارد.</p>
-                    <p>وی در دوران مسئولیت خود به‌عنوان شهردار، پروژه‌های متعددی در زمینه ساخت مراکز درمانی، توسعه فضای سبز، احداث پل‌ها و بهبود امکانات عمومی با بودجه‌ای کاملاً شفاف اجرا کرده است.</p>
-                    <p>فرهمند به‌عنوان یک نامزد مستقل وارد عرصه شده و معتقد است ایالت نیازمند عبور از بازی‌های حزبی است. برنامه‌های او متمرکز بر توسعه متوازن شهرها و رسیدگی فوری به مناطق محروم حاشیه شهری است.</p>
-                `
-            }
-        };
-
-        function openCandidateModal(id) {
-            const data = candidateData[id];
-            document.getElementById('modal-candidate-name').innerText = data.name;
-            document.getElementById('modal-candidate-en-name').innerText = data.enName;
-            document.getElementById('modal-candidate-age').innerText = data.age;
-            document.getElementById('modal-candidate-edu').innerHTML = data.edu;
-            
-            const pBadge = document.getElementById('modal-candidate-party');
-            pBadge.innerText = data.party;
-            pBadge.className = `mt-4 px-4 py-1.5 text-xs font-bold rounded-lg shadow-sm text-white ${data.partyColor}`;
-            
-            document.getElementById('modal-candidate-icon').className = `w-32 h-32 rounded-full bg-white border-4 ${data.partyColor.replace('bg-', 'border-')} shadow-lg flex items-center justify-center text-slate-700 mb-6`;
-            
-            document.getElementById('modal-candidate-bio').innerHTML = data.bio;
-            document.getElementById('candidate-modal').classList.remove('hidden');
-        }
-        function closeCandidateModal() { document.getElementById('candidate-modal').classList.add('hidden'); }
-    </script>
-</body>
-</html>
+  );
+}
