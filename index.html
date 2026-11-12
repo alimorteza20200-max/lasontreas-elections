@@ -136,13 +136,14 @@
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="cities-container"></div>
             
             <script>
+                // مجموع کل: 19.7 میلیون | لوسانتوس و سان آندریاس دارای بیشترین جمعیت
                 const cityData = [
-                    { name: 'لوسانتوس', voters: '1,200,000', link: 'city-los-santos.html' },
-                    { name: 'سان آندریاس', voters: '950,000', link: 'city-san-andreas.html' },
-                    { name: 'سان فییرو', voters: '810,000', link: 'city-san-fierro.html' },
-                    { name: 'لیبرتی سیتی', voters: '2,100,000', link: 'city-liberty-city.html' },
-                    { name: 'وای سیتی', voters: '1,050,000', link: 'city-vice-city.html' },
-                    { name: 'کارل سیتی', voters: '450,000', link: 'city-carl-city.html' }
+                    { name: 'لوسانتوس', voters: '5,240,000', link: 'city-los-santos.html' },
+                    { name: 'سان آندریاس', voters: '4,850,000', link: 'city-san-andreas.html' },
+                    { name: 'لیبرتی سیتی', voters: '3,520,000', link: 'city-liberty-city.html' },
+                    { name: 'وای سیتی', voters: '2,810,000', link: 'city-vice-city.html' },
+                    { name: 'سان فییرو', voters: '2,150,000', link: 'city-san-fierro.html' },
+                    { name: 'کارل سیتی', voters: '1,130,000', link: 'city-carl-city.html' }
                 ];
                 let cityHtml = '';
                 cityData.forEach(city => {
@@ -170,9 +171,39 @@
             <h2 class="text-2xl font-bold text-govNavy mb-6 border-b-2 border-govGold inline-block pb-2">مرکز تحلیل و بررسی نتایج انتخابات</h2>
             
             <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6 mb-8 text-justify leading-relaxed">
-                <h3 class="text-lg font-bold text-slate-800 mb-3"><i class="fa-solid fa-file-contract text-govGold ml-2"></i>گزارش جامع وضعیت آرا</h3>
-                <p class="text-slate-600 mb-4">بر اساس داده‌های جمع‌آوری شده از حوزه‌های ایالتی، روند رأی‌گیری نشان‌دهنده مشارکت مستمر در شهرهای بزرگ است. توزیع آرا مشخص می‌کند که نامزدهای پیشتاز بخش عمده‌ای از آرای خود را در مراکز تجاری و صنعتی مانند لوسانتوس و لیبرتی سیتی به دست آورده‌اند. اختلاف معنادار نفر اول و دوم حاکی از تثبیت جایگاه‌هاست، با این حال شمارش آرای حوزه‌های حاشیه‌ای همچنان ادامه دارد.</p>
-                <div class="overflow-x-auto mt-6 border rounded-lg">
+                <h3 class="text-xl font-bold text-slate-800 mb-6 border-b pb-2"><i class="fa-solid fa-magnifying-glass-chart text-govGold ml-2"></i>گزارش جامع وضعیت آرا و رفتار انتخاباتی</h3>
+                
+                <!-- شبکه آماری سریع -->
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+                    <div class="bg-slate-50 p-4 rounded-lg border border-slate-100 text-center">
+                        <div class="text-sm text-slate-500 mb-1">کل واجدین شرایط (تخمینی)</div>
+                        <div class="font-bold text-xl font-sans text-govNavy">19,700,000</div>
+                    </div>
+                    <div class="bg-slate-50 p-4 rounded-lg border border-slate-100 text-center">
+                        <div class="text-sm text-slate-500 mb-1">ساعات اوج مراجعه</div>
+                        <div class="font-bold text-xl font-sans text-govNavy">18:00 - 20:00</div>
+                    </div>
+                    <div class="bg-slate-50 p-4 rounded-lg border border-slate-100 text-center">
+                        <div class="text-sm text-slate-500 mb-1">آرای باطله مأخوذه</div>
+                        <div class="font-bold text-xl font-sans text-red-600">1.2%</div>
+                    </div>
+                    <div class="bg-slate-50 p-4 rounded-lg border border-slate-100 text-center">
+                        <div class="text-sm text-slate-500 mb-1">مشارکت رأی‌اولی‌ها</div>
+                        <div class="font-bold text-xl font-sans text-emerald-600">14.5%</div>
+                    </div>
+                </div>
+
+                <!-- توضیحات تحلیلی گسترده -->
+                <div class="text-slate-700 space-y-5 text-sm md:text-base bg-blue-50/50 p-6 rounded-lg border border-blue-100">
+                    <p><strong><i class="fa-solid fa-map text-blue-600 ml-1"></i> الگوی توزیع منطقه‌ای و دموگرافیک:</strong> بررسی‌های اولیه ستاد انتخابات نشان می‌دهد که کلان‌شهرهای <em>لوسانتوس</em> و <em>سان آندریاس</em> با در اختیار داشتن بیش از نیمی از کل واجدین شرایط ایالت (حدود ۱۰ میلیون نفر)، نقش قطعی و تعیین‌کننده‌ای در نتیجه نهایی ایفا می‌کنند. نامزد پیشتاز توانسته است در این دو حوزه کلیدی، با تمرکز بر مناطق صنعتی و تجاری، آرای قشر کارگر و صاحبان مشاغل آزاد را با اختلاف قابل‌توجهی به سبد خود سرازیر کند.</p>
+                    
+                    <p><strong><i class="fa-solid fa-chart-line text-blue-600 ml-1"></i> روند مشارکت زمانی شهروندان:</strong> برخلاف دوره‌های پیشین که مشارکت در ساعات صبح کُند بود، در این دوره الگوی حضور شهروندان از همان ساعات ابتدایی صبح دارای شیب صعودی تندی بوده است. تحلیل‌گران بر این باورند که با نزدیک شدن به ساعات پایانی رأی‌گیری و تعطیلی مراکز اداری، شاهد پیک دوم حضور جمعیت در حوزه‌های رأی‌گیری خواهیم بود که ممکن است نرخ مشارکت نهایی را به بالای ۷۵ درصد برساند.</p>
+                    
+                    <p><strong><i class="fa-solid fa-scale-unbalanced text-blue-600 ml-1"></i> تحلیل شکاف آرا در مناطق حاشیه‌ای:</strong> رقابت در حوزه‌های <em>لیبرتی سیتی</em> و <em>وای سیتی</em> بسیار فشرده‌تر از سایر مناطق گزارش شده است. نامزدهای دوم و سوم در این شهرها کمپین‌های تبلیغاتی متراکمی داشته‌اند که منجر به تقسیم شدید آرا و کاهش حاشیه امنیت نفر اول در این حوزه‌های خاص شده است. با این وجود، به دلیل وزن بالای جمعیتی لوسانتوس، این تقسیم آرا نتوانسته است تغییر چشمگیری در جایگاه کلی جدول ایالتی ایجاد کند.</p>
+                </div>
+
+                <!-- جدول آمار -->
+                <div class="overflow-x-auto mt-8 border rounded-lg">
                     <table class="w-full text-right border-collapse">
                         <thead class="bg-govNavy text-white">
                             <tr>
@@ -272,12 +303,49 @@
 
     </main>
 
-    <!-- فوتر -->
+    <!-- فوتر با اطلاعات تماس -->
     <footer class="bg-govNavy text-white pt-10 pb-6 border-t-4 border-govGold mt-auto">
         <div class="container mx-auto px-4">
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
+                <!-- درباره سامانه -->
+                <div>
+                    <div class="flex items-center gap-3 mb-4">
+                        <div class="w-10 h-10 rounded-full bg-govGold flex items-center justify-center text-white"><i class="fa-solid fa-building-columns"></i></div>
+                        <div>
+                            <h3 class="font-bold text-lg text-govGoldLight">وزارت امور ایالتی</h3>
+                            <p class="text-xs opacity-80">سامانه جامع اعلام نتایج</p>
+                        </div>
+                    </div>
+                    <p class="text-slate-400 text-sm leading-relaxed text-justify">این پرتال تنها مرجع رسمی و قانونی برای اعلام آمار و وضعیت شمارش آرای انتخابات فرمانداری در سطح ایالت و شش شهر تابعه می‌باشد.</p>
+                </div>
+
+                <!-- دسترسی سریع -->
+                <div>
+                    <h4 class="font-bold text-lg mb-4 text-govGoldLight border-b border-slate-700 pb-2 inline-block">دسترسی سریع</h4>
+                    <ul class="space-y-2 text-slate-300 text-sm">
+                        <li><a href="#results" class="hover:text-white hover:translate-x-[-5px] transition block"><i class="fa-solid fa-angle-left ml-2 text-xs"></i>نتایج انتخابات</a></li>
+                        <li><a href="#cities" class="hover:text-white hover:translate-x-[-5px] transition block"><i class="fa-solid fa-angle-left ml-2 text-xs"></i>شهرها و حوزه‌ها</a></li>
+                        <li><a href="#guide" class="hover:text-white hover:translate-x-[-5px] transition block"><i class="fa-solid fa-angle-left ml-2 text-xs"></i>راهنمای رأی‌دهی</a></li>
+                        <li><a href="#news" class="hover:text-white hover:translate-x-[-5px] transition block"><i class="fa-solid fa-angle-left ml-2 text-xs"></i>اخبار و اطلاعیه‌ها</a></li>
+                    </ul>
+                </div>
+
+                <!-- اطلاعات تماس فیک/رسمی -->
+                <div>
+                    <h4 class="font-bold text-lg mb-4 text-govGoldLight border-b border-slate-700 pb-2 inline-block">اطلاعات ارتباطی</h4>
+                    <ul class="space-y-3 text-slate-300 text-sm">
+                        <li class="flex items-start gap-2"><i class="fa-solid fa-location-dot mt-1 opacity-70"></i><span>لوسانتوس، بلوار استقلال، ساختمان مرکزی وزارت امور ایالتی، طبقه همکف</span></li>
+                        <li class="flex items-center gap-2"><i class="fa-solid fa-phone opacity-70"></i><span dir="ltr">+1 (555) 019-8472</span></li>
+                        <li class="flex items-center gap-2"><i class="fa-solid fa-envelope opacity-70"></i><span font-sans>info@lasontras-gov.org</span></li>
+                        <li class="flex items-center gap-2"><i class="fa-regular fa-clock opacity-70"></i><span>ساعات پاسخ‌گویی: ۲۴ ساعته (ایام انتخابات)</span></li>
+                    </ul>
+                </div>
+            </div>
+
             <div class="border-t border-slate-700 pt-6 text-center text-xs text-slate-400 space-y-2">
-                <p>این وب‌سایت بخشی از پروژه شبیه‌سازی‌شده وزارت امور ایالتی لاسونتراس است.</p>
-                <p class="font-sans">&copy; <span id="current-year"></span> - All Rights Reserved.</p>
+                <p>این وب‌سایت بخشی از پروژه شبیه‌سازی‌شده وزارت امور ایالتی لاسونتراس است و صرفاً جهت اطلاع‌رسانی آماری کاربرد دارد.</p>
+                <p class="font-sans text-slate-300 font-bold mt-2">&copy; 2026 - تمامی حقوق مادی و معنوی این سامانه متعلق به وزارت امور ایالتی لاسونتراس می‌باشد.</p>
             </div>
         </div>
     </footer>
@@ -306,7 +374,6 @@
 
         // تنظیمات اعداد انگلیسی
         document.getElementById('stat-total-votes').innerText = totalVotes.toLocaleString('en-US');
-        document.getElementById('current-year').innerText = new Date().getFullYear();
 
         // رندر کارت‌های نتایج
         const container = document.getElementById('candidates-grid');
