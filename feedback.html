@@ -29,14 +29,14 @@
     </script>
 
     <style>
-        body { font-family: 'Vazirmatn', sans-serif; background-color: #f1f5f9; }
+        body { font-family: 'Vazirmatn', sans-serif; background-color: #f8fafc; }
         ::-webkit-scrollbar { width: 8px; }
-        ::-webkit-scrollbar-track { background: #e2e8f0; }
+        ::-webkit-scrollbar-track { background: #f1f5f9; }
         ::-webkit-scrollbar-thumb { background: #94a3b8; border-radius: 4px; }
         ::-webkit-scrollbar-thumb:hover { background: #64748b; }
         
         .comment-card { animation: fadeIn 0.5s ease-in-out forwards; opacity: 0; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
 <body class="text-slate-800 antialiased min-h-screen flex flex-col">
@@ -49,12 +49,12 @@
                     <i class="fa-solid fa-comments text-xl"></i>
                 </div>
                 <div>
-                    <h1 class="text-lg font-bold text-govGoldLight">درگاه نظرات مردمی</h1>
+                    <h1 class="text-lg font-bold text-govGoldLight">درگاه نظرات و دیدگاه‌های مردمی</h1>
                     <h2 class="text-xs opacity-80 font-sans">Public Feedback Portal</h2>
                 </div>
             </div>
             
-            <a href="index.html" class="bg-white/10 hover:bg-white/20 border border-white/20 text-white px-5 py-2 rounded-lg font-bold transition flex items-center gap-2 text-sm">
+            <a href="index.html" class="bg-white/10 hover:bg-white/20 border border-white/20 text-white px-5 py-2 rounded-lg font-bold transition flex items-center gap-2 text-sm shadow">
                 <i class="fa-solid fa-arrow-right"></i> بازگشت به داشبورد اصلی
             </a>
         </div>
@@ -65,12 +65,12 @@
         
         <!-- پیام وضعیت سامانه -->
         <div class="max-w-4xl mx-auto bg-white rounded-xl shadow-sm border border-slate-200 p-6 mb-8 flex items-start gap-4">
-            <div class="w-12 h-12 rounded-full bg-red-50 text-red-500 flex items-center justify-center text-2xl shrink-0">
+            <div class="w-14 h-14 rounded-full bg-slate-100 text-slate-500 flex items-center justify-center text-2xl shrink-0 border border-slate-200">
                 <i class="fa-solid fa-lock"></i>
             </div>
             <div>
-                <h3 class="text-lg font-bold text-slate-800 mb-1">امکان ثبت نظر به پایان رسیده است</h3>
-                <p class="text-sm text-slate-500 leading-relaxed">شهروند گرامی، با توجه به نزدیک شدن به ساعات پایانی رأی‌گیری، بخش ثبت دیدگاه‌های جدید مسدود شده است. در این صفحه می‌توانید نظرات تأیید شده سایر شهروندان را مطالعه فرمایید. تعداد نظرات ثبت شده: <span class="font-bold text-govNavy font-sans">250</span> نظر.</p>
+                <h3 class="text-lg font-bold text-slate-800 mb-1">بخش ثبت نظر بسته شده است</h3>
+                <p class="text-sm text-slate-600 leading-relaxed text-justify">شهروند گرامی، با توجه به نزدیک شدن به ساعات پایانی رأی‌گیری و جلوگیری از تبلیغات خارج از زمان قانونی، فرم ثبت دیدگاه جدید غیرفعال شده است. در این صفحه می‌توانید <span class="font-bold text-govNavy font-sans">200</span> دیدگاه منتخب و تأییدشده از سوی سایر شهروندان ایالت را مطالعه فرمایید.</p>
             </div>
         </div>
 
@@ -82,84 +82,136 @@
     </main>
 
     <!-- فوتر کوچک -->
-    <footer class="bg-slate-800 text-slate-400 py-6 text-center text-xs border-t border-slate-700 mt-auto">
+    <footer class="bg-slate-900 text-slate-400 py-6 text-center text-xs border-t-4 border-govGold mt-auto">
         <p>تمامی حقوق این سامانه متعلق به وزارت امور ایالتی لاسونتراس می‌باشد &copy; 2026</p>
     </footer>
 
-    <!-- اسکریپت تولید خودکار نظرات -->
+    <!-- اسکریپت تولید خودکار نظرات هوشمند -->
     <script>
-        // بانک اطلاعاتی برای تولید نظرات رندوم
-        const firstNames = ["علی", "محمد", "سارا", "زهرا", "امیر", "حسین", "رضا", "فاطمه", "مریم", "مهدی", "نیما", "پوریا", "الناز", "مینا", "سینا", "امید", "لیلا", "سمانه", "عرفان", "میلاد", "کامران", "نسترن", "حسن", "شایان", "پریا"];
-        const lastNames = ["احمدی", "حسینی", "رضایی", "مرادی", "کریمی", "موسوی", "جعفری", "هاشمی", "صادقی", "نوری", "تقوی", "جلالی", "راد", "کمالی", "طاهری", "نیازی", "سعیدی", "قاسمی", "رستمی", "پناهی"];
-        const candidates = ["آرمان نیک‌فر", "حامد صادقیان", "محمد علی‌نیا", "جیمز ویلسون"];
+        // ۱. پایگاه داده اسامی (بسیار متنوع)
+        const firstNames = ["علی", "محمد", "سارا", "زهرا", "امیر", "حسین", "رضا", "فاطمه", "مریم", "مهدی", "نیما", "پوریا", "الناز", "مینا", "سینا", "امید", "لیلا", "سمانه", "عرفان", "میلاد", "کامران", "نسترن", "حسن", "شایان", "پریا", "احسان", "بهار", "سامان", "سپیده", "آرش", "ماهان", "نگین", "پویا", "فرزاد", "یگانه", "شهاب", "ترانه", "کوروش", "شیرین", "جواد", "آیدا", "پدرام"];
+        const lastNames = ["احمدی", "حسینی", "رضایی", "مرادی", "کریمی", "موسوی", "جعفری", "هاشمی", "صادقی", "نوری", "تقوی", "جلالی", "راد", "کمالی", "طاهری", "نیازی", "سعیدی", "قاسمی", "رستمی", "پناهی", "عظیمی", "شفیعی", "یزدانی", "اکبری", "رحیمی", "محمودی", "صالحی", "عباسی", "فراهانی", "نادری", "بهمنی", "شیرزاد", "دانش", "پژوه", "زند", "کاظمی"];
         
-        // قالب‌های جملات (متفاوت و متنوع)
+        // ۲. جملات بسیار متنوع برای جلوگیری از تکرار (۵۰ قالب)
         const templates = [
-            "رای من قطعا {candidate} است. اون بهترین برنامه رو برای اقتصاد داره.",
-            "فقط {candidate}! امیدوارم بتونه وضعیت شهرها رو بهتر کنه.",
-            "من و خانوادم به {candidate} رای دادیم، کارش خیلی درسته.",
-            "بدون شک {candidate} شایسته‌ترین فرد برای این مقامه.",
-            "به امید پیروزی {candidate} در انتخابات. لوسانتوس بهش نیاز داره.",
-            "امسال رقابت خیلی نزدیکه ولی {candidate} انتخاب اول منه.",
-            "{candidate} مرد عمله. رای من فقط ایشون.",
-            "من قبلا مردد بودم ولی الان نظرم کاملا روی {candidate} هست.",
-            "فقط به خاطر برنامه‌های توسعه شهری به {candidate} رای دادم.",
-            "ایالت ما به رئیسی مثل {candidate} نیاز داره تا پیشرفت کنیم.",
-            "بهترین گزینه برای تغییرات مثبت قطعا {candidate} هست.",
-            "رای من {candidate}. امیدوارم به وعده‌هاش عمل کنه.",
-            "هیچکس مثل {candidate} دلسوز مردم نیست.",
-            "امروز رفتم پای صندوق و با افتخار اسم {candidate} رو زدم.",
-            "همه دوستان من هم طرفدار {candidate} هستن."
+            "رای من و تمام اعضای خانوادم فقط {candidate} هست. کارش درسته.",
+            "اگه دنبال تغییر واقعی هستیم، باید به {candidate} اعتماد کنیم.",
+            "برنامه‌های اقتصادیش عالیه. {candidate} بهترین انتخابه.",
+            "من قبلاً شک داشتم، ولی مناظره‌ها باعث شد به {candidate} رای بدم.",
+            "فقط {candidate} می‌تونه ایالت رو از این وضعیت نجات بده.",
+            "صداقت {candidate} تو این مدت بهم ثابت شده.",
+            "من رأی اولی هستم و با افتخار اسم {candidate} رو زدم.",
+            "لوسانتوس به یه مدیر قوی مثل {candidate} نیاز داره.",
+            "بدون تعصب میگم، رزومه {candidate} از بقیه خیلی پربارتره.",
+            "امیدوارم {candidate} پیروز بشه، شهر ما بهش احتیاج داره.",
+            "رأی من {candidate} هست. اون مرد عمله، نه شعار.",
+            "حمایت کامل از {candidate}! پیش به سوی موفقیت.",
+            "به نظرم {candidate} تنها کسیه که درد مردم رو می‌فهمه.",
+            "بین این ۴ نفر، {candidate} منطقی‌ترین برنامه‌ها رو داشت.",
+            "امروز پای صندوق رفتم و اسم {candidate} رو با اطمینان ثبت کردم.",
+            "فقط {candidate}! امیدوارم به وعده‌هایی که داده عمل کنه.",
+            "توسعه زیرساخت‌ها فقط از عهده {candidate} برمیاد.",
+            "برای آینده بچه‌هامون، {candidate} رو انتخاب کردم.",
+            "حرف‌های {candidate} خیلی به واقعیت نزدیک‌تر بود تا بقیه.",
+            "کسی که واقعاً برای مردم کار کنه قطعا {candidate} هست.",
+            "دلم روشنه که {candidate} رأی میاره و اوضاع بهتر میشه.",
+            "دقت کردید فقط {candidate} برنامه عملیاتی داشت؟ رأی من همونه.",
+            "من تو سان فییرو زندگی می‌کنم و اینجا اکثراً طرفدار {candidate} هستن.",
+            "کاش زودتر نتایج بیاد، بی‌صبرانه منتظر پیروزی {candidate} هستم.",
+            "به {candidate} رأی دادم چون شعار الکی نمیده.",
+            "پشتیبان {candidate} هستیم تا آخر!",
+            "با بررسی کامل رزومه‌ها، به این نتیجه رسیدم که {candidate} شایسته‌تره.",
+            "حق {candidate} هست که فرماندار بشه، واقعاً زحمت کشیده.",
+            "رأی قطعی من {candidate}. امیدوارم اقتصاد ایالت تکون بخوره.",
+            "هیچ گزینه‌ای بهتر از {candidate} روی میز نبود.",
+            "با رأی به {candidate}، آینده روشن‌تری برای ایالت می‌بینم.",
+            "از نظر مدیریتی، سطح {candidate} خیلی بالاتر از رقباشه.",
+            "من و همکارام همگی تصمیم گرفتیم به {candidate} رأی بدیم.",
+            "شفافیت {candidate} تو کمپین‌های انتخاباتی برام خیلی ارزشمند بود.",
+            "امیدوارم {candidate} بتونه امنیت و رفاه رو بیشتر کنه.",
+            "رأی من {candidate} بود. خدا کنه به نفع مردم کار کنن.",
+            "فقط به عشق {candidate} امروز رفتم رأی دادم!",
+            "سابقه اجرایی {candidate} نشون میده چقدر آدم توانمندی هست.",
+            "مطمئنم {candidate} بهترین عملکرد رو تو فرمانداری خواهد داشت.",
+            "حضور {candidate} تو این جایگاه می‌تونه خیلی چیزا رو درست کنه.",
+            "انتخاب من {candidate} بود، چون به جوونا اهمیت میده.",
+            "روی حرف‌های {candidate} حساب کردیم، امیدوارم ناامیدمون نکنه.",
+            "رأی دادن وظیفه بود، رأی به {candidate} یه انتخاب هوشمندانه.",
+            "عالی‌ترین گزینه ممکن {candidate} هست. بدون شک!",
+            "تیم قوی {candidate} منو مجاب کرد که بهش رأی بدم.",
+            "اگه {candidate} بیاد روی کار، وضعیت مسکن بهتر میشه.",
+            "هیچکس مثل {candidate} برای لیبرتی سیتی برنامه نداشت.",
+            "عقل سلیم میگه تو این شرایط فقط به {candidate} رأی بدیم.",
+            "از اول هم می‌دونستم رأی من کسی نیست جز {candidate}.",
+            "با افتخار به {candidate} رأی دادم. پشیمون هم نمیشم."
         ];
 
-        const colors = ["bg-blue-500", "bg-emerald-500", "bg-amber-500", "bg-purple-500", "bg-rose-500", "bg-indigo-500", "bg-teal-500"];
+        const colors = ["bg-blue-600", "bg-emerald-600", "bg-amber-600", "bg-purple-600", "bg-rose-600", "bg-indigo-600", "bg-teal-600", "bg-cyan-600", "bg-orange-600"];
         
+        // ۳. ساخت لیست ۲۰۰ کاندیدا با توزیع دقیق (۴۵٪ حامد، ۳۰٪ محمد، و بقیه)
+        let candidatesDistribution = [];
+        for(let i=0; i<90; i++) candidatesDistribution.push("حامد صادقیان"); // 45%
+        for(let i=0; i<60; i++) candidatesDistribution.push("محمد علی‌نیا"); // 30%
+        for(let i=0; i<35; i++) candidatesDistribution.push("آرمان نیک‌فر");  // 17.5%
+        for(let i=0; i<15; i++) candidatesDistribution.push("جیمز ویلسون");   // 7.5%
+
+        // تابع برای مخلوط کردن (Shuffle) دقیق آرایه
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
+
+        // مخلوط کردن کاندیداها تا نظرات پشت سر هم نباشند
+        candidatesDistribution = shuffleArray(candidatesDistribution);
+
         const container = document.getElementById('comments-container');
-        const totalComments = 250;
         let htmlContent = '';
 
-        // تابع تولید عدد تصادفی
         function getRandomItem(arr) {
             return arr[Math.floor(Math.random() * arr.length)];
         }
 
-        // تولید 250 نظر
-        for (let i = 0; i < totalComments; i++) {
+        // ۴. تولید و رندر ۲۰۰ نظر
+        for (let i = 0; i < 200; i++) {
             const name = getRandomItem(firstNames) + " " + getRandomItem(lastNames);
-            const candidate = getRandomItem(candidates);
+            const candidate = candidatesDistribution[i];
             const template = getRandomItem(templates);
-            const commentText = template.replace("{candidate}", `<strong class="text-govNavy font-bold">${candidate}</strong>`);
+            // برجسته کردن نام کاندیدا در متن نظر
+            const commentText = template.replace("{candidate}", `<span class="text-govNavy font-bold bg-slate-100 px-1 rounded">${candidate}</span>`);
             const color = getRandomItem(colors);
             const firstLetter = name.charAt(0);
             
-            // تولید زمان رندوم (مثلا 2 دقیقه پیش تا 14 ساعت پیش)
+            // تولید زمان رندوم
             const timeNum = Math.floor(Math.random() * 59) + 1;
-            const timeUnit = Math.random() > 0.5 ? "دقیقه پیش" : "ساعت پیش";
+            const timeUnit = Math.random() > 0.6 ? "ساعت پیش" : "دقیقه پیش";
             const timeAgo = `${timeNum} ${timeUnit}`;
 
-            // تاخیر انیمیشن برای لود شدن زیبا
-            const delay = (i * 0.02).toFixed(2);
+            // ایجاد تأخیر آبشاری ظریف برای انیمیشن لود شدن
+            const delay = (i * 0.03).toFixed(2);
 
             htmlContent += `
-                <div class="bg-white rounded-xl p-5 shadow-sm border border-slate-200 hover:shadow-md transition duration-300 comment-card" style="animation-delay: ${delay}s">
+                <div class="bg-white rounded-xl p-5 shadow-sm border border-slate-200 hover:shadow-md hover:border-slate-300 transition duration-300 comment-card" style="animation-delay: ${delay}s">
                     <div class="flex items-center gap-3 mb-3 border-b border-slate-100 pb-3">
-                        <div class="w-10 h-10 rounded-full ${color} text-white flex items-center justify-center font-bold text-lg shrink-0">
+                        <div class="w-10 h-10 rounded-full ${color} text-white flex items-center justify-center font-bold text-lg shrink-0 shadow-inner">
                             ${firstLetter}
                         </div>
                         <div class="overflow-hidden">
                             <h4 class="font-bold text-slate-800 text-sm truncate">${name}</h4>
-                            <p class="text-xs text-slate-400 mt-0.5"><i class="fa-regular fa-clock ml-1"></i>${timeAgo}</p>
+                            <p class="text-xs text-slate-400 mt-0.5"><i class="fa-regular fa-clock ml-1 text-slate-300"></i>${timeAgo}</p>
                         </div>
                     </div>
                     <p class="text-slate-600 text-sm leading-relaxed text-justify">
-                        <i class="fa-solid fa-quote-right text-slate-300 ml-1 text-lg"></i>
+                        <i class="fa-solid fa-quote-right text-slate-200 ml-1 text-lg"></i>
                         ${commentText}
                     </p>
                 </div>
             `;
         }
 
-        // درج در صفحه
+        // قرار دادن محتوا درون صفحه
         container.innerHTML = htmlContent;
     </script>
 </body>
