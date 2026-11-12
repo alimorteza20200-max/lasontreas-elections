@@ -55,7 +55,10 @@
 
             <div class="flex items-center gap-6">
                 <!-- تاریخ میلادی -->
-                <div id="live-clock" class="hidden md:block text-sm opacity-80" dir="ltr"></div>
+                <div class="hidden md:flex flex-col items-end text-sm opacity-80" dir="ltr">
+                    <div id="live-date" class="font-bold"></div>
+                    <div id="live-time" class="font-sans text-govGoldLight"></div>
+                </div>
                 
                 <!-- دکمه منوی همبرگری -->
                 <button onclick="toggleMenu()" class="text-3xl text-govGoldLight hover:text-white transition focus:outline-none">
@@ -83,13 +86,13 @@
         <!-- ================= صفحه اصلی (داشبورد) ================= -->
         <section id="home" class="page-section active">
             
-            <!-- شمارش معکوس ۱.۵ روزه -->
+            <!-- شمارش معکوس هوشمند -->
             <div class="bg-white rounded-xl shadow-md border-l-4 border-govNavy p-6 mb-8 text-center flex flex-col items-center">
                 <h3 class="text-lg font-bold text-slate-700 mb-4"><i class="fa-regular fa-clock text-govGold ml-2"></i>زمان باقی‌مانده تا پایان رأی‌گیری</h3>
                 <div class="flex gap-4 md:gap-8 justify-center" dir="ltr">
-                    <div class="text-center"><div id="cd-days" class="text-3xl md:text-5xl font-bold text-govNavy">01</div><div class="text-xs text-slate-500 mt-1 font-bold font-sans">Days</div></div>
+                    <div class="text-center"><div id="cd-days" class="text-3xl md:text-5xl font-bold text-govNavy">00</div><div class="text-xs text-slate-500 mt-1 font-bold font-sans">Days</div></div>
                     <div class="text-3xl md:text-5xl font-bold text-slate-300">:</div>
-                    <div class="text-center"><div id="cd-hours" class="text-3xl md:text-5xl font-bold text-govNavy">12</div><div class="text-xs text-slate-500 mt-1 font-bold font-sans">Hours</div></div>
+                    <div class="text-center"><div id="cd-hours" class="text-3xl md:text-5xl font-bold text-govNavy">00</div><div class="text-xs text-slate-500 mt-1 font-bold font-sans">Hours</div></div>
                     <div class="text-3xl md:text-5xl font-bold text-slate-300">:</div>
                     <div class="text-center"><div id="cd-minutes" class="text-3xl md:text-5xl font-bold text-govNavy">00</div><div class="text-xs text-slate-500 mt-1 font-bold font-sans">Minutes</div></div>
                     <div class="text-3xl md:text-5xl font-bold text-slate-300">:</div>
@@ -109,11 +112,17 @@
                 </div>
                 <div class="bg-white rounded-xl p-5 shadow-sm border border-slate-100 flex items-center gap-4">
                     <div class="w-12 h-12 rounded-lg bg-purple-50 text-purple-600 flex items-center justify-center text-xl"><i class="fa-solid fa-box-archive"></i></div>
-                    <div><p class="text-sm text-slate-500">حوزه‌های شمرده شده</p><p class="text-xl font-bold text-slate-800 font-sans">82%</p></div>
+                    <div>
+                        <p class="text-sm text-slate-500">حوزه‌های شمرده شده</p>
+                        <div class="flex items-end gap-2">
+                            <p class="text-xl font-bold text-slate-800 font-sans">82.4%</p>
+                            <p class="text-xs text-slate-400 font-sans mb-1">(1,854 / 2,250)</p>
+                        </div>
+                    </div>
                 </div>
                 <div class="bg-white rounded-xl p-5 shadow-sm border border-slate-100 flex items-center gap-4">
                     <div class="w-12 h-12 rounded-lg bg-amber-50 text-amber-600 flex items-center justify-center text-xl"><i class="fa-solid fa-spinner fa-spin"></i></div>
-                    <div><p class="text-sm text-slate-500">وضعیت سامانه</p><p class="text-xl font-bold text-slate-800">در حال شمارش</p></div>
+                    <div><p class="text-sm text-slate-500">وضعیت سامانه</p><p class="text-lg font-bold text-slate-800">در حال پردازش زنده</p></div>
                 </div>
             </div>
             
@@ -132,7 +141,7 @@
 
         <!-- ================= شهرها و حوزه‌ها ================= -->
         <section id="cities" class="page-section">
-            <h2 class="text-2xl font-bold text-govNavy mb-6 border-b-2 border-govGold inline-block pb-2">تحلیل نتایج انتخابات در شهرهای ایالت لاسونتراس</h2>
+            <h2 class="text-2xl font-bold text-govNavy mb-6 border-b-2 border-govGold inline-block pb-2">وضعیت انتخابات در شهرهای ایالت لاسونتراس</h2>
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="cities-container"></div>
             
             <script>
@@ -168,24 +177,24 @@
 
         <!-- ================= تحلیل آرا ================= -->
         <section id="analysis" class="page-section">
-            <h2 class="text-2xl font-bold text-govNavy mb-6 border-b-2 border-govGold inline-block pb-2">مرکز تحلیل و بررسی نتایج انتخابات</h2>
+            <h2 class="text-2xl font-bold text-govNavy mb-6 border-b-2 border-govGold inline-block pb-2">مرکز تحلیل تخصصی و داده‌کاوی انتخابات</h2>
             
             <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6 mb-8 text-justify leading-relaxed">
-                <h3 class="text-xl font-bold text-slate-800 mb-6 border-b pb-2"><i class="fa-solid fa-magnifying-glass-chart text-govGold ml-2"></i>گزارش جامع وضعیت آرا و رفتار انتخاباتی</h3>
+                <h3 class="text-xl font-bold text-slate-800 mb-6 border-b pb-2"><i class="fa-solid fa-magnifying-glass-chart text-govGold ml-2"></i>گزارش جامع وضعیت آرا، الگوهای جمعیتی و رفتار انتخاباتی</h3>
                 
                 <!-- شبکه آماری سریع -->
                 <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
                     <div class="bg-slate-50 p-4 rounded-lg border border-slate-100 text-center">
-                        <div class="text-sm text-slate-500 mb-1">کل واجدین شرایط (تخمینی)</div>
+                        <div class="text-sm text-slate-500 mb-1">کل واجدین شرایط</div>
                         <div class="font-bold text-xl font-sans text-govNavy">19,700,000</div>
                     </div>
                     <div class="bg-slate-50 p-4 rounded-lg border border-slate-100 text-center">
-                        <div class="text-sm text-slate-500 mb-1">ساعات اوج مراجعه</div>
-                        <div class="font-bold text-xl font-sans text-govNavy">18:00 - 20:00</div>
+                        <div class="text-sm text-slate-500 mb-1">آرای پستی و پیش‌ازموعد</div>
+                        <div class="font-bold text-xl font-sans text-govNavy">2,310,405</div>
                     </div>
                     <div class="bg-slate-50 p-4 rounded-lg border border-slate-100 text-center">
-                        <div class="text-sm text-slate-500 mb-1">آرای باطله مأخوذه</div>
-                        <div class="font-bold text-xl font-sans text-red-600">1.2%</div>
+                        <div class="text-sm text-slate-500 mb-1">نسبت آرای باطله مأخوذه</div>
+                        <div class="font-bold text-xl font-sans text-red-600">1.28%</div>
                     </div>
                     <div class="bg-slate-50 p-4 rounded-lg border border-slate-100 text-center">
                         <div class="text-sm text-slate-500 mb-1">مشارکت رأی‌اولی‌ها</div>
@@ -194,12 +203,21 @@
                 </div>
 
                 <!-- توضیحات تحلیلی گسترده -->
-                <div class="text-slate-700 space-y-5 text-sm md:text-base bg-blue-50/50 p-6 rounded-lg border border-blue-100">
-                    <p><strong><i class="fa-solid fa-map text-blue-600 ml-1"></i> الگوی توزیع منطقه‌ای و دموگرافیک:</strong> بررسی‌های اولیه ستاد انتخابات نشان می‌دهد که کلان‌شهرهای <em>لوسانتوس</em> و <em>سان آندریاس</em> با در اختیار داشتن بیش از نیمی از کل واجدین شرایط ایالت (حدود ۱۰ میلیون نفر)، نقش قطعی و تعیین‌کننده‌ای در نتیجه نهایی ایفا می‌کنند. نامزد پیشتاز توانسته است در این دو حوزه کلیدی، با تمرکز بر مناطق صنعتی و تجاری، آرای قشر کارگر و صاحبان مشاغل آزاد را با اختلاف قابل‌توجهی به سبد خود سرازیر کند.</p>
+                <div class="text-slate-700 space-y-6 text-sm md:text-base">
+                    <p class="bg-blue-50/60 p-5 rounded-lg border-r-4 border-blue-500">
+                        <strong><i class="fa-solid fa-map text-blue-600 ml-1"></i> الگوی توزیع منطقه‌ای و هژمونی شهری:</strong>
+                        بررسی‌های کلان داده‌های استخراج شده از سامانه‌های ایالتی نشان می‌دهد که وزن ژئوپلیتیکی این دوره از انتخابات به‌طور کامل بر دوش کلان‌شهرهای <em>لوسانتوس</em> و <em>سان آندریاس</em> قرار دارد. این دو حوزه با در اختیار داشتن حدود ۱۰ میلیون رأی‌دهنده بالقوه، میدان نبرد اصلی نامزدها بوده‌اند. تحلیل‌های میدانی حاکی از آن است که نامزد پیشتاز توانسته با تمرکز بر سیاست‌های توسعه اقتصادی و حمایت از قشر کارگر و صنایع تولیدی، آرای حاشیه شهر لوسانتوس را با ضریب نفوذ بسیار بالایی (نزدیک به ۶۲ درصد) به سبد خود سرازیر کند.
+                    </p>
                     
-                    <p><strong><i class="fa-solid fa-chart-line text-blue-600 ml-1"></i> روند مشارکت زمانی شهروندان:</strong> برخلاف دوره‌های پیشین که مشارکت در ساعات صبح کُند بود، در این دوره الگوی حضور شهروندان از همان ساعات ابتدایی صبح دارای شیب صعودی تندی بوده است. تحلیل‌گران بر این باورند که با نزدیک شدن به ساعات پایانی رأی‌گیری و تعطیلی مراکز اداری، شاهد پیک دوم حضور جمعیت در حوزه‌های رأی‌گیری خواهیم بود که ممکن است نرخ مشارکت نهایی را به بالای ۷۵ درصد برساند.</p>
-                    
-                    <p><strong><i class="fa-solid fa-scale-unbalanced text-blue-600 ml-1"></i> تحلیل شکاف آرا در مناطق حاشیه‌ای:</strong> رقابت در حوزه‌های <em>لیبرتی سیتی</em> و <em>وای سیتی</em> بسیار فشرده‌تر از سایر مناطق گزارش شده است. نامزدهای دوم و سوم در این شهرها کمپین‌های تبلیغاتی متراکمی داشته‌اند که منجر به تقسیم شدید آرا و کاهش حاشیه امنیت نفر اول در این حوزه‌های خاص شده است. با این وجود، به دلیل وزن بالای جمعیتی لوسانتوس، این تقسیم آرا نتوانسته است تغییر چشمگیری در جایگاه کلی جدول ایالتی ایجاد کند.</p>
+                    <p class="bg-slate-50 p-5 rounded-lg border-r-4 border-slate-500">
+                        <strong><i class="fa-solid fa-users text-slate-600 ml-1"></i> شکاف دموگرافیک و رفتار رأی‌دهندگان نوسانی (Swing Voters):</strong>
+                        در شهرهایی نظیر <em>لیبرتی سیتی</em> و <em>وای سیتی</em>، رفتار رأی‌دهندگان به شدت نوسانی گزارش شده است. کمپین‌های تبلیغاتی متراکم کاندیداهای دوم و سوم در این مناطق باعث شده تا آرای طبقه متوسط و کارکنان بخش شرکتی به شدت دچار پراکندگی شود. نظرسنجی‌های خروج از شعب (Exit Polls) نشان می‌دهد که رأی‌دهندگان مستقل در وای سیتی تا ساعات پایانی تصمیم خود را تغییر داده‌اند، که همین امر پیش‌بینی نتایج نهایی در این حوزه‌ها را به یک چالش آماری تبدیل کرده است.
+                    </p>
+
+                    <p class="bg-amber-50/60 p-5 rounded-lg border-r-4 border-amber-500">
+                        <strong><i class="fa-solid fa-envelope-open-text text-amber-600 ml-1"></i> تأثیر آرای پستی و پیش‌بینی روندهای شمارش:</strong>
+                        با توجه به ثبت بیش از ۲.۳ میلیون رأی پستی و غیابی، مکانیزم شمارش آرا در ساعات پیش رو دچار تغییرات محسوسی خواهد شد. از نظر تاریخی، آرای پستی در ایالت لاسونتراس عمدتاً به سمت نامزدهایی با پایگاه رأی در میان اقشار مسن‌تر و ساکنان حومه‌های دوردست گرایش دارد. الگوریتم‌های پیش‌بینی ستاد انتخابات تخمین می‌زنند که با ورود بسته‌های آرای پستی کارل سیتی و سان فییرو به سیستم پردازش مرکزی، فاصله نامزد اول و دوم ممکن است تا ۳ درصد نوسان داشته باشد. با این حال، به دلیل حجم گسترده آرای روزِ انتخابات، بعید به نظر می‌رسد این نوسانات تغییری در ساختار اصلی رتبه‌بندی ایجاد کند.
+                    </p>
                 </div>
 
                 <!-- جدول آمار -->
@@ -220,14 +238,17 @@
                 </div>
             </div>
 
+            <!-- نمودارهای جدید و تخصصی -->
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
                 <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
-                    <h3 class="text-lg font-bold text-slate-700 mb-4 text-center">سهم نامزدها از کل آرا</h3>
-                    <div class="relative h-64 w-full"><canvas id="pieChart"></canvas></div>
+                    <h3 class="text-lg font-bold text-slate-700 mb-4 text-center">توزیع قطبی آرا (Polar Area Chart)</h3>
+                    <p class="text-xs text-slate-500 text-center mb-4">این نمودار حجم آرای هر نامزد را نسبت به مرکز ثقل رقابت نشان می‌دهد.</p>
+                    <div class="relative h-72 w-full flex justify-center"><canvas id="polarChart"></canvas></div>
                 </div>
                 <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
-                    <h3 class="text-lg font-bold text-slate-700 mb-4 text-center">مقایسه تعداد آرا</h3>
-                    <div class="relative h-64 w-full"><canvas id="barChart"></canvas></div>
+                    <h3 class="text-lg font-bold text-slate-700 mb-4 text-center">مقایسه افقی حاشیه آرا (Horizontal Bar Chart)</h3>
+                    <p class="text-xs text-slate-500 text-center mb-4">نمایش دقیق فاصله‌های امتیازی بین کاندیداهای ایالتی.</p>
+                    <div class="relative h-72 w-full"><canvas id="barChart"></canvas></div>
                 </div>
             </div>
         </section>
@@ -379,7 +400,6 @@
         const container = document.getElementById('candidates-grid');
         let tableBody = '';
         candidates.forEach(c => {
-            // ساخت کارت در بخش نتایج
             container.innerHTML += `
                 <div class="bg-white rounded-xl shadow-sm border border-slate-100 p-6 flex flex-col hover:shadow-md transition">
                     <div class="flex items-center gap-4 mb-4 border-b pb-4">
@@ -401,7 +421,6 @@
                 </div>
             `;
 
-            // پر کردن ردیف‌های جدول تحلیل
             tableBody += `
                 <tr class="hover:bg-slate-50 transition">
                     <td class="p-4 text-slate-500">${c.rank}</td>
@@ -412,7 +431,6 @@
             `;
         });
         
-        // قرار دادن داده‌ها در جدول تحلیل
         document.addEventListener('DOMContentLoaded', () => {
             const tBody = document.getElementById('analysis-table-body');
             if(tBody) tBody.innerHTML = tableBody;
@@ -434,20 +452,31 @@
         window.addEventListener('hashchange', router);
         window.addEventListener('load', router);
 
-        // ساعت میلادی زنده
+        // ساعت و تاریخ میلادی زنده
         setInterval(() => {
             const now = new Date();
-            const dateObj = document.getElementById('live-clock');
-            if(dateObj) {
-                dateObj.innerText = now.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }) + ' ' + now.toLocaleTimeString('en-US');
+            const dateObj = document.getElementById('live-date');
+            const timeObj = document.getElementById('live-time');
+            if(dateObj && timeObj) {
+                dateObj.innerText = now.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+                timeObj.innerText = now.toLocaleTimeString('en-US');
             }
         }, 1000);
 
-        // شمارش معکوس 1.5 روزه (ثابت و زنده)
-        let countdownSeconds = (1 * 24 * 60 * 60) + (12 * 60 * 60); // 1.5 روز
+        // شمارش معکوس هوشمند (با ذخیره در localStorage برای جلوگیری از ریست شدن با رفرش)
+        let electionEndTime = localStorage.getItem('electionEndTime');
+        if (!electionEndTime) {
+            // تنظیم زمان برای 1.5 روز (36 ساعت) بعد از اولین لود
+            electionEndTime = Date.now() + (36 * 60 * 60 * 1000);
+            localStorage.setItem('electionEndTime', electionEndTime);
+        }
+
         setInterval(() => {
-            if (countdownSeconds <= 0) return;
-            countdownSeconds--;
+            let now = Date.now();
+            let countdownSeconds = Math.floor((electionEndTime - now) / 1000);
+
+            if (countdownSeconds <= 0) countdownSeconds = 0; // توقف در صفر
+            
             const d = Math.floor(countdownSeconds / (3600 * 24));
             const h = Math.floor((countdownSeconds % (3600 * 24)) / 3600);
             const m = Math.floor((countdownSeconds % 3600) / 60);
@@ -459,23 +488,35 @@
             document.getElementById('cd-seconds').innerText = String(s).padStart(2, '0');
         }, 1000);
 
-        // نمودارها
+        // نمودارهای تخصصی جدید
         function renderCharts() {
             Chart.defaults.font.family = 'Vazirmatn';
             const labels = candidates.map(c => c.name);
             const dataVotes = candidates.map(c => c.votes);
-            const bgColors = ['#0f172a', '#0284c7', '#16a34a', '#dc2626'];
+            const bgColors = ['rgba(15, 23, 42, 0.8)', 'rgba(2, 132, 199, 0.8)', 'rgba(22, 163, 74, 0.8)', 'rgba(220, 38, 38, 0.8)'];
 
-            new Chart(document.getElementById('pieChart'), {
-                type: 'doughnut',
-                data: { labels: labels, datasets: [{ data: dataVotes, backgroundColor: bgColors, borderWidth: 0 }] },
-                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom' } } }
+            // نمودار قطبی (Polar Area) به جای دایره‌ای
+            new Chart(document.getElementById('polarChart'), {
+                type: 'polarArea',
+                data: { labels: labels, datasets: [{ data: dataVotes, backgroundColor: bgColors }] },
+                options: { 
+                    responsive: true, 
+                    maintainAspectRatio: false, 
+                    plugins: { legend: { position: 'bottom' } },
+                    scales: { r: { ticks: { display: false } } }
+                }
             });
 
+            // نمودار میله‌ای افقی (Horizontal Bar)
             new Chart(document.getElementById('barChart'), {
                 type: 'bar',
                 data: { labels: labels, datasets: [{ label: 'Votes', data: dataVotes, backgroundColor: bgColors, borderRadius: 4 }] },
-                options: { responsive: true, maintainAspectRatio: false, scales: { y: { beginAtZero: true } }, plugins: { legend: { display: false } } }
+                options: { 
+                    indexAxis: 'y', // تبدیل به حالت افقی
+                    responsive: true, 
+                    maintainAspectRatio: false, 
+                    plugins: { legend: { display: false } }
+                }
             });
         }
     </script>
