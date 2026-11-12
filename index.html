@@ -108,7 +108,7 @@
                 </div>
                 <div class="bg-white rounded-xl p-5 shadow-sm border border-slate-100 flex items-center gap-4">
                     <div class="w-12 h-12 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center text-xl"><i class="fa-solid fa-chart-pie"></i></div>
-                    <div><p class="text-sm text-slate-500">درصد مشارکت</p><p class="text-xl font-bold text-slate-800 font-sans">68.4%</p></div>
+                    <div><p class="text-sm text-slate-500">درصد مشارکت</p><p class="text-xl font-bold text-slate-800 font-sans" id="stat-turnout">0%</p></div>
                 </div>
                 <div class="bg-white rounded-xl p-5 shadow-sm border border-slate-100 flex items-center gap-4">
                     <div class="w-12 h-12 rounded-lg bg-purple-50 text-purple-600 flex items-center justify-center text-xl"><i class="fa-solid fa-box-archive"></i></div>
@@ -145,7 +145,6 @@
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="cities-container"></div>
             
             <script>
-                // مجموع کل: 19.7 میلیون | لوسانتوس و سان آندریاس دارای بیشترین جمعیت
                 const cityData = [
                     { name: 'لوسانتوس', voters: '5,240,000', link: 'city-los-santos.html' },
                     { name: 'سان آندریاس', voters: '4,850,000', link: 'city-san-andreas.html' },
@@ -206,17 +205,17 @@
                 <div class="text-slate-700 space-y-6 text-sm md:text-base">
                     <p class="bg-blue-50/60 p-5 rounded-lg border-r-4 border-blue-500">
                         <strong><i class="fa-solid fa-map text-blue-600 ml-1"></i> الگوی توزیع منطقه‌ای و هژمونی شهری:</strong>
-                        بررسی‌های کلان داده‌های استخراج شده از سامانه‌های ایالتی نشان می‌دهد که وزن ژئوپلیتیکی این دوره از انتخابات به‌طور کامل بر دوش کلان‌شهرهای <em>لوسانتوس</em> و <em>سان آندریاس</em> قرار دارد. این دو حوزه با در اختیار داشتن حدود ۱۰ میلیون رأی‌دهنده بالقوه، میدان نبرد اصلی نامزدها بوده‌اند. تحلیل‌های میدانی حاکی از آن است که نامزد پیشتاز توانسته با تمرکز بر سیاست‌های توسعه اقتصادی و حمایت از قشر کارگر و صنایع تولیدی، آرای حاشیه شهر لوسانتوس را با ضریب نفوذ بسیار بالایی (نزدیک به ۶۲ درصد) به سبد خود سرازیر کند.
+                        بررسی‌های کلان داده‌های استخراج شده از سامانه‌های ایالتی نشان می‌دهد که وزن ژئوپلیتیکی این دوره از انتخابات به‌طور کامل بر دوش کلان‌شهرهای <em>لوسانتوس</em> و <em>سان آندریاس</em> قرار دارد. این دو حوزه با در اختیار داشتن حدود ۱۰ میلیون رأی‌دهنده بالقوه، میدان نبرد اصلی نامزدها بوده‌اند. تحلیل‌های میدانی حاکی از آن است که نامزد پیشتاز توانسته با تمرکز بر سیاست‌های توسعه اقتصادی و حمایت از قشر کارگر و صنایع تولیدی، آرای حاشیه شهر لوسانتوس را با ضریب نفوذ بسیار بالایی به سبد خود سرازیر کند.
                     </p>
                     
                     <p class="bg-slate-50 p-5 rounded-lg border-r-4 border-slate-500">
                         <strong><i class="fa-solid fa-users text-slate-600 ml-1"></i> شکاف دموگرافیک و رفتار رأی‌دهندگان نوسانی (Swing Voters):</strong>
-                        در شهرهایی نظیر <em>لیبرتی سیتی</em> و <em>وای سیتی</em>، رفتار رأی‌دهندگان به شدت نوسانی گزارش شده است. کمپین‌های تبلیغاتی متراکم کاندیداهای دوم و سوم در این مناطق باعث شده تا آرای طبقه متوسط و کارکنان بخش شرکتی به شدت دچار پراکندگی شود. نظرسنجی‌های خروج از شعب (Exit Polls) نشان می‌دهد که رأی‌دهندگان مستقل در وای سیتی تا ساعات پایانی تصمیم خود را تغییر داده‌اند، که همین امر پیش‌بینی نتایج نهایی در این حوزه‌ها را به یک چالش آماری تبدیل کرده است.
+                        در شهرهایی نظیر <em>لیبرتی سیتی</em> و <em>وای سیتی</em>، رفتار رأی‌دهندگان به شدت نوسانی گزارش شده است. کمپین‌های تبلیغاتی متراکم کاندیداهای دوم و سوم در این مناطق باعث شده تا آرای طبقه متوسط و کارکنان بخش شرکتی به شدت دچار پراکندگی شود. نظرسنجی‌های خروج از شعب (Exit Polls) نشان می‌دهد که رأی‌دهندگان مستقل در وای سیتی تا ساعات پایانی تصمیم خود را تغییر داده‌اند، که همین امر رقابت نفر دوم و سوم را به شدت نزدیک کرده است.
                     </p>
 
                     <p class="bg-amber-50/60 p-5 rounded-lg border-r-4 border-amber-500">
                         <strong><i class="fa-solid fa-envelope-open-text text-amber-600 ml-1"></i> تأثیر آرای پستی و پیش‌بینی روندهای شمارش:</strong>
-                        با توجه به ثبت بیش از ۲.۳ میلیون رأی پستی و غیابی، مکانیزم شمارش آرا در ساعات پیش رو دچار تغییرات محسوسی خواهد شد. از نظر تاریخی، آرای پستی در ایالت لاسونتراس عمدتاً به سمت نامزدهایی با پایگاه رأی در میان اقشار مسن‌تر و ساکنان حومه‌های دوردست گرایش دارد. الگوریتم‌های پیش‌بینی ستاد انتخابات تخمین می‌زنند که با ورود بسته‌های آرای پستی کارل سیتی و سان فییرو به سیستم پردازش مرکزی، فاصله نامزد اول و دوم ممکن است تا ۳ درصد نوسان داشته باشد. با این حال، به دلیل حجم گسترده آرای روزِ انتخابات، بعید به نظر می‌رسد این نوسانات تغییری در ساختار اصلی رتبه‌بندی ایجاد کند.
+                        با توجه به ثبت بیش از ۲.۳ میلیون رأی پستی و غیابی، مکانیزم شمارش آرا در ساعات پیش رو دچار تغییرات محسوسی خواهد شد. از نظر تاریخی، آرای پستی در ایالت لاسونتراس عمدتاً به سمت نامزدهایی با پایگاه رأی در میان اقشار مسن‌تر و ساکنان حومه‌های دوردست گرایش دارد. الگوریتم‌های پیش‌بینی ستاد انتخابات تخمین می‌زنند که با ورود بسته‌های آرای پستی کارل سیتی و سان فییرو به سیستم پردازش مرکزی، فاصله نامزد اول با سایرین ممکن است نوسان داشته باشد، هرچند ساختار فعلی رتبه‌بندی تثبیت شده به نظر می‌رسد.
                     </p>
                 </div>
 
@@ -238,7 +237,7 @@
                 </div>
             </div>
 
-            <!-- نمودارهای جدید و تخصصی -->
+            <!-- نمودارهای تخصصی -->
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
                 <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
                     <h3 class="text-lg font-bold text-slate-700 mb-4 text-center">توزیع قطبی آرا (Polar Area Chart)</h3>
@@ -265,7 +264,7 @@
             </div>
         </section>
 
-        <!-- ================= راهنمای رأی‌دهی (مدرن) ================= -->
+        <!-- ================= راهنمای رأی‌دهی ================= -->
         <section id="guide" class="page-section">
             <h2 class="text-2xl font-bold text-govNavy mb-8 border-b-2 border-govGold inline-block pb-2">راهنمای جامع و مقررات رأی‌دهی</h2>
             
@@ -327,7 +326,6 @@
     <!-- فوتر با اطلاعات تماس -->
     <footer class="bg-govNavy text-white pt-10 pb-6 border-t-4 border-govGold mt-auto">
         <div class="container mx-auto px-4">
-            
             <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
                 <!-- درباره سامانه -->
                 <div>
@@ -352,7 +350,7 @@
                     </ul>
                 </div>
 
-                <!-- اطلاعات تماس فیک/رسمی -->
+                <!-- اطلاعات تماس -->
                 <div>
                     <h4 class="font-bold text-lg mb-4 text-govGoldLight border-b border-slate-700 pb-2 inline-block">اطلاعات ارتباطی</h4>
                     <ul class="space-y-3 text-slate-300 text-sm">
@@ -378,23 +376,28 @@
             document.getElementById('mobile-menu').classList.toggle('hidden');
         }
 
-        // داده‌های خام 
+        // داده‌های جدید نامزدها (به ترتیب خواسته شده در قالب آرایه و بدون مرتب‌سازی دستی مجدد)
+        // رتبه‌ها بر اساس آرا تعیین شده‌اند: آرمان اول، محمد دوم، حامد سوم، جیمز چهارم
         const candidates = [
-            { name: 'آرمان نیک‌فر', votes: 3726283, color: '#0f172a', bg: 'bg-slate-800' },
-            { name: 'حامد صادقیان', votes: 3109766, color: '#0284c7', bg: 'bg-sky-600' },
-            { name: 'محمد علی‌نیا', votes: 2103348, color: '#16a34a', bg: 'bg-green-600' },
-            { name: 'جیمز ویلسون', votes: 203004, color: '#dc2626', bg: 'bg-red-600' }
+            { name: 'آرمان نیک‌فر', votes: 4022239, color: '#0f172a', bg: 'bg-slate-800' },
+            { name: 'محمد علی‌نیا', votes: 3734727, color: '#16a34a', bg: 'bg-green-600' },
+            { name: 'حامد صادقیان', votes: 3672736, color: '#0284c7', bg: 'bg-sky-600' },
+            { name: 'جیمز ویلسون', votes: 701722, color: '#dc2626', bg: 'bg-red-600' }
         ];
 
         // محاسبات
         const totalVotes = candidates.reduce((sum, c) => sum + c.votes, 0);
+        const totalEligible = 19700000;
+        const turnoutPercentage = ((totalVotes / totalEligible) * 100).toFixed(1);
+
         candidates.forEach((c, index) => {
             c.percent = ((c.votes / totalVotes) * 100).toFixed(1);
             c.rank = index + 1;
         });
 
-        // تنظیمات اعداد انگلیسی
+        // بروزرسانی آمار صفحه اصلی
         document.getElementById('stat-total-votes').innerText = totalVotes.toLocaleString('en-US');
+        document.getElementById('stat-turnout').innerText = turnoutPercentage + '%';
 
         // رندر کارت‌های نتایج
         const container = document.getElementById('candidates-grid');
@@ -425,8 +428,8 @@
                 <tr class="hover:bg-slate-50 transition">
                     <td class="p-4 text-slate-500">${c.rank}</td>
                     <td class="p-4 font-bold text-slate-800" dir="rtl">${c.name}</td>
-                    <td class="p-4 text-slate-600">${c.votes.toLocaleString('en-US')}</td>
-                    <td class="p-4 text-slate-600">${c.percent}%</td>
+                    <td class="p-4 text-slate-600 font-sans">${c.votes.toLocaleString('en-US')}</td>
+                    <td class="p-4 text-slate-600 font-sans">${c.percent}%</td>
                 </tr>
             `;
         });
@@ -463,10 +466,9 @@
             }
         }, 1000);
 
-        // شمارش معکوس هوشمند (با ذخیره در localStorage برای جلوگیری از ریست شدن با رفرش)
+        // شمارش معکوس هوشمند
         let electionEndTime = localStorage.getItem('electionEndTime');
         if (!electionEndTime) {
-            // تنظیم زمان برای 1.5 روز (36 ساعت) بعد از اولین لود
             electionEndTime = Date.now() + (36 * 60 * 60 * 1000);
             localStorage.setItem('electionEndTime', electionEndTime);
         }
@@ -475,7 +477,7 @@
             let now = Date.now();
             let countdownSeconds = Math.floor((electionEndTime - now) / 1000);
 
-            if (countdownSeconds <= 0) countdownSeconds = 0; // توقف در صفر
+            if (countdownSeconds <= 0) countdownSeconds = 0;
             
             const d = Math.floor(countdownSeconds / (3600 * 24));
             const h = Math.floor((countdownSeconds % (3600 * 24)) / 3600);
@@ -493,9 +495,8 @@
             Chart.defaults.font.family = 'Vazirmatn';
             const labels = candidates.map(c => c.name);
             const dataVotes = candidates.map(c => c.votes);
-            const bgColors = ['rgba(15, 23, 42, 0.8)', 'rgba(2, 132, 199, 0.8)', 'rgba(22, 163, 74, 0.8)', 'rgba(220, 38, 38, 0.8)'];
+            const bgColors = ['rgba(15, 23, 42, 0.8)', 'rgba(22, 163, 74, 0.8)', 'rgba(2, 132, 199, 0.8)', 'rgba(220, 38, 38, 0.8)'];
 
-            // نمودار قطبی (Polar Area) به جای دایره‌ای
             new Chart(document.getElementById('polarChart'), {
                 type: 'polarArea',
                 data: { labels: labels, datasets: [{ data: dataVotes, backgroundColor: bgColors }] },
@@ -507,12 +508,11 @@
                 }
             });
 
-            // نمودار میله‌ای افقی (Horizontal Bar)
             new Chart(document.getElementById('barChart'), {
                 type: 'bar',
                 data: { labels: labels, datasets: [{ label: 'Votes', data: dataVotes, backgroundColor: bgColors, borderRadius: 4 }] },
                 options: { 
-                    indexAxis: 'y', // تبدیل به حالت افقی
+                    indexAxis: 'y',
                     responsive: true, 
                     maintainAspectRatio: false, 
                     plugins: { legend: { display: false } }
