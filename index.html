@@ -115,8 +115,8 @@
                     <div>
                         <p class="text-sm text-slate-500">حوزه‌های شمرده شده</p>
                         <div class="flex items-end gap-2">
-                            <p class="text-xl font-bold text-slate-800 font-sans">82.4%</p>
-                            <p class="text-xs text-slate-400 font-sans mb-1">(1,854 / 2,250)</p>
+                            <p class="text-xl font-bold text-slate-800 font-sans">91.2%</p>
+                            <p class="text-xs text-slate-400 font-sans mb-1">(2,052 / 2,250)</p>
                         </div>
                     </div>
                 </div>
@@ -145,13 +145,14 @@
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="cities-container"></div>
             
             <script>
+                // جمعیت برای هماهنگی با آرای 20 میلیونی به صورت منطقی افزایش یافته است
                 const cityData = [
-                    { name: 'لوسانتوس', voters: '5,240,000', link: 'city-los-santos.html' },
-                    { name: 'سان آندریاس', voters: '4,850,000', link: 'city-san-andreas.html' },
-                    { name: 'لیبرتی سیتی', voters: '3,520,000', link: 'city-liberty-city.html' },
-                    { name: 'وای سیتی', voters: '2,810,000', link: 'city-vice-city.html' },
-                    { name: 'سان فییرو', voters: '2,150,000', link: 'city-san-fierro.html' },
-                    { name: 'کارل سیتی', voters: '1,130,000', link: 'city-carl-city.html' }
+                    { name: 'لوسانتوس', voters: '7,150,000', link: 'city-los-santos.html' },
+                    { name: 'سان آندریاس', voters: '6,200,000', link: 'city-san-andreas.html' },
+                    { name: 'لیبرتی سیتی', voters: '4,850,000', link: 'city-liberty-city.html' },
+                    { name: 'وای سیتی', voters: '3,920,000', link: 'city-vice-city.html' },
+                    { name: 'سان فییرو', voters: '2,830,000', link: 'city-san-fierro.html' },
+                    { name: 'کارل سیتی', voters: '1,550,000', link: 'city-carl-city.html' }
                 ];
                 let cityHtml = '';
                 cityData.forEach(city => {
@@ -162,7 +163,7 @@
                                 <h3 class="text-xl font-bold text-slate-800"><i class="fa-solid fa-map-location-dot text-govGold ml-2"></i>شهر ${city.name}</h3>
                             </div>
                             <div class="bg-slate-50 p-3 rounded border border-slate-100 mb-4">
-                                <div class="flex justify-between text-sm"><span class="text-slate-500">واجدین شرایط:</span><span class="font-bold font-sans">${city.voters}</span></div>
+                                <div class="flex justify-between text-sm"><span class="text-slate-500">واجدین شرایط (جدید):</span><span class="font-bold font-sans">${city.voters}</span></div>
                             </div>
                             <a href="${city.link}" class="inline-flex w-full justify-center items-center gap-2 bg-blue-50 text-blue-700 py-2 rounded-lg font-bold hover:bg-blue-600 hover:text-white transition group-hover:bg-govNavy group-hover:text-white">
                                 اطلاعات و آمار دقیق <i class="fa-solid fa-arrow-left text-sm"></i>
@@ -185,37 +186,37 @@
                 <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
                     <div class="bg-slate-50 p-4 rounded-lg border border-slate-100 text-center">
                         <div class="text-sm text-slate-500 mb-1">کل واجدین شرایط</div>
-                        <div class="font-bold text-xl font-sans text-govNavy">19,700,000</div>
+                        <div class="font-bold text-xl font-sans text-govNavy">26,500,000</div>
                     </div>
                     <div class="bg-slate-50 p-4 rounded-lg border border-slate-100 text-center">
                         <div class="text-sm text-slate-500 mb-1">آرای پستی و پیش‌ازموعد</div>
-                        <div class="font-bold text-xl font-sans text-govNavy">2,310,405</div>
+                        <div class="font-bold text-xl font-sans text-govNavy">3,850,210</div>
                     </div>
                     <div class="bg-slate-50 p-4 rounded-lg border border-slate-100 text-center">
                         <div class="text-sm text-slate-500 mb-1">نسبت آرای باطله مأخوذه</div>
-                        <div class="font-bold text-xl font-sans text-red-600">1.28%</div>
+                        <div class="font-bold text-xl font-sans text-red-600">1.04%</div>
                     </div>
                     <div class="bg-slate-50 p-4 rounded-lg border border-slate-100 text-center">
                         <div class="text-sm text-slate-500 mb-1">مشارکت رأی‌اولی‌ها</div>
-                        <div class="font-bold text-xl font-sans text-emerald-600">14.5%</div>
+                        <div class="font-bold text-xl font-sans text-emerald-600">18.2%</div>
                     </div>
                 </div>
 
                 <!-- توضیحات تحلیلی گسترده -->
                 <div class="text-slate-700 space-y-6 text-sm md:text-base">
                     <p class="bg-blue-50/60 p-5 rounded-lg border-r-4 border-blue-500">
-                        <strong><i class="fa-solid fa-map text-blue-600 ml-1"></i> الگوی توزیع منطقه‌ای و هژمونی شهری:</strong>
-                        بررسی‌های کلان داده‌های استخراج شده از سامانه‌های ایالتی نشان می‌دهد که وزن ژئوپلیتیکی این دوره از انتخابات به‌طور کامل بر دوش کلان‌شهرهای <em>لوسانتوس</em> و <em>سان آندریاس</em> قرار دارد. این دو حوزه با در اختیار داشتن حدود ۱۰ میلیون رأی‌دهنده بالقوه، میدان نبرد اصلی نامزدها بوده‌اند. تحلیل‌های میدانی حاکی از آن است که نامزد پیشتاز توانسته با تمرکز بر سیاست‌های توسعه اقتصادی و حمایت از قشر کارگر و صنایع تولیدی، آرای حاشیه شهر لوسانتوس را با ضریب نفوذ بسیار بالایی به سبد خود سرازیر کند.
+                        <strong><i class="fa-solid fa-map text-blue-600 ml-1"></i> جهش بی‌سابقه در آرای نفر اول:</strong>
+                        بررسی کلان داده‌های شمارش‌شده تا این لحظه نشانگر یک پیروزی قاطع و سونامی رأی برای نامزد پیشتاز (محمد علی‌نیا) است. عبور آرای ایشان از مرز ۱۱.۸ میلیون رأی، حاکی از اجماع بی‌نظیر طبقات مختلف اجتماعی، اعم از حاشیه‌نشینان و طبقه متوسط شهری است. ستاد انتخابات اعلام کرده است که چنین اختلافی در ادوار گذشته انتخابات فرمانداری لاسونتراس بی‌سابقه بوده و نشان‌دهنده یک تغییر رادیکال در خواسته‌های مدنی شهروندان است.
                     </p>
                     
                     <p class="bg-slate-50 p-5 rounded-lg border-r-4 border-slate-500">
-                        <strong><i class="fa-solid fa-users text-slate-600 ml-1"></i> شکاف دموگرافیک و رفتار رأی‌دهندگان نوسانی (Swing Voters):</strong>
-                        در شهرهایی نظیر <em>لیبرتی سیتی</em> و <em>وای سیتی</em>، رفتار رأی‌دهندگان به شدت نوسانی گزارش شده است. کمپین‌های تبلیغاتی متراکم کاندیداهای دوم و سوم در این مناطق باعث شده تا آرای طبقه متوسط و کارکنان بخش شرکتی به شدت دچار پراکندگی شود. نظرسنجی‌های خروج از شعب (Exit Polls) نشان می‌دهد که رأی‌دهندگان مستقل در وای سیتی تا ساعات پایانی تصمیم خود را تغییر داده‌اند، که همین امر رقابت نفر دوم و سوم را به شدت نزدیک کرده است.
+                        <strong><i class="fa-solid fa-users text-slate-600 ml-1"></i> استعفای داوطلبانه و تأثیر آن بر سبد آرا:</strong>
+                        خروج و استعفای داوطلبانه «جیمز ویلسون» از چرخه رقابت در ساعات گذشته، باعث شد تا پایگاه رأی سنتی وی به صورت پراکنده بین سایر کاندیداها تقسیم شود. تحلیلگران سیاسی معتقدند بخش عمده‌ای از سبد رأی وی به دلیل شباهت برنامه‌های اقتصادی، به سمت نفر دوم و سوم (آرمان نیک‌فر و حامد صادقیان) سرازیر شده است که توانسته رقابت این دو نفر را برای کسب جایگاه دوم به شدت نزدیک و میلی‌متری کند.
                     </p>
 
                     <p class="bg-amber-50/60 p-5 rounded-lg border-r-4 border-amber-500">
-                        <strong><i class="fa-solid fa-envelope-open-text text-amber-600 ml-1"></i> تأثیر آرای پستی و پیش‌بینی روندهای شمارش:</strong>
-                        با توجه به ثبت بیش از ۲.۳ میلیون رأی پستی و غیابی، مکانیزم شمارش آرا در ساعات پیش رو دچار تغییرات محسوسی خواهد شد. از نظر تاریخی، آرای پستی در ایالت لاسونتراس عمدتاً به سمت نامزدهایی با پایگاه رأی در میان اقشار مسن‌تر و ساکنان حومه‌های دوردست گرایش دارد. الگوریتم‌های پیش‌بینی ستاد انتخابات تخمین می‌زنند که با ورود بسته‌های آرای پستی کارل سیتی و سان فییرو به سیستم پردازش مرکزی، فاصله نامزد اول با سایرین ممکن است نوسان داشته باشد، هرچند ساختار فعلی رتبه‌بندی تثبیت شده به نظر می‌رسد.
+                        <strong><i class="fa-solid fa-envelope-open-text text-amber-600 ml-1"></i> رقابت فشرده برای جایگاه دوم:</strong>
+                        با تثبیت جایگاه نفر اول، اکنون تمام توجه تحلیلگران به فاصله بسیار ناچیز آرمان نیک‌فر و حامد صادقیان جلب شده است. با توجه به اینکه آرای پستی حوزه‌هایی نظیر لیبرتی سیتی هنوز به طور کامل پردازش نشده‌اند، احتمال جابه‌جایی رتبه دوم و سوم در ساعات آینده دور از ذهن نیست.
                     </p>
                 </div>
 
@@ -240,12 +241,12 @@
             <!-- نمودارهای تخصصی -->
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
                 <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
-                    <h3 class="text-lg font-bold text-slate-700 mb-4 text-center">توزیع قطبی آرا (Polar Area Chart)</h3>
-                    <p class="text-xs text-slate-500 text-center mb-4">این نمودار حجم آرای هر نامزد را نسبت به مرکز ثقل رقابت نشان می‌دهد.</p>
+                    <h3 class="text-lg font-bold text-slate-700 mb-4 text-center">توزیع قطبی آرا (نامزدهای فعال)</h3>
+                    <p class="text-xs text-slate-500 text-center mb-4">این نمودار حجم آرای هر نامزد فعال را نسبت به مرکز ثقل رقابت نشان می‌دهد.</p>
                     <div class="relative h-72 w-full flex justify-center"><canvas id="polarChart"></canvas></div>
                 </div>
                 <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
-                    <h3 class="text-lg font-bold text-slate-700 mb-4 text-center">مقایسه افقی حاشیه آرا (Horizontal Bar Chart)</h3>
+                    <h3 class="text-lg font-bold text-slate-700 mb-4 text-center">مقایسه افقی حاشیه آرا</h3>
                     <p class="text-xs text-slate-500 text-center mb-4">نمایش دقیق فاصله‌های امتیازی بین کاندیداهای ایالتی.</p>
                     <div class="relative h-72 w-full"><canvas id="barChart"></canvas></div>
                 </div>
@@ -376,21 +377,21 @@
             document.getElementById('mobile-menu').classList.toggle('hidden');
         }
 
-        // داده‌های جدید نامزدها (به ترتیب خواسته شده در قالب آرایه و بدون مرتب‌سازی دستی مجدد)
-        // رتبه‌ها بر اساس آرا تعیین شده‌اند: آرمان اول، محمد دوم، حامد سوم، جیمز چهارم
+        // داده‌های جدید نامزدها (محمد رتبه اول، آرمان رتبه دوم، حامد رتبه سوم، جیمز مستعفی)
         const candidates = [
-            { name: 'آرمان نیک‌فر', votes: 4022239, color: '#0f172a', bg: 'bg-slate-800' },
-            { name: 'محمد علی‌نیا', votes: 3734727, color: '#16a34a', bg: 'bg-green-600' },
-            { name: 'حامد صادقیان', votes: 3672736, color: '#0284c7', bg: 'bg-sky-600' },
-            { name: 'جیمز ویلسون', votes: 701722, color: '#dc2626', bg: 'bg-red-600' }
+            { name: 'محمد علی‌نیا', votes: 11838827, color: '#16a34a', bg: 'bg-green-600', status: 'active' },
+            { name: 'آرمان نیک‌فر', votes: 4245028, color: '#0f172a', bg: 'bg-slate-800', status: 'active' },
+            { name: 'حامد صادقیان', votes: 3992006, color: '#0284c7', bg: 'bg-sky-600', status: 'active' },
+            { name: 'جیمز ویلسون', votes: 0, color: '#94a3b8', bg: 'bg-slate-300', status: 'resigned' }
         ];
 
-        // محاسبات
-        const totalVotes = candidates.reduce((sum, c) => sum + c.votes, 0);
-        const totalEligible = 19700000;
+        // محاسبات فقط برای نامزدهای فعال
+        const activeCandidates = candidates.filter(c => c.status === 'active');
+        const totalVotes = activeCandidates.reduce((sum, c) => sum + c.votes, 0);
+        const totalEligible = 26500000; // افزایش به ۲۶.۵ میلیون جهت منطقی شدن درصد با آرای جدید
         const turnoutPercentage = ((totalVotes / totalEligible) * 100).toFixed(1);
 
-        candidates.forEach((c, index) => {
+        activeCandidates.forEach((c, index) => {
             c.percent = ((c.votes / totalVotes) * 100).toFixed(1);
             c.rank = index + 1;
         });
@@ -399,39 +400,69 @@
         document.getElementById('stat-total-votes').innerText = totalVotes.toLocaleString('en-US');
         document.getElementById('stat-turnout').innerText = turnoutPercentage + '%';
 
-        // رندر کارت‌های نتایج
+        // رندر کارت‌های نتایج و جدول تحلیل
         const container = document.getElementById('candidates-grid');
         let tableBody = '';
+        
         candidates.forEach(c => {
-            container.innerHTML += `
-                <div class="bg-white rounded-xl shadow-sm border border-slate-100 p-6 flex flex-col hover:shadow-md transition">
-                    <div class="flex items-center gap-4 mb-4 border-b pb-4">
-                        <div class="w-14 h-14 rounded-full bg-slate-100 flex items-center justify-center text-slate-400">
-                            <i class="fa-solid fa-user text-2xl"></i>
+            if(c.status === 'active') {
+                // رندر برای کاندیدای فعال
+                container.innerHTML += `
+                    <div class="bg-white rounded-xl shadow-sm border border-slate-100 p-6 flex flex-col hover:shadow-md transition">
+                        <div class="flex items-center gap-4 mb-4 border-b pb-4">
+                            <div class="w-14 h-14 rounded-full bg-slate-100 flex items-center justify-center text-slate-400">
+                                <i class="fa-solid fa-user text-2xl"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-xl text-slate-800">${c.name}</h4>
+                                <span class="bg-slate-100 text-slate-500 text-xs px-2 py-1 rounded mt-1 inline-block font-sans">Rank: ${c.rank}</span>
+                            </div>
                         </div>
-                        <div>
-                            <h4 class="font-bold text-xl text-slate-800">${c.name}</h4>
-                            <span class="bg-slate-100 text-slate-500 text-xs px-2 py-1 rounded mt-1 inline-block font-sans">Rank: ${c.rank}</span>
+                        <div class="flex justify-between items-end mb-2 font-sans">
+                            <div class="font-bold text-2xl" style="color: ${c.color}">${c.votes.toLocaleString('en-US')}</div>
+                            <div class="font-bold text-xl text-slate-500">${c.percent}%</div>
+                        </div>
+                        <div class="w-full bg-slate-100 rounded-full h-3 overflow-hidden">
+                            <div class="${c.bg} h-3 rounded-full" style="width: ${c.percent}%"></div>
                         </div>
                     </div>
-                    <div class="flex justify-between items-end mb-2 font-sans">
-                        <div class="font-bold text-2xl" style="color: ${c.color}">${c.votes.toLocaleString('en-US')}</div>
-                        <div class="font-bold text-xl text-slate-500">${c.percent}%</div>
-                    </div>
-                    <div class="w-full bg-slate-100 rounded-full h-3 overflow-hidden">
-                        <div class="${c.bg} h-3 rounded-full" style="width: ${c.percent}%"></div>
-                    </div>
-                </div>
-            `;
+                `;
 
-            tableBody += `
-                <tr class="hover:bg-slate-50 transition">
-                    <td class="p-4 text-slate-500">${c.rank}</td>
-                    <td class="p-4 font-bold text-slate-800" dir="rtl">${c.name}</td>
-                    <td class="p-4 text-slate-600 font-sans">${c.votes.toLocaleString('en-US')}</td>
-                    <td class="p-4 text-slate-600 font-sans">${c.percent}%</td>
-                </tr>
-            `;
+                tableBody += `
+                    <tr class="hover:bg-slate-50 transition">
+                        <td class="p-4 text-slate-500">${c.rank}</td>
+                        <td class="p-4 font-bold text-slate-800" dir="rtl">${c.name}</td>
+                        <td class="p-4 text-slate-600 font-sans">${c.votes.toLocaleString('en-US')}</td>
+                        <td class="p-4 text-slate-600 font-sans">${c.percent}%</td>
+                    </tr>
+                `;
+            } else {
+                // رندر ویژه برای کاندیدای مستعفی
+                container.innerHTML += `
+                    <div class="bg-slate-50 rounded-xl border border-slate-200 p-6 flex flex-col opacity-60 grayscale">
+                        <div class="flex items-center gap-4 mb-4 border-b border-slate-200 pb-4">
+                            <div class="w-14 h-14 rounded-full bg-slate-200 flex items-center justify-center text-slate-400">
+                                <i class="fa-solid fa-user-slash text-2xl"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-xl text-slate-500 line-through decoration-slate-400">${c.name}</h4>
+                                <span class="bg-red-100 text-red-600 font-bold text-xs px-2 py-1 rounded mt-1 inline-block border border-red-200">استعفا داوطلبانه</span>
+                            </div>
+                        </div>
+                        <div class="text-center py-2">
+                            <p class="text-slate-400 text-sm">این نامزد رسماً از ادامه رقابت‌ها انصراف داده است.</p>
+                        </div>
+                    </div>
+                `;
+
+                tableBody += `
+                    <tr class="bg-slate-50 opacity-70">
+                        <td class="p-4 text-slate-400">-</td>
+                        <td class="p-4 font-bold text-slate-500 line-through decoration-slate-400" dir="rtl">${c.name}</td>
+                        <td class="p-4 text-red-500 font-bold" colspan="2">استعفا داوطلبانه / انصراف از رقابت</td>
+                    </tr>
+                `;
+            }
         });
         
         document.addEventListener('DOMContentLoaded', () => {
@@ -490,12 +521,12 @@
             document.getElementById('cd-seconds').innerText = String(s).padStart(2, '0');
         }, 1000);
 
-        // نمودارهای تخصصی جدید
+        // نمودارهای تخصصی (فقط برای کاندیداهای فعال)
         function renderCharts() {
             Chart.defaults.font.family = 'Vazirmatn';
-            const labels = candidates.map(c => c.name);
-            const dataVotes = candidates.map(c => c.votes);
-            const bgColors = ['rgba(15, 23, 42, 0.8)', 'rgba(22, 163, 74, 0.8)', 'rgba(2, 132, 199, 0.8)', 'rgba(220, 38, 38, 0.8)'];
+            const labels = activeCandidates.map(c => c.name);
+            const dataVotes = activeCandidates.map(c => c.votes);
+            const bgColors = activeCandidates.map(c => c.color); // استفاده از رنگ هماهنگ خود کاندیدا
 
             new Chart(document.getElementById('polarChart'), {
                 type: 'polarArea',
